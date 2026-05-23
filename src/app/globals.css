@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbfbfa;
+  --foreground: #37352f;
+  --card: #ffffff;
+  --card-foreground: #37352f;
+  --popover: #ffffff;
+  --popover-foreground: #37352f;
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f4;
+  --secondary-foreground: #37352f;
+  --muted: #f3f4f2;
+  --muted-foreground: #6b6b6b;
+  --accent: #e8f5f3;
+  --accent-foreground: #0f766e;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e8e8e6;
+  --input: #e8e8e6;
+  --ring: #0d9488;
+  --radius: 0.5rem;
+  --sidebar: #f7f7f5;
+  --sidebar-foreground: #37352f;
+  --sidebar-accent: #efefec;
+  --sidebar-accent-foreground: #37352f;
+}
+
+.dark {
+  --background: #191919;
+  --foreground: #e8e8e6;
+  --card: #202020;
+  --card-foreground: #e8e8e6;
+  --popover: #202020;
+  --popover-foreground: #e8e8e6;
+  --primary: #14b8a6;
+  --primary-foreground: #042f2e;
+  --secondary: #2a2a2a;
+  --secondary-foreground: #e8e8e6;
+  --muted: #2a2a2a;
+  --muted-foreground: #a1a1a1;
+  --accent: #134e4a;
+  --accent-foreground: #99f6e4;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #2f2f2f;
+  --input: #2f2f2f;
+  --ring: #14b8a6;
+  --sidebar: #1f1f1f;
+  --sidebar-foreground: #e8e8e6;
+  --sidebar-accent: #2a2a2a;
+  --sidebar-accent-foreground: #e8e8e6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* TipTap editor */
+.tiptap {
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.tiptap h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1rem 0 0.5rem;
+}
+
+.tiptap h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.35rem;
+}
+
+.tiptap p {
+  margin: 0.35rem 0;
+  line-height: 1.65;
+}
+
+.tiptap ul,
+.tiptap ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.tiptap ul[data-type="taskList"] li label {
+  margin-top: 0.2rem;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid var(--border);
+  margin: 0.75rem 0;
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+}
+
+.tiptap pre {
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875rem;
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+
+.tiptap code {
+  background: var(--muted);
+  border-radius: 0.25rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875em;
+  padding: 0.1rem 0.35rem;
+}
+
+.tiptap mark {
+  background: #fef08a;
+  border-radius: 0.15rem;
+  padding: 0 0.1rem;
+}
+
+.dark .tiptap mark {
+  background: #854d0e;
+  color: #fef9c3;
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.25rem 0;
+}
+
+/* BlockNote */
+.blocknote-wrapper .bn-container {
+  --bn-colors-editor-background: transparent;
+  --bn-colors-menu-background: var(--popover);
+  --bn-colors-tooltip-background: var(--popover);
+  --bn-colors-tooltip-text: var(--popover-foreground);
+  --bn-colors-border: var(--border);
+  --bn-colors-shadow: transparent;
+  --bn-colors-hovered-background: var(--accent);
+  --bn-colors-selected-background: var(--accent);
+  --bn-colors-disabled-text: var(--muted-foreground);
+  --bn-colors-side-menu: var(--muted-foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.blocknote-wrapper .bn-editor {
+  padding-left: 2.5rem;
+  padding-right: 0.5rem;
+}
