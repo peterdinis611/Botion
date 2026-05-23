@@ -11,11 +11,9 @@ import {
   NOTIFICATIONS_QUERY,
 } from "@/graphql/operations";
 import type { NotificationsQueryResult } from "@/graphql/types";
-import { useNotificationSubscription } from "@/hooks/use-notification-subscription";
 import { cn } from "@/lib/utils";
 
 export function NotificationsPanel() {
-  useNotificationSubscription();
   const { data, refetch } = useQuery<NotificationsQueryResult>(NOTIFICATIONS_QUERY);
 
   const [markRead] = useMutation(MARK_NOTIFICATION_READ);

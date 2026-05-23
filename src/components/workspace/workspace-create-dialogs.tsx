@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -30,6 +31,9 @@ export function WorkspaceCreateDialogs({
           <DialogTitle>
             {dialog === "folder" ? "New folder" : "New notebook"}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Enter a name for the new {dialog === "folder" ? "folder" : "notebook"}.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div className="space-y-2">

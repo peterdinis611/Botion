@@ -3,7 +3,12 @@
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 import * as React from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 const Command = React.forwardRef<
@@ -35,6 +40,10 @@ function CommandDialog({
   return (
     <Dialog {...props}>
       <DialogContent className="gap-0 overflow-hidden p-0 shadow-2xl sm:max-w-xl">
+        <DialogTitle className="sr-only">Command palette</DialogTitle>
+        <DialogDescription className="sr-only">
+          Search notes, notebooks, and run actions.
+        </DialogDescription>
         <Command
           shouldFilter={false}
           value={commandValue}

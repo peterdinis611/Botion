@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -178,6 +179,9 @@ export function CalendarEventDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit event" : "New event"}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {isEdit ? "Update calendar event details." : "Add a new event to your calendar."}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4 pt-2">
           <div className="space-y-2">

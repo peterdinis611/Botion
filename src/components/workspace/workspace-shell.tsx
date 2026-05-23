@@ -24,7 +24,6 @@ import type {
   NoteQueryResult,
   WorkspaceQueryResult,
 } from "@/graphql/types";
-import { useNotificationSubscription } from "@/hooks/use-notification-subscription";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { buildWorkspacePath, parseWorkspaceFilters } from "@/lib/workspace-url";
 
@@ -39,8 +38,6 @@ export function WorkspaceShell({
   const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
   const { createNewPage } = useWorkspaceCreate();
-  useNotificationSubscription();
-
   const filters = parseWorkspaceFilters(searchParams);
 
   const { data, loading: workspaceLoading } =

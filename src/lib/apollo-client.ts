@@ -39,12 +39,18 @@ export async function initApolloClient() {
       ? new GraphQLWsLink(
           createClient({
             url: getGraphqlWsUri(),
+            lazy: true,
             connectionParams: () => {
               const token = getToken();
-              return token ? { authorization: `Bearer ${token}` } : {};
+              if (!token) {
+                return {};
+              }
+              return { authorization: `Bearer ${token}` };
             },
             retryAttempts: 5,
-            shouldRetry: () => true,
+            shouldRetry: () => {
+              return Boolean(getToken());
+            },
           }),
         )
       : null;
