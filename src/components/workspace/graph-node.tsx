@@ -1,7 +1,7 @@
 "use client";
 
+import { Handle, type NodeProps, Position, useReactFlow } from "@xyflow/react";
 import { memo, useCallback, useEffect, useState } from "react";
-import { Handle, Position, useReactFlow, type NodeProps } from "@xyflow/react";
 import type { GraphNodeData } from "@/lib/graph-flow";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +30,9 @@ function GraphNodeComponent({ id, data, selected }: NodeProps) {
         selected && "ring-2 ring-primary ring-offset-2 ring-offset-background",
         !borderColor && "border-border",
       )}
-      style={borderColor ? { borderColor, backgroundColor: `${borderColor}18` } : undefined}
+      style={
+        borderColor ? { borderColor, backgroundColor: `${borderColor}18` } : undefined
+      }
     >
       <Handle type="target" position={Position.Top} className="!bg-primary" />
       {editing ? (
@@ -59,8 +61,18 @@ function GraphNodeComponent({ id, data, selected }: NodeProps) {
         </button>
       )}
       <Handle type="source" position={Position.Bottom} className="!bg-primary" />
-      <Handle type="source" position={Position.Left} id="left" className="!bg-primary" />
-      <Handle type="source" position={Position.Right} id="right" className="!bg-primary" />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left"
+        className="!bg-primary"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        className="!bg-primary"
+      />
     </div>
   );
 }

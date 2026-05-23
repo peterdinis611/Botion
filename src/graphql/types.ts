@@ -122,13 +122,7 @@ export type Graph = {
 
 export type GraphListItem = Pick<
   Graph,
-  | "id"
-  | "title"
-  | "description"
-  | "nodesJson"
-  | "edgesJson"
-  | "createdAt"
-  | "updatedAt"
+  "id" | "title" | "description" | "nodesJson" | "edgesJson" | "createdAt" | "updatedAt"
 >;
 
 export type GraphsQueryResult = { graphs: GraphListItem[] };

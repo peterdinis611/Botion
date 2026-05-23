@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/components/providers/auth-provider";
 import { LOGIN_MUTATION, REGISTER_MUTATION } from "@/graphql/operations";
 
 type AuthMode = "login" | "register";
@@ -61,8 +61,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         typeof err === "object" &&
         "graphQLErrors" in err &&
         Array.isArray((err as { graphQLErrors: { message: string }[] }).graphQLErrors)
-          ? (err as { graphQLErrors: { message: string }[] }).graphQLErrors[0]
-              ?.message
+          ? (err as { graphQLErrors: { message: string }[] }).graphQLErrors[0]?.message
           : err instanceof Error
             ? err.message
             : "Something went wrong";

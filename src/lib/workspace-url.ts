@@ -6,9 +6,7 @@ export type WorkspaceFilters = {
   tagId?: string;
 };
 
-export function parseWorkspaceFilters(
-  searchParams: URLSearchParams,
-): WorkspaceFilters {
+export function parseWorkspaceFilters(searchParams: URLSearchParams): WorkspaceFilters {
   return {
     notebookId: searchParams.get("notebook") ?? undefined,
     folderId: searchParams.get("folder") ?? undefined,
@@ -48,13 +46,16 @@ export function buildWorkspacePath(
 
 export function buildWorkspaceHref(
   current: URLSearchParams,
-  patch: Partial<WorkspaceFilters> & { clearTag?: boolean; clearPinned?: boolean; clearArchived?: boolean },
+  patch: Partial<WorkspaceFilters> & {
+    clearTag?: boolean;
+    clearPinned?: boolean;
+    clearArchived?: boolean;
+  },
 ): string {
   const filters = parseWorkspaceFilters(current);
 
   const next: WorkspaceFilters = {
-    notebookId:
-      patch.notebookId !== undefined ? patch.notebookId : filters.notebookId,
+    notebookId: patch.notebookId !== undefined ? patch.notebookId : filters.notebookId,
     folderId: patch.folderId !== undefined ? patch.folderId : filters.folderId,
     pinned: patch.pinned !== undefined ? patch.pinned : filters.pinned,
     archived: patch.archived !== undefined ? patch.archived : filters.archived,

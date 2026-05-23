@@ -16,15 +16,9 @@ type CommandPaletteContextValue = {
   openPalette: () => void;
 };
 
-const CommandPaletteContext = createContext<CommandPaletteContextValue | null>(
-  null,
-);
+const CommandPaletteContext = createContext<CommandPaletteContextValue | null>(null);
 
-export function CommandPaletteProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function CommandPaletteProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   const toggle = useCallback(() => setOpen((v) => !v), []);

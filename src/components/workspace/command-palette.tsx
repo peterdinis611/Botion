@@ -1,17 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
-import {
-  Archive,
-  Clock,
-  FileText,
-  FolderOpen,
-  Plus,
-  Search,
-  Star,
-} from "lucide-react";
+import { Archive, Clock, FileText, FolderOpen, Plus, Search, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -21,9 +13,10 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { useCommandPalette } from "@/hooks/use-command-palette";
+import { SearchHighlight } from "@/components/workspace/search-highlight";
 import { CREATE_NOTE_MUTATION, WORKSPACE_QUERY } from "@/graphql/operations";
 import type { CreateNoteResult, Note, WorkspaceQueryResult } from "@/graphql/types";
+import { useCommandPalette } from "@/hooks/use-command-palette";
 import {
   getRecentNoteIds,
   noteSearchSubtitle,
@@ -31,7 +24,6 @@ import {
   searchByName,
   searchNotes,
 } from "@/lib/search";
-import { SearchHighlight } from "@/components/workspace/search-highlight";
 
 export function CommandPalette({
   notes,
@@ -163,9 +155,7 @@ export function CommandPalette({
                 >
                   <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">
-                      {note.title || "Untitled"}
-                    </p>
+                    <p className="truncate font-medium">{note.title || "Untitled"}</p>
                     <p className="truncate text-xs text-muted-foreground">
                       {noteSearchSubtitle(note.content)}
                     </p>
@@ -190,10 +180,7 @@ export function CommandPalette({
                   <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium leading-snug">
-                      <SearchHighlight
-                        text={note.title || "Untitled"}
-                        query={query}
-                      />
+                      <SearchHighlight text={note.title || "Untitled"} query={query} />
                     </p>
                     <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
                       <SearchHighlight

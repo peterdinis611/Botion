@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { useTheme } from "next-themes";
-import {
-  ME_QUERY,
-  UPDATE_MY_PROFILE_MUTATION,
-} from "@/graphql/operations";
-import type { MeQueryResult, UpdateMyProfileResult } from "@/graphql/types";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { ThemeToggle } from "@/components/workspace/theme-toggle";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ThemeToggle } from "@/components/workspace/theme-toggle";
+import { ME_QUERY, UPDATE_MY_PROFILE_MUTATION } from "@/graphql/operations";
+import type { MeQueryResult, UpdateMyProfileResult } from "@/graphql/types";
+import { useSidebar } from "@/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 
 export function SettingsView() {
@@ -176,9 +173,7 @@ export function SettingsView() {
                 </div>
                 <input
                   type="checkbox"
-                  className={cn(
-                    "h-4 w-4 rounded border border-input accent-primary",
-                  )}
+                  className={cn("h-4 w-4 rounded border border-input accent-primary")}
                   checked={collapsed}
                   onChange={(e) => void handleSidebarDefault(e.target.checked)}
                 />

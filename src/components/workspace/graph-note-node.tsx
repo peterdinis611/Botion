@@ -1,7 +1,7 @@
 "use client";
 
+import { Handle, type NodeProps, Position, useReactFlow } from "@xyflow/react";
 import { memo, useCallback, useEffect, useState } from "react";
-import { Handle, Position, useReactFlow, type NodeProps } from "@xyflow/react";
 import type { GraphNodeData } from "@/lib/graph-flow";
 import { cn } from "@/lib/utils";
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { use } from "react";
-import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
 import { GraphEditor } from "@/components/workspace/graph-editor";
+import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
 import { useNotificationSubscription } from "@/hooks/use-notification-subscription";
 
 export default function GraphEditorPage({

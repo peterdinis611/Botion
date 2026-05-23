@@ -1,28 +1,37 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { useMutation, useQuery } from "@apollo/client/react";
 import {
-  ReactFlow,
-  ReactFlowProvider,
+  addEdge,
   Background,
   BackgroundVariant,
+  type Connection,
   Controls,
+  type Edge,
   MiniMap,
+  type Node,
   Panel,
-  addEdge,
+  ReactFlow,
+  ReactFlowProvider,
   useEdgesState,
   useNodesState,
   useOnSelectionChange,
   useReactFlow,
-  type Connection,
-  type Edge,
-  type Node,
   type Viewport,
 } from "@xyflow/react";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "@xyflow/react/dist/style.css";
 import { ArrowLeft, Loader2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { GraphDecisionNode } from "@/components/workspace/graph-decision-node";
+import { GraphEditorInspector } from "@/components/workspace/graph-editor-inspector";
+import { GraphEditorToolbar } from "@/components/workspace/graph-editor-toolbar";
+import { GraphFlowNode } from "@/components/workspace/graph-node";
+import { GraphNoteNode } from "@/components/workspace/graph-note-node";
 import {
   GRAPH_QUERY,
   GRAPHS_QUERY,
@@ -30,32 +39,23 @@ import {
   UPDATE_GRAPH_MUTATION,
 } from "@/graphql/operations";
 import type { GraphQueryResult, UpdateGraphResult } from "@/graphql/types";
-import { GraphFlowNode } from "@/components/workspace/graph-node";
-import { GraphDecisionNode } from "@/components/workspace/graph-decision-node";
-import { GraphNoteNode } from "@/components/workspace/graph-note-node";
-import { GraphEditorToolbar } from "@/components/workspace/graph-editor-toolbar";
-import { GraphEditorInspector } from "@/components/workspace/graph-editor-inspector";
 import {
-  GRAPH_DECISION_TYPE,
-  GRAPH_NOTE_TYPE,
-  GRAPH_NODE_TYPE,
   buildExportPayload,
   cloneTemplateWithEdges,
   createNode,
   duplicateNodes,
+  GRAPH_DECISION_TYPE,
+  GRAPH_NODE_TYPE,
+  GRAPH_NOTE_TYPE,
+  type GraphNodeData,
+  type GraphNodeKind,
+  type GraphTemplateId,
   parseFlowEdges,
   parseFlowNodes,
   parseFlowViewport,
   parseImportPayload,
   serializeFlow,
-  type GraphNodeData,
-  type GraphNodeKind,
-  type GraphTemplateId,
 } from "@/lib/graph-flow";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter } from "next/navigation";
 
 const nodeTypes = {
   [GRAPH_NODE_TYPE]: GraphFlowNode,
@@ -183,10 +183,7 @@ function GraphEditorCanvas({
   }
 
   function handleApplyTemplate(id: GraphTemplateId) {
-    if (
-      nodes.length > 0 &&
-      !confirm("Replace current canvas with this template?")
-    ) {
+    if (nodes.length > 0 && !confirm("Replace current canvas with this template?")) {
       return;
     }
     const { nodes: n, edges: e } = cloneTemplateWithEdges(id);
@@ -234,10 +231,7 @@ function GraphEditorCanvas({
     const selected = nodes.filter((n) => n.selected);
     if (selected.length === 0) return;
     const clones = duplicateNodes(selected);
-    setNodes((nds) => [
-      ...nds.map((n) => ({ ...n, selected: false })),
-      ...clones,
-    ]);
+    setNodes((nds) => [...nds.map((n) => ({ ...n, selected: false })), ...clones]);
   }
 
   function handleDeleteSelection() {
@@ -259,9 +253,7 @@ function GraphEditorCanvas({
   }
 
   function handleUpdateEdge(id: string, patch: Partial<Edge>) {
-    setEdges((eds) =>
-      eds.map((e) => (e.id === id ? { ...e, ...patch } : e)),
-    );
+    setEdges((eds) => eds.map((e) => (e.id === id ? { ...e, ...patch } : e)));
   }
 
   useEffect(() => {
@@ -279,8 +271,7 @@ function GraphEditorCanvas({
     return () => window.removeEventListener("keydown", onKeyDown);
   });
 
-  const hasSelection =
-    nodes.some((n) => n.selected) || edges.some((e) => e.selected);
+  const hasSelection = nodes.some((n) => n.selected) || edges.some((e) => e.selected);
 
   return (
     <>
@@ -324,11 +315,7 @@ function GraphEditorCanvas({
             className="bg-muted/20"
           >
             {showGrid && (
-              <Background
-                variant={BackgroundVariant.Dots}
-                gap={16}
-                size={1}
-              />
+              <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
             )}
             <Controls />
             <MiniMap

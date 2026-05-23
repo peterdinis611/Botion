@@ -4,8 +4,8 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { LocalStorageWrapper, persistCache } from "apollo3-cache-persist";
 import { createClient } from "graphql-ws";
-import { getToken } from "./auth";
 import { APOLLO_CACHE_KEY, createApolloCache } from "./apollo-cache";
+import { getToken } from "./auth";
 import { getGraphqlHttpUri, getGraphqlWsUri } from "./graphql-uri";
 
 export async function initApolloClient() {

@@ -1,10 +1,8 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { Archive, Pin, Tag, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { buildWorkspaceHref } from "@/lib/workspace-url";
-import type { Tag as TagType } from "@/graphql/types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import type { Tag as TagType } from "@/graphql/types";
+import { cn } from "@/lib/utils";
+import { buildWorkspaceHref } from "@/lib/workspace-url";
 
 export function NoteListFilters({ tags }: { tags: TagType[] }) {
   const router = useRouter();

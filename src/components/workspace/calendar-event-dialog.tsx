@@ -1,10 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client/react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
-  CREATE_CALENDAR_EVENT_MUTATION,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
   CALENDAR_EVENTS_QUERY,
+  CREATE_CALENDAR_EVENT_MUTATION,
   UPDATE_CALENDAR_EVENT_MUTATION,
 } from "@/graphql/operations";
 import type {
@@ -19,15 +28,6 @@ import {
   toDateInputValue,
   toDateTimeLocalValue,
 } from "@/lib/calendar-utils";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const COLOR_OPTIONS = [
@@ -71,15 +71,19 @@ export function CalendarEventDialog({
     variables: { from: rangeFrom, to: rangeTo },
   };
 
-  const [createEvent, { loading: creating }] =
-    useMutation<CreateCalendarEventResult>(CREATE_CALENDAR_EVENT_MUTATION, {
+  const [createEvent, { loading: creating }] = useMutation<CreateCalendarEventResult>(
+    CREATE_CALENDAR_EVENT_MUTATION,
+    {
       refetchQueries: [refetch],
-    });
+    },
+  );
 
-  const [updateEvent, { loading: updating }] =
-    useMutation<UpdateCalendarEventResult>(UPDATE_CALENDAR_EVENT_MUTATION, {
+  const [updateEvent, { loading: updating }] = useMutation<UpdateCalendarEventResult>(
+    UPDATE_CALENDAR_EVENT_MUTATION,
+    {
       refetchQueries: [refetch],
-    });
+    },
+  );
 
   useEffect(() => {
     if (!open) return;

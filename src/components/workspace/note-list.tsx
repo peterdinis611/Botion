@@ -1,17 +1,17 @@
 "use client";
 
+import { Pin, SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Pin, SlidersHorizontal, X } from "lucide-react";
-import { excerpt } from "@/lib/content";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCommandPalette } from "@/hooks/use-command-palette";
 import { NoteListFilters } from "@/components/workspace/note-list-filters";
 import type { Tag } from "@/graphql/types";
+import { useCommandPalette } from "@/hooks/use-command-palette";
+import { excerpt } from "@/lib/content";
+import { cn } from "@/lib/utils";
 
 export type NoteListItem = {
   id: string;
@@ -57,9 +57,7 @@ export function NoteList({
     <div className="flex h-full w-[280px] shrink-0 flex-col border-r border-border bg-background/50">
       <div className="space-y-2 border-b border-border px-3 py-3">
         <div className="flex items-baseline justify-between gap-2 px-0.5">
-          <h2 className="truncate text-sm font-semibold text-foreground">
-            {title}
-          </h2>
+          <h2 className="truncate text-sm font-semibold text-foreground">{title}</h2>
           <span className="shrink-0 text-[11px] text-muted-foreground">
             {isFiltering
               ? `${notes.length} of ${totalCount ?? notes.length}`
@@ -135,9 +133,7 @@ export function NoteList({
                   href={href}
                   className={cn(
                     "mb-0.5 block rounded-lg px-3 py-2.5 transition-colors",
-                    active
-                      ? "bg-sidebar-accent shadow-sm"
-                      : "hover:bg-muted/60",
+                    active ? "bg-sidebar-accent shadow-sm" : "hover:bg-muted/60",
                   )}
                 >
                   <div className="flex items-start gap-2">

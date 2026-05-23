@@ -74,9 +74,7 @@ export function parseBlockContent(content: string): PartialBlock[] | null {
 
   try {
     if (content.startsWith(BLOCK_CONTENT_PREFIX)) {
-      return JSON.parse(
-        content.slice(BLOCK_CONTENT_PREFIX.length),
-      ) as PartialBlock[];
+      return JSON.parse(content.slice(BLOCK_CONTENT_PREFIX.length)) as PartialBlock[];
     }
     if (isBlockJsonArray(content)) {
       return JSON.parse(content) as PartialBlock[];

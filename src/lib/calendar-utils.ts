@@ -61,16 +61,10 @@ export function eventOverlapsDay(event: CalendarEvent, day: Date): boolean {
   return start <= dayEnd && end >= dayStart;
 }
 
-export function eventsForDay(
-  events: CalendarEvent[],
-  day: Date,
-): CalendarEvent[] {
+export function eventsForDay(events: CalendarEvent[], day: Date): CalendarEvent[] {
   return events
     .filter((e) => eventOverlapsDay(e, day))
-    .sort(
-      (a, b) =>
-        new Date(a.startAt).getTime() - new Date(b.startAt).getTime(),
-    );
+    .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
 }
 
 export function formatMonthYear(date: Date): string {

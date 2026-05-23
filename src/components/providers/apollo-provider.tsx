@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ApolloProvider } from "@apollo/client/react";
 import type { ApolloClient } from "@apollo/client";
-import { initApolloClient } from "@/lib/apollo-client";
+import { ApolloProvider } from "@apollo/client/react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { initApolloClient } from "@/lib/apollo-client";
 
 export function ApolloAppProvider({ children }: { children: React.ReactNode }) {
   const [client, setClient] = useState<ApolloClient | null>(null);

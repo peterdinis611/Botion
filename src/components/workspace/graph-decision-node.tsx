@@ -1,7 +1,7 @@
 "use client";
 
+import { Handle, type NodeProps, Position, useReactFlow } from "@xyflow/react";
 import { memo, useCallback, useEffect, useState } from "react";
-import { Handle, Position, useReactFlow, type NodeProps } from "@xyflow/react";
 import type { GraphNodeData } from "@/lib/graph-flow";
 import { cn } from "@/lib/utils";
 
@@ -60,8 +60,18 @@ function GraphDecisionNodeComponent({ id, data, selected }: NodeProps) {
         )}
       </div>
       <Handle type="source" position={Position.Bottom} className="!bg-primary" />
-      <Handle type="source" position={Position.Left} id="left" className="!bg-primary" />
-      <Handle type="source" position={Position.Right} id="right" className="!bg-primary" />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left"
+        className="!bg-primary"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        className="!bg-primary"
+      />
     </div>
   );
 }

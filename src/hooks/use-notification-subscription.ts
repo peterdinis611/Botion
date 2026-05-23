@@ -1,15 +1,12 @@
 "use client";
 
-import { useSubscription, useApolloClient } from "@apollo/client/react";
+import { useApolloClient, useSubscription } from "@apollo/client/react";
 import { useEffect } from "react";
 import {
   NOTIFICATION_ADDED_SUBSCRIPTION,
   NOTIFICATIONS_QUERY,
 } from "@/graphql/operations";
-import type {
-  Notification,
-  NotificationsQueryResult,
-} from "@/graphql/types";
+import type { Notification, NotificationsQueryResult } from "@/graphql/types";
 import { getToken } from "@/lib/auth";
 
 export function useNotificationSubscription(enabled = true) {

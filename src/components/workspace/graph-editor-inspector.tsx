@@ -1,12 +1,12 @@
 "use client";
 
 import type { Edge, Node } from "@xyflow/react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import type { GraphEdgeData, GraphNodeData } from "@/lib/graph-flow";
 import { NODE_COLOR_PRESETS } from "@/lib/graph-flow";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 export function GraphEditorInspector({
@@ -63,9 +63,7 @@ export function GraphEditorInspector({
               <Input
                 id="node-label"
                 value={nodeData.label ?? ""}
-                onChange={(e) =>
-                  onUpdateNode(node.id, { label: e.target.value })
-                }
+                onChange={(e) => onUpdateNode(node.id, { label: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -77,9 +75,7 @@ export function GraphEditorInspector({
                     type="button"
                     className={cn(
                       "h-6 w-6 rounded-full border-2",
-                      nodeData.color === c
-                        ? "border-foreground"
-                        : "border-transparent",
+                      nodeData.color === c ? "border-foreground" : "border-transparent",
                     )}
                     style={{ backgroundColor: c }}
                     onClick={() => onUpdateNode(node.id, { color: c })}
@@ -115,9 +111,7 @@ export function GraphEditorInspector({
               <input
                 type="checkbox"
                 checked={Boolean(edge.animated)}
-                onChange={(e) =>
-                  onUpdateEdge(edge.id, { animated: e.target.checked })
-                }
+                onChange={(e) => onUpdateEdge(edge.id, { animated: e.target.checked })}
                 className="h-4 w-4 accent-primary"
               />
               Animated
@@ -127,9 +121,7 @@ export function GraphEditorInspector({
               <select
                 className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={edge.type ?? "smoothstep"}
-                onChange={(e) =>
-                  onUpdateEdge(edge.id, { type: e.target.value })
-                }
+                onChange={(e) => onUpdateEdge(edge.id, { type: e.target.value })}
               >
                 <option value="smoothstep">Smooth step</option>
                 <option value="default">Bezier</option>
@@ -142,8 +134,7 @@ export function GraphEditorInspector({
 
         {selectedNodes.length > 1 && (
           <p className="text-sm text-muted-foreground">
-            {selectedNodes.length} nodes selected. Use toolbar to duplicate or
-            delete.
+            {selectedNodes.length} nodes selected. Use toolbar to duplicate or delete.
           </p>
         )}
 

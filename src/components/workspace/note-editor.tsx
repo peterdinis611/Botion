@@ -1,18 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import { Archive, Loader2, Pin, RotateCcw, Trash2 } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounce";
-import { BlockEditor } from "@/components/workspace/block-editor";
-import { TagPicker } from "@/components/workspace/tag-picker";
-import { NoteColorPicker } from "@/components/workspace/note-color-picker";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  REMOVE_NOTE_MUTATION,
-  UPDATE_NOTE_MUTATION,
-} from "@/graphql/operations";
+import { BlockEditor } from "@/components/workspace/block-editor";
+import { NoteColorPicker } from "@/components/workspace/note-color-picker";
+import { TagPicker } from "@/components/workspace/tag-picker";
+import { REMOVE_NOTE_MUTATION, UPDATE_NOTE_MUTATION } from "@/graphql/operations";
 import type { Tag, UpdateNoteResult } from "@/graphql/types";
+import { useDebounce } from "@/hooks/use-debounce";
 import { removeNoteFromCache, upsertNoteInCache } from "@/lib/cache-updates";
 import { pushRecentNoteId } from "@/lib/search";
 
@@ -89,8 +86,7 @@ export function NoteEditor({
         if (data?.updateNote) {
           upsertNoteInCache(client.cache, data.updateNote);
           if (patch.title !== undefined) lastSaved.current.title = patch.title;
-          if (patch.content !== undefined)
-            lastSaved.current.content = patch.content;
+          if (patch.content !== undefined) lastSaved.current.content = patch.content;
           if (patch.color !== undefined) lastSaved.current.color = patch.color;
         }
       } finally {

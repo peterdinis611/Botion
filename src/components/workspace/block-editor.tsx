@@ -1,15 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
 import type { PartialBlock } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useTheme } from "next-themes";
-import {
-  isHtmlContent,
-  parseBlockContent,
-  serializeBlockContent,
-} from "@/lib/content";
+import { useEffect, useMemo, useRef } from "react";
+import { isHtmlContent, parseBlockContent, serializeBlockContent } from "@/lib/content";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 

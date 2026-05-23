@@ -44,10 +44,7 @@ export function searchNotes(
   if (!q) {
     return notes
       .slice()
-      .sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-      )
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
       .map((item) => ({ item, score: 1 }));
   }
 

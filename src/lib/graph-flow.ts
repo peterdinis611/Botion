@@ -28,11 +28,7 @@ export const NODE_COLOR_PRESETS = [
   "#ffffff",
 ] as const;
 
-export type GraphTemplateId =
-  | "blank"
-  | "flowchart"
-  | "mindmap"
-  | "sequence";
+export type GraphTemplateId = "blank" | "flowchart" | "mindmap" | "sequence";
 
 export type GraphTemplate = {
   id: GraphTemplateId;
@@ -64,12 +60,7 @@ function node(
   };
 }
 
-function edge(
-  source: string,
-  target: string,
-  label?: string,
-  animated = false,
-): Edge {
+function edge(source: string, target: string, label?: string, animated = false): Edge {
   return {
     id: `e-${source}-${target}`,
     source,
@@ -280,11 +271,7 @@ export function parseFlowViewport(json?: string | null): Viewport | undefined {
   return undefined;
 }
 
-export function serializeFlow(
-  nodes: Node[],
-  edges: Edge[],
-  viewport?: Viewport,
-) {
+export function serializeFlow(nodes: Node[], edges: Edge[], viewport?: Viewport) {
   return {
     nodesJson: JSON.stringify(nodes),
     edgesJson: JSON.stringify(edges),

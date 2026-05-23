@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -8,13 +9,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
 import {
   clearAuth,
   getStoredUser,
   getToken,
-  setAuth,
   type StoredUser,
+  setAuth,
 } from "@/lib/auth";
 
 type AuthContextValue = {

@@ -1,18 +1,13 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
-import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
+import { useRouter } from "next/navigation";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { WorkspaceCreateDialogs } from "@/components/workspace/workspace-create-dialogs";
 import {
   CREATE_FOLDER_MUTATION,
-  CREATE_NOTEBOOK_MUTATION,
   CREATE_NOTE_MUTATION,
+  CREATE_NOTEBOOK_MUTATION,
   WORKSPACE_QUERY,
 } from "@/graphql/operations";
 import type {
@@ -20,7 +15,6 @@ import type {
   CreateNotebookResult,
   CreateNoteResult,
 } from "@/graphql/types";
-import { WorkspaceCreateDialogs } from "@/components/workspace/workspace-create-dialogs";
 
 type CreateDialog = "folder" | "notebook" | null;
 
@@ -30,14 +24,9 @@ type WorkspaceCreateContextValue = {
   createNewPage: (notebookId?: string) => Promise<void>;
 };
 
-const WorkspaceCreateContext =
-  createContext<WorkspaceCreateContextValue | null>(null);
+const WorkspaceCreateContext = createContext<WorkspaceCreateContextValue | null>(null);
 
-export function WorkspaceCreateProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function WorkspaceCreateProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [dialog, setDialog] = useState<CreateDialog>(null);
   const [name, setName] = useState("");
@@ -48,10 +37,9 @@ export function WorkspaceCreateProvider({
   const [createNote] = useMutation<CreateNoteResult>(CREATE_NOTE_MUTATION, {
     refetchQueries: refetch,
   });
-  const [createNotebook] = useMutation<CreateNotebookResult>(
-    CREATE_NOTEBOOK_MUTATION,
-    { refetchQueries: refetch },
-  );
+  const [createNotebook] = useMutation<CreateNotebookResult>(CREATE_NOTEBOOK_MUTATION, {
+    refetchQueries: refetch,
+  });
   const [createFolder] = useMutation<CreateFolderResult>(CREATE_FOLDER_MUTATION, {
     refetchQueries: refetch,
   });

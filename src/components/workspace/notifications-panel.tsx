@@ -3,13 +3,8 @@
 import { useMutation, useQuery } from "@apollo/client/react";
 import { Bell, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 import {
   MARK_ALL_NOTIFICATIONS_READ,
   MARK_NOTIFICATION_READ,
@@ -17,12 +12,11 @@ import {
 } from "@/graphql/operations";
 import type { NotificationsQueryResult } from "@/graphql/types";
 import { useNotificationSubscription } from "@/hooks/use-notification-subscription";
+import { cn } from "@/lib/utils";
 
 export function NotificationsPanel() {
   useNotificationSubscription();
-  const { data, refetch } = useQuery<NotificationsQueryResult>(
-    NOTIFICATIONS_QUERY,
-  );
+  const { data, refetch } = useQuery<NotificationsQueryResult>(NOTIFICATIONS_QUERY);
 
   const [markRead] = useMutation(MARK_NOTIFICATION_READ);
   const [markAllRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
@@ -85,9 +79,7 @@ export function NotificationsPanel() {
                     onClick={() => !n.isRead && handleMarkRead(n.id)}
                   >
                     <p className="font-medium leading-snug">{n.type}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {n.message}
-                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{n.message}</p>
                   </button>
                 </li>
               ))}

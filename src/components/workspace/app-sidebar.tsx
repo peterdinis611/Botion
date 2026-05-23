@@ -1,27 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Archive,
   BookOpen,
   CalendarDays,
   Home,
-  Network,
   LogOut,
+  Network,
   PanelLeft,
   PanelLeftClose,
   Plus,
   Settings,
   Star,
 } from "lucide-react";
-import { buildWorkspaceHref, parseWorkspaceFilters } from "@/lib/workspace-url";
-import { SidebarWorkspaceTree } from "@/components/workspace/sidebar-workspace-tree";
-import { SidebarQuickFind } from "@/components/workspace/sidebar-quick-find";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -32,7 +26,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SidebarQuickFind } from "@/components/workspace/sidebar-quick-find";
+import { SidebarWorkspaceTree } from "@/components/workspace/sidebar-workspace-tree";
 import type { Folder, Notebook, Tag as TagType } from "@/graphql/types";
+import { useSidebar } from "@/hooks/use-sidebar";
+import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
+import { cn } from "@/lib/utils";
+import { buildWorkspaceHref, parseWorkspaceFilters } from "@/lib/workspace-url";
 
 export function AppSidebar({
   folders,
@@ -49,8 +49,7 @@ export function AppSidebar({
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
   const { collapsed, toggleCollapsed } = useSidebar();
-  const { openFolderDialog, openNotebookDialog, createNewPage } =
-    useWorkspaceCreate();
+  const { openFolderDialog, openNotebookDialog, createNewPage } = useWorkspaceCreate();
 
   const activeNotebookId = filters.notebookId;
   const activeFolderId = filters.folderId;
@@ -166,9 +165,7 @@ export function AppSidebar({
             />
             <SidebarNavItem
               href="/workspace?archived=1"
-              active={
-                !!filters.archived && !isSettings && !isCalendar && !isGraphs
-              }
+              active={!!filters.archived && !isSettings && !isCalendar && !isGraphs}
               collapsed={collapsed}
               icon={<Archive className="h-4 w-4" />}
               label="Archive"
@@ -236,9 +233,7 @@ export function AppSidebar({
                 <SidebarWorkspaceTree
                   folders={folders}
                   notebooks={notebooks}
-                  onNewNotebookInFolder={(folderId) =>
-                    openNotebookDialog(folderId)
-                  }
+                  onNewNotebookInFolder={(folderId) => openNotebookDialog(folderId)}
                   onNewPage={createNewPage}
                   onNewLooseNotebook={() => openNotebookDialog()}
                 />
@@ -333,9 +328,7 @@ function SidebarNavItem({
       onClick={onClick}
       className={cn(
         "flex items-center rounded-md text-sm transition-colors",
-        collapsed
-          ? "justify-center px-2 py-2.5"
-          : "gap-2.5 px-2.5 py-2",
+        collapsed ? "justify-center px-2 py-2.5" : "gap-2.5 px-2.5 py-2",
         active
           ? "bg-sidebar-accent font-medium text-foreground"
           : "text-muted-foreground hover:bg-sidebar-accent/70 hover:text-foreground",

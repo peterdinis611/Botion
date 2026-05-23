@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
-import { getToken } from "@/lib/auth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getToken } from "@/lib/auth";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isReady, isAuthenticated } = useAuth();

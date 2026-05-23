@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client/react";
 import {
   CalendarDays,
@@ -11,12 +10,15 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CalendarEventDialog } from "@/components/workspace/calendar-event-dialog";
 import {
   CALENDAR_EVENTS_QUERY,
   REMOVE_CALENDAR_EVENT_MUTATION,
 } from "@/graphql/operations";
 import type { CalendarEvent, CalendarEventsQueryResult } from "@/graphql/types";
-import { CalendarEventDialog } from "@/components/workspace/calendar-event-dialog";
 import {
   buildMonthGrid,
   eventsForDay,
@@ -27,8 +29,6 @@ import {
   monthRange,
   toDateKey,
 } from "@/lib/calendar-utils";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -46,10 +46,9 @@ export function CalendarView() {
   const month = viewDate.getMonth();
   const { from, to } = monthRange(year, month);
 
-  const { data, loading } = useQuery<CalendarEventsQueryResult>(
-    CALENDAR_EVENTS_QUERY,
-    { variables: { from, to } },
-  );
+  const { data, loading } = useQuery<CalendarEventsQueryResult>(CALENDAR_EVENTS_QUERY, {
+    variables: { from, to },
+  });
 
   const [removeEvent] = useMutation(REMOVE_CALENDAR_EVENT_MUTATION, {
     refetchQueries: [{ query: CALENDAR_EVENTS_QUERY, variables: { from, to } }],

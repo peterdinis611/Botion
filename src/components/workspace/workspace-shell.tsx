@@ -1,19 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { useQuery, useMutation } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { Plus } from "lucide-react";
-import { notFound } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
-import { NoteEditor } from "@/components/workspace/note-editor";
-import { NoteList } from "@/components/workspace/note-list";
-import { EmptyState } from "@/components/workspace/empty-state";
-import { ThemeToggle } from "@/components/workspace/theme-toggle";
-import { NotificationsPanel } from "@/components/workspace/notifications-panel";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/workspace/empty-state";
+import { NoteEditor } from "@/components/workspace/note-editor";
+import { NoteList } from "@/components/workspace/note-list";
+import { NotificationsPanel } from "@/components/workspace/notifications-panel";
+import { ThemeToggle } from "@/components/workspace/theme-toggle";
+import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
 import {
   CREATE_NOTE_MUTATION,
   NOTE_QUERY,
@@ -28,10 +26,7 @@ import type {
 } from "@/graphql/types";
 import { useNotificationSubscription } from "@/hooks/use-notification-subscription";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
-import {
-  buildWorkspacePath,
-  parseWorkspaceFilters,
-} from "@/lib/workspace-url";
+import { buildWorkspacePath, parseWorkspaceFilters } from "@/lib/workspace-url";
 
 export function WorkspaceShell({
   noteId,
@@ -85,8 +80,7 @@ export function WorkspaceShell({
     }
 
     return list.sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     );
   }, [notesData?.notes, filters.archived]);
 
@@ -185,12 +179,12 @@ export function WorkspaceShell({
             notFound()
           )
         ) : (
-          children ?? (
+          (children ?? (
             <EmptyState
               title="Select a page"
               description="Pick a note from the list, press ⌘K to search, or create a new page."
             />
-          )
+          ))
         )}
       </main>
     </WorkspaceFrame>

@@ -1,8 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import {
   ArrowDownAZ,
@@ -15,6 +12,21 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   CREATE_GRAPH_MUTATION,
   GRAPH_QUERY,
@@ -30,22 +42,10 @@ import type {
 import {
   cloneTemplateWithEdges,
   countGraphElements,
-  serializeFlow,
+  GRAPH_TEMPLATES,
   type GraphTemplateId,
+  serializeFlow,
 } from "@/lib/graph-flow";
-import { GRAPH_TEMPLATES } from "@/lib/graph-flow";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 type SortKey = "updated" | "title" | "created";
@@ -56,10 +56,12 @@ export function GraphsListView() {
   const { data, loading } = useQuery<GraphsQueryResult>(GRAPHS_QUERY);
   const [fetchGraph] = useLazyQuery<GraphQueryResult>(GRAPH_QUERY);
 
-  const [createGraph, { loading: creating }] =
-    useMutation<CreateGraphResult>(CREATE_GRAPH_MUTATION, {
+  const [createGraph, { loading: creating }] = useMutation<CreateGraphResult>(
+    CREATE_GRAPH_MUTATION,
+    {
       refetchQueries: [{ query: GRAPHS_QUERY }],
-    });
+    },
+  );
 
   const [removeGraph] = useMutation(REMOVE_GRAPH_MUTATION, {
     refetchQueries: [{ query: GRAPHS_QUERY }],
@@ -84,13 +86,9 @@ export function GraphsListView() {
     list.sort((a, b) => {
       if (sort === "title") return a.title.localeCompare(b.title);
       if (sort === "created") {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
-      return (
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-      );
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
     return list;
   }, [graphs, search, sort]);
@@ -162,15 +160,10 @@ export function GraphsListView() {
                 <DropdownMenuLabel>Templates</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {GRAPH_TEMPLATES.map((t) => (
-                  <DropdownMenuItem
-                    key={t.id}
-                    onClick={() => void handleCreate(t.id)}
-                  >
+                  <DropdownMenuItem key={t.id} onClick={() => void handleCreate(t.id)}>
                     <div>
                       <p className="font-medium">{t.label}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {t.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t.description}</p>
                     </div>
                   </DropdownMenuItem>
                 ))}
@@ -254,10 +247,7 @@ export function GraphsListView() {
             {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton
                 key={i}
-                className={cn(
-                  "rounded-lg",
-                  viewMode === "grid" ? "h-32" : "h-20",
-                )}
+                className={cn("rounded-lg", viewMode === "grid" ? "h-32" : "h-20")}
               />
             ))}
           </div>
@@ -398,15 +388,10 @@ function GraphListRow({
 }) {
   return (
     <li className="group flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-sm">
-      <Link
-        href={`/workspace/graphs/${graph.id}`}
-        className="min-w-0 flex-1"
-      >
+      <Link href={`/workspace/graphs/${graph.id}`} className="min-w-0 flex-1">
         <p className="font-medium">{graph.title}</p>
         {graph.description && (
-          <p className="truncate text-sm text-muted-foreground">
-            {graph.description}
-          </p>
+          <p className="truncate text-sm text-muted-foreground">{graph.description}</p>
         )}
       </Link>
       <GraphStats graph={graph} />

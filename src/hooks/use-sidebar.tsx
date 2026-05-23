@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQuery } from "@apollo/client/react";
 import {
   createContext,
   useCallback,
@@ -9,11 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useMutation, useQuery } from "@apollo/client/react";
-import {
-  ME_QUERY,
-  UPDATE_MY_PREFERENCES_MUTATION,
-} from "@/graphql/operations";
+import { ME_QUERY, UPDATE_MY_PREFERENCES_MUTATION } from "@/graphql/operations";
 import type { MeQueryResult, UpdateMyPreferencesResult } from "@/graphql/types";
 import {
   DEFAULT_PREFERENCES,
@@ -103,9 +100,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     [collapsed, setCollapsed, toggleCollapsed, ready],
   );
 
-  return (
-    <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
-  );
+  return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>;
 }
 
 export function useSidebar() {

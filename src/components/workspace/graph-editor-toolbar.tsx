@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef } from "react";
 import {
   Copy,
   Diamond,
   Download,
-  Maximize2,
   Grid3x3,
   Magnet,
+  Maximize2,
   Plus,
   Save,
   Square,
@@ -17,8 +16,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
-import type { GraphNodeKind, GraphTemplateId } from "@/lib/graph-flow";
-import { GRAPH_TEMPLATES } from "@/lib/graph-flow";
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,6 +26,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { GraphNodeKind, GraphTemplateId } from "@/lib/graph-flow";
+import { GRAPH_TEMPLATES } from "@/lib/graph-flow";
 import { cn } from "@/lib/utils";
 
 export function GraphEditorToolbar({
@@ -103,10 +103,7 @@ export function GraphEditorToolbar({
           <DropdownMenuLabel>Replace canvas</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {GRAPH_TEMPLATES.map((t) => (
-            <DropdownMenuItem
-              key={t.id}
-              onClick={() => onApplyTemplate(t.id)}
-            >
+            <DropdownMenuItem key={t.id} onClick={() => onApplyTemplate(t.id)}>
               <div>
                 <p className="font-medium">{t.label}</p>
                 <p className="text-xs text-muted-foreground">{t.description}</p>

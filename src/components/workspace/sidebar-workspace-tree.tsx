@@ -1,20 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import {
+  closestCenter,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
-  closestCenter,
-  type DragEndEvent,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
-  SortableContext,
   arrayMove,
+  SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -27,7 +25,8 @@ import {
   GripVertical,
   Plus,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -40,6 +39,7 @@ import {
   WORKSPACE_QUERY,
 } from "@/graphql/operations";
 import type { Folder, Notebook } from "@/graphql/types";
+import { cn } from "@/lib/utils";
 
 const folderKey = (id: string) => `folder:${id}`;
 const notebookKey = (id: string) => `notebook:${id}`;
@@ -209,20 +209,13 @@ export function SidebarWorkspaceTree({
                     <button
                       type="button"
                       className="flex min-w-0 flex-1 items-center gap-2 py-1.5 pr-1 text-left text-sm"
-                      onClick={() =>
-                        router.push(`/workspace?folder=${folder.id}`)
-                      }
+                      onClick={() => router.push(`/workspace?folder=${folder.id}`)}
                     >
                       <FolderClosed
                         className="h-4 w-4 shrink-0 opacity-80"
                         style={{ color: folder.color }}
                       />
-                      <span
-                        className={cn(
-                          "truncate",
-                          isFolderActive && "font-medium",
-                        )}
-                      >
+                      <span className={cn("truncate", isFolderActive && "font-medium")}>
                         {folder.name}
                       </span>
                     </button>
@@ -250,9 +243,7 @@ export function SidebarWorkspaceTree({
                             notebook={nb}
                             active={activeNotebookId === nb.id}
                             isLast={i === folderNotebooks.length - 1}
-                            onSelect={() =>
-                              router.push(`/workspace?notebook=${nb.id}`)
-                            }
+                            onSelect={() => router.push(`/workspace?notebook=${nb.id}`)}
                             onNewPage={() => onNewPage(nb.id)}
                           />
                         ))}
@@ -309,21 +300,9 @@ export function SidebarWorkspaceTree({
   );
 }
 
-function SortableTreeRow({
-  id,
-  children,
-}: {
-  id: string;
-  children: React.ReactNode;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+function SortableTreeRow({ id, children }: { id: string; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id });
 
   return (
     <div
@@ -364,14 +343,8 @@ function NotebookRow({
   onSelect: () => void;
   onNewPage: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id });
 
   return (
     <div
@@ -405,9 +378,7 @@ function NotebookRow({
           className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
           style={{ color: active ? notebook.color : undefined }}
         />
-        <span className={cn("truncate", active && "font-medium")}>
-          {notebook.name}
-        </span>
+        <span className={cn("truncate", active && "font-medium")}>{notebook.name}</span>
       </button>
       <Button
         variant="ghost"

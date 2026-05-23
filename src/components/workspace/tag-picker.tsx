@@ -1,33 +1,26 @@
 "use client";
 
-import { useState } from "react";
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import { Plus, Tag } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   CREATE_TAG_MUTATION,
   NOTE_QUERY,
   UPDATE_NOTE_MUTATION,
   WORKSPACE_QUERY,
 } from "@/graphql/operations";
-import type { CreateTagResult, Tag as TagType, UpdateNoteResult } from "@/graphql/types";
+import type {
+  CreateTagResult,
+  Tag as TagType,
+  UpdateNoteResult,
+} from "@/graphql/types";
 import { upsertNoteInCache } from "@/lib/cache-updates";
 
-const TAG_COLORS = [
-  "#0d9488",
-  "#059669",
-  "#d97706",
-  "#dc2626",
-  "#2563eb",
-  "#64748b",
-];
+const TAG_COLORS = ["#0d9488", "#059669", "#d97706", "#dc2626", "#2563eb", "#64748b"];
 
 export function TagPicker({
   noteId,

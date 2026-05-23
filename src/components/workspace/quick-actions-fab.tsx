@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   Archive,
   CalendarDays,
@@ -12,8 +11,7 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import { useCommandPalette } from "@/hooks/use-command-palette";
-import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,11 +21,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCommandPalette } from "@/hooks/use-command-palette";
+import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 
 export function QuickActionsFab() {
   const { openPalette } = useCommandPalette();
-  const { createNewPage, openFolderDialog, openNotebookDialog } =
-    useWorkspaceCreate();
+  const { createNewPage, openFolderDialog, openNotebookDialog } = useWorkspaceCreate();
 
   return (
     <div className="pointer-events-none fixed bottom-5 right-5 z-50">

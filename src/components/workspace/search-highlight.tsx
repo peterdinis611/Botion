@@ -1,12 +1,6 @@
 import { splitHighlight } from "@/lib/search";
 
-export function SearchHighlight({
-  text,
-  query,
-}: {
-  text: string;
-  query: string;
-}) {
+export function SearchHighlight({ text, query }: { text: string; query: string }) {
   const parts = splitHighlight(text, query);
   if (!parts) return <>{text}</>;
   return (
