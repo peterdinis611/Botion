@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { Bell, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,9 +39,14 @@ export function NotificationsPanel() {
         <Button variant="ghost" size="icon" className="relative h-8 w-8">
           <Bell className="h-4 w-4" />
           {unread > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground">
+            <motion.span
+              className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 28 }}
+            >
               {unread > 9 ? "9+" : unread}
-            </span>
+            </motion.span>
           )}
         </Button>
       </PopoverTrigger>
@@ -66,8 +72,13 @@ export function NotificationsPanel() {
             </p>
           ) : (
             <ul className="p-1">
-              {notifications.map((n) => (
-                <li key={n.id}>
+              {notifications.map((n, index) => (
+                <motion.li
+                  key={n.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.04, duration: 0.2 }}
+                >
                   <button
                     type="button"
                     className={cn(
@@ -79,7 +90,7 @@ export function NotificationsPanel() {
                     <p className="font-medium leading-snug">{n.type}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{n.message}</p>
                   </button>
-                </li>
+                </motion.li>
               ))}
             </ul>
           )}

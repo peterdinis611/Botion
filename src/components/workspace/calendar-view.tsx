@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@apollo/client/react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   CalendarDays,
   ChevronLeft,
@@ -29,6 +30,7 @@ import {
   monthRange,
   toDateKey,
 } from "@/lib/calendar-utils";
+import { staggerItem, transitionFast } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -232,17 +234,29 @@ export function CalendarView() {
                   <Skeleton key={i} className="h-16 w-full rounded-lg" />
                 ))}
               </div>
-            ) : selectedDayEvents.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Nothing scheduled for this day. Add an event to get started.
-              </p>
             ) : (
-              <ul className="space-y-2">
-                {selectedDayEvents.map((event) => (
-                  <li
-                    key={event.id}
-                    className="rounded-lg border border-border bg-card p-3 shadow-sm"
-                  >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={toDateKey(selectedDate)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={transitionFast}
+                >
+                  {selectedDayEvents.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      Nothing scheduled for this day. Add an event to get started.
+                    </p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {selectedDayEvents.map((event) => (
+                        <motion.li
+                          key={event.id}
+                          variants={staggerItem}
+                          initial="hidden"
+                          animate="visible"
+                          className="rounded-lg border border-border bg-card p-3 shadow-sm"
+                        >
                     <div className="flex items-start gap-2">
                       <span
                         className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
@@ -286,9 +300,12 @@ export function CalendarView() {
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </div>
-                  </li>
-                ))}
-              </ul>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             )}
           </div>
         </aside>

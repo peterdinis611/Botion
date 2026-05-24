@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StaggerItem, StaggerList } from "@/components/motion/stagger-list";
 import { NoteListFilters } from "@/components/workspace/note-list-filters";
 import type { Tag } from "@/graphql/types";
 import { useCommandPalette } from "@/hooks/use-command-palette";
@@ -124,37 +125,40 @@ export function NoteList({
               )}
             </div>
           ) : (
-            notes.map((note) => {
-              const href = `/workspace/notes/${note.id}`;
-              const active = pathname === href;
-              return (
-                <Link
-                  key={note.id}
-                  href={href}
-                  className={cn(
-                    "mb-0.5 block rounded-lg px-3 py-2.5 transition-colors",
-                    active ? "bg-sidebar-accent shadow-sm" : "hover:bg-muted/60",
-                  )}
-                >
-                  <div className="flex items-start gap-2">
-                    {note.isPinned && (
-                      <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium leading-snug text-foreground">
-                        {note.title || "Untitled"}
-                      </p>
-                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                        {excerpt(note.content, 100)}
-                      </p>
-                      <p className="mt-1.5 text-[10px] font-medium text-muted-foreground/70">
-                        {formatDate(note.updatedAt)}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })
+            <StaggerList>
+              {notes.map((note) => {
+                const href = `/workspace/notes/${note.id}`;
+                const active = pathname === href;
+                return (
+                  <StaggerItem key={note.id}>
+                    <Link
+                      href={href}
+                      className={cn(
+                        "mb-0.5 block rounded-lg px-3 py-2.5 transition-colors",
+                        active ? "bg-sidebar-accent shadow-sm" : "hover:bg-muted/60",
+                      )}
+                    >
+                      <div className="flex items-start gap-2">
+                        {note.isPinned && (
+                          <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium leading-snug text-foreground">
+                            {note.title || "Untitled"}
+                          </p>
+                          <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                            {excerpt(note.content, 100)}
+                          </p>
+                          <p className="mt-1.5 text-[10px] font-medium text-muted-foreground/70">
+                            {formatDate(note.updatedAt)}
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </StaggerItem>
+                );
+              })}
+            </StaggerList>
           )}
         </div>
       </ScrollArea>

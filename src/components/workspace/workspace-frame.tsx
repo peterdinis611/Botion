@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
+import { PageTransition } from "@/components/motion/page-transition";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AppSidebar } from "@/components/workspace/app-sidebar";
 import { CommandPalette } from "@/components/workspace/command-palette";
@@ -43,9 +44,11 @@ export function WorkspaceFrame({
           notebooks={data?.notebooks ?? []}
           tags={data?.tags ?? []}
         />
-        <div className={cn("flex min-h-0 min-w-0 flex-1", className ?? "flex-col")}>
+        <PageTransition
+          className={cn("flex min-h-0 min-w-0 flex-1", className ?? "flex-col")}
+        >
           {children}
-        </div>
+        </PageTransition>
       </div>
       <QuickActionsFab />
     </CommandPaletteProvider>

@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { FadeIn } from "@/components/motion/fade-in";
+import { StaggerItem, StaggerList } from "@/components/motion/stagger-list";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -252,7 +254,7 @@ export function GraphsListView() {
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16 text-center">
+          <FadeIn className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16 text-center">
             <Network className="mb-3 h-10 w-10 text-muted-foreground/60" />
             <p className="font-medium">
               {graphs.length === 0 ? "No graphs yet" : "No matching graphs"}
@@ -271,29 +273,31 @@ export function GraphsListView() {
                 Start with flowchart template
               </Button>
             )}
-          </div>
+          </FadeIn>
         ) : viewMode === "grid" ? (
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerList as="ul" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((g) => (
-              <GraphCard
-                key={g.id}
-                graph={g}
-                onDelete={() => void handleDelete(g.id, g.title)}
-                onDuplicate={() => void handleDuplicate(g)}
-              />
+              <StaggerItem key={g.id}>
+                <GraphCard
+                  graph={g}
+                  onDelete={() => void handleDelete(g.id, g.title)}
+                  onDuplicate={() => void handleDuplicate(g)}
+                />
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerList>
         ) : (
-          <ul className="space-y-2">
+          <StaggerList as="ul" className="space-y-2">
             {filtered.map((g) => (
-              <GraphListRow
-                key={g.id}
-                graph={g}
-                onDelete={() => void handleDelete(g.id, g.title)}
-                onDuplicate={() => void handleDuplicate(g)}
-              />
+              <StaggerItem key={g.id}>
+                <GraphListRow
+                  graph={g}
+                  onDelete={() => void handleDelete(g.id, g.title)}
+                  onDuplicate={() => void handleDuplicate(g)}
+                />
+              </StaggerItem>
             ))}
-          </ul>
+          </StaggerList>
         )}
       </div>
     </div>

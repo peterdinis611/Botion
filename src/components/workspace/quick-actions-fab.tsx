@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   Archive,
   CalendarDays,
@@ -29,16 +30,27 @@ export function QuickActionsFab() {
   const { createNewPage, openFolderDialog, openNotebookDialog } = useWorkspaceCreate();
 
   return (
-    <div className="pointer-events-none fixed bottom-5 right-5 z-50">
+    <motion.div
+      className="pointer-events-none fixed bottom-5 right-5 z-50"
+      initial={{ opacity: 0, scale: 0.85, y: 16 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            size="icon"
-            className="pointer-events-auto h-12 w-12 rounded-full shadow-lg"
-            aria-label="Quick actions"
+          <motion.div
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.94 }}
+            className="pointer-events-auto"
           >
-            <Sparkles className="h-5 w-5" />
-          </Button>
+            <Button
+              size="icon"
+              className="h-12 w-12 rounded-full shadow-lg"
+              aria-label="Quick actions"
+            >
+              <Sparkles className="h-5 w-5" />
+            </Button>
+          </motion.div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="top" className="w-52">
           <DropdownMenuLabel>Quick actions</DropdownMenuLabel>
@@ -90,6 +102,6 @@ export function QuickActionsFab() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </motion.div>
   );
 }

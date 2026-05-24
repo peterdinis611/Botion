@@ -1,4 +1,7 @@
+"use client";
+
 import { FileText } from "lucide-react";
+import { FadeIn } from "@/components/motion/fade-in";
 
 export function EmptyState({
   title,
@@ -8,7 +11,7 @@ export function EmptyState({
   description: string;
 }) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 px-8 text-center">
+    <FadeIn className="flex h-full flex-col items-center justify-center gap-3 px-8 text-center">
       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
         <FileText className="h-6 w-6 text-muted-foreground" />
       </div>
@@ -16,6 +19,6 @@ export function EmptyState({
         <h2 className="text-lg font-medium text-foreground">{title}</h2>
         <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
       </div>
-    </div>
+    </FadeIn>
   );
 }

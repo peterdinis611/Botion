@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FadeIn } from "@/components/motion/fade-in";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -70,7 +71,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   }
 
   return (
-    <div className="w-full max-w-sm space-y-6">
+    <FadeIn className="w-full max-w-sm space-y-6" variant="scale">
       <div className="space-y-1 text-center">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           {mode === "login" ? "Welcome back" : "Create your workspace"}
@@ -149,6 +150,6 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           </>
         )}
       </p>
-    </div>
+    </FadeIn>
   );
 }
