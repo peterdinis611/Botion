@@ -41,10 +41,11 @@ export function useNoteActions(options?: { onComplete?: () => void }) {
       wrap(async () => {
         const { data } = await updateNote({
           variables: { input: { id: noteId, isArchived: true } },
+          awaitRefetchQueries: true,
           refetchQueries: refetchAll,
         });
         if (data?.updateNote) {
-          upsertNoteInCache(client.cache, data.updateNote);
+          upsertNoteInCache(client.cache, { ...data.updateNote, isArchived: true });
         }
       }),
     [client.cache, updateNote, wrap],
@@ -55,10 +56,11 @@ export function useNoteActions(options?: { onComplete?: () => void }) {
       wrap(async () => {
         const { data } = await updateNote({
           variables: { input: { id: noteId, isArchived: false } },
+          awaitRefetchQueries: true,
           refetchQueries: refetchAll,
         });
         if (data?.updateNote) {
-          upsertNoteInCache(client.cache, data.updateNote);
+          upsertNoteInCache(client.cache, { ...data.updateNote, isArchived: false });
         }
       }),
     [client.cache, updateNote, wrap],
@@ -79,23 +81,29 @@ export function useNoteActions(options?: { onComplete?: () => void }) {
   );
 
   const deletePermanently = useCallback(
-    (noteId: string, title?: string) =>
-      wrap(async () => {
-        const label = displayStoredTitle(title ?? "") || "Untitled";
-        if (
-          !confirm(
-            `Natrvalo zmazať „${label}“? Túto akciu nie je možné vrátiť.`,
-          )
-        ) {
-          return;
-        }
+    async (noteId: string, title?: string) => {
+      const label = displayStoredTitle(title ?? "") || "Untitled";
+      if (
+        !confirm(
+          `Permanently delete "${label}"? This cannot be undone.`,
+        )
+      ) {
+        return;
+      }
+      setBusy(true);
+      try {
         await removeNote({
           variables: { id: noteId },
+          awaitRefetchQueries: true,
           refetchQueries: refetchAll,
         });
         removeNoteFromCache(client.cache, noteId);
-      }),
-    [client.cache, removeNote, wrap],
+        options?.onComplete?.();
+      } finally {
+        setBusy(false);
+      }
+    },
+    [client.cache, options, removeNote],
   );
 
   return {

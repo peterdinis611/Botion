@@ -109,7 +109,7 @@ export function EmojiPicker({
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Hľadať emoji (domov, práca, hviezda…)"
+              placeholder="Search emoji (home, work, star…)"
               className="h-9 border-border/50 bg-background/80 pl-8 text-sm"
               autoFocus
             />
@@ -121,13 +121,13 @@ export function EmojiPicker({
             searchResults.length > 0 ? (
               <div>
                 <p className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Výsledky ({searchResults.length})
+                  Results ({searchResults.length})
                 </p>
                 <EmojiGrid emojis={searchResults} value={value} onSelect={select} />
               </div>
             ) : (
               <p className="px-2 py-8 text-center text-sm text-muted-foreground">
-                Žiadne emoji. Skúste „domov“, „práca“ alebo „hviezda“.
+                No emoji found. Try &quot;home&quot;, &quot;work&quot;, or &quot;star&quot;.
               </p>
             )
           ) : (
@@ -151,7 +151,7 @@ export function EmojiPicker({
             onClick={() => select("✨")}
           >
             <Sparkles className="h-3 w-3" />
-            Predvolené ✨
+            Default ✨
           </Button>
         </div>
       </PopoverContent>

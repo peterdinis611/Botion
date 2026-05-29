@@ -158,7 +158,7 @@ export function SnapsPanel({
         <div className="flex items-center justify-between px-5 py-3.5">
           <h2 className="text-[14px] font-semibold text-foreground">Snaps</h2>
           <ItemActionsMenu
-            label="Možnosti Snaps"
+            label="Snaps options"
             className="h-7 w-7 opacity-100"
             contentClassName="w-44"
           >
@@ -166,7 +166,7 @@ export function SnapsPanel({
               <>
                 <DropdownMenuItem onClick={() => setEditOpen(true)}>
                   <Pencil className="mr-2 h-4 w-4" />
-                  Upraviť
+                  Edit
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -174,11 +174,11 @@ export function SnapsPanel({
                   onClick={() => void handleDelete(activeSnap.id)}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Zmazať
+                  Delete
                 </DropdownMenuItem>
               </>
             ) : (
-              <DropdownMenuItem onClick={openAddSnap}>Pridať snap</DropdownMenuItem>
+              <DropdownMenuItem onClick={openAddSnap}>Add snap</DropdownMenuItem>
             )}
           </ItemActionsMenu>
         </div>

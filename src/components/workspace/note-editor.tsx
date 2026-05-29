@@ -12,6 +12,7 @@ import { TagPicker } from "@/components/workspace/tag-picker";
 import { UPDATE_NOTE_MUTATION } from "@/graphql/operations";
 import type { Tag, UpdateNoteResult } from "@/graphql/types";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useNoteCollaboration } from "@/hooks/use-note-collaboration";
 import { removeNoteFromCache, upsertNoteInCache } from "@/lib/cache-updates";
 import { joinWithLeadingEmoji, splitLeadingEmoji } from "@/lib/icon-emoji";
 import { pushRecentNoteId } from "@/lib/search";
@@ -58,11 +59,13 @@ export function NoteEditor({
   const [color, setColor] = useState(note.color);
   const [isPinned, setIsPinned] = useState(note.isPinned);
   const [saving, setSaving] = useState(false);
+  const [editorReloadKey, setEditorReloadKey] = useState(0);
   const lastSaved = useRef({
     title: note.title,
     content: note.content,
     color: note.color,
   });
+  const lastSavedUpdatedAt = useRef(note.updatedAt);
 
   const storedTitle = useMemo(
     () => joinWithLeadingEmoji(pageEmoji, displayTitle),
@@ -87,6 +90,7 @@ export function NoteEditor({
       content: note.content,
       color: note.color,
     };
+    lastSavedUpdatedAt.current = note.updatedAt;
     pushRecentNoteId(note.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: note.id only
   }, [note.id]);
@@ -94,6 +98,26 @@ export function NoteEditor({
   const handleContentChange = useCallback((serialized: string) => {
     setContent(serialized);
   }, []);
+
+  const applyRemoteNote = useCallback(
+    (remote: { title?: string; content?: string; updatedAt: string }) => {
+      if (remote.title !== undefined) {
+        const parsed = parseNoteTitle(remote.title);
+        setDisplayTitle(parsed.displayTitle);
+        setPageEmoji(parsed.pageEmoji);
+        lastSaved.current.title = remote.title;
+      }
+      if (remote.content !== undefined) {
+        setContent(remote.content);
+        lastSaved.current.content = remote.content;
+        setEditorReloadKey((k) => k + 1);
+      }
+      lastSavedUpdatedAt.current = remote.updatedAt;
+    },
+    [],
+  );
+
+  useNoteCollaboration(note.id, note.updatedAt, applyRemoteNote);
 
   const persist = useCallback(
     async (patch: {
@@ -118,6 +142,7 @@ export function NoteEditor({
           if (patch.title !== undefined) lastSaved.current.title = patch.title;
           if (patch.content !== undefined) lastSaved.current.content = patch.content;
           if (patch.color !== undefined) lastSaved.current.color = patch.color;
+          lastSavedUpdatedAt.current = data.updateNote.updatedAt;
         }
       } finally {
         setSaving(false);
@@ -200,11 +225,11 @@ export function NoteEditor({
               {saving ? (
                 <span className="mr-2 flex items-center gap-1.5 rounded-md bg-background/60 px-2 py-1 text-[11px] text-muted-foreground">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Ukladá sa…
+                  Saving…
                 </span>
               ) : (
                 <span className="mr-1 hidden rounded-md px-2 py-1 text-[11px] text-muted-foreground/75 sm:inline">
-                  Upravené {updatedLabel}
+                  Edited {updatedLabel}
                 </span>
               )}
 
@@ -215,7 +240,7 @@ export function NoteEditor({
                 size="icon"
                 className={cn("h-8 w-8", isPinned && "text-tag")}
                 onClick={togglePin}
-                title={isPinned ? "Odopnúť" : "Pripnúť"}
+                title={isPinned ? "Unpin" : "Pin"}
               >
                 <Pin className="h-3.5 w-3.5" />
               </Button>
@@ -237,7 +262,7 @@ export function NoteEditor({
 
         <section className="note-editor-body">
           <BlockEditor
-            key={note.id}
+            key={`${note.id}-${editorReloadKey}`}
             noteId={note.id}
             content={content}
             onChange={handleContentChange}

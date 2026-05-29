@@ -14,7 +14,7 @@ export function ItemActionsMenu({
   children,
   align = "end",
   side = "bottom",
-  label = "Viac akcií",
+  label = "More actions",
   size = "sm",
   className,
   contentClassName,

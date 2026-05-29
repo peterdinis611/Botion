@@ -518,6 +518,75 @@ export const INVITE_WORKSPACE_MEMBER_MUTATION = gql`
   }
 `;
 
+export const WORKSPACE_COLLABORATORS_QUERY = gql`
+  query WorkspaceCollaborators($noteId: ID) {
+    workspaceCollaborators(noteId: $noteId) {
+      id
+      name
+      email
+      status
+      permission
+      noteId
+    }
+  }
+`;
+
+export const NOTE_SHARES_QUERY = gql`
+  query NoteShares($noteId: ID!) {
+    noteShares(noteId: $noteId) {
+      id
+      noteId
+      sharedWithUserId
+      permission
+      createdAt
+      sharedWithUser {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
+
+export const SHARE_PAGE_MUTATION = gql`
+  mutation SharePageWithCollaborator($input: SharePageInput!) {
+    sharePageWithCollaborator(input: $input) {
+      id
+      noteId
+      permission
+      sharedWithUser {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
+
+export const UNSHARE_NOTE_MUTATION = gql`
+  mutation UnshareNote($input: UnshareNoteInput!) {
+    unshareNote(input: $input)
+  }
+`;
+
+export const APP_EVENT_SUBSCRIPTION = gql`
+  subscription AppEvent($actions: [AppEventAction!]) {
+    appEvent(actions: $actions) {
+      action
+      entityId
+      note {
+        id
+        title
+        content
+        color
+        isArchived
+        isPinned
+        updatedAt
+      }
+    }
+  }
+`;
+
 export const PAGE_SHARE_LINK_QUERY = gql`
   query PageShareLink($noteId: ID!) {
     pageShareLink(noteId: $noteId) {

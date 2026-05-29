@@ -19,9 +19,11 @@ import type { InviteWorkspaceMemberResult } from "@/graphql/types";
 export function InviteDialog({
   open,
   onOpenChange,
+  onInvited,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onInvited?: () => void;
 }) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -30,7 +32,7 @@ export function InviteDialog({
 
   const [invite, { loading }] = useMutation<InviteWorkspaceMemberResult>(
     INVITE_WORKSPACE_MEMBER_MUTATION,
-    { refetchQueries: ["Notifications"] },
+    { refetchQueries: ["Notifications", "WorkspaceCollaborators"] },
   );
 
   async function handleInvite() {
@@ -47,6 +49,7 @@ export function InviteDialog({
         },
       });
       setFeedback(data?.inviteWorkspaceMember?.message ?? "Invitation sent.");
+      onInvited?.();
       setEmail("");
       setMessage("");
       setTimeout(() => {

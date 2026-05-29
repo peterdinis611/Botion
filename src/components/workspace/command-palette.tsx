@@ -154,7 +154,7 @@ export function CommandPalette({
             }
           >
             <Trash2 className="h-4 w-4" />
-            Kôš
+            Trash
           </CommandItem>
         </CommandGroup>
 

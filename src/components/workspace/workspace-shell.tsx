@@ -57,7 +57,7 @@ export function WorkspaceShell({
   );
 
   const headerTitle = useMemo(() => {
-    if (filters.archived && !noteId) return "Kôš";
+    if (filters.archived && !noteId) return "Trash";
     if (noteId && noteData?.note) {
       const { label } = splitLeadingEmoji(noteData.note.title);
       return label || "Untitled";

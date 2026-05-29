@@ -317,7 +317,7 @@ function GraphActionsMenu({
   return (
     <ItemActionsMenu
       size="md"
-      label="Akcie grafu"
+      label="Graph actions"
       className={className}
       contentClassName="w-44"
     >
@@ -328,7 +328,7 @@ function GraphActionsMenu({
         }}
       >
         <Copy className="mr-2 h-4 w-4" />
-        Duplikovať
+        Duplicate
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
@@ -339,7 +339,7 @@ function GraphActionsMenu({
         }}
       >
         <Trash2 className="mr-2 h-4 w-4" />
-        Zmazať
+        Delete
       </DropdownMenuItem>
     </ItemActionsMenu>
   );

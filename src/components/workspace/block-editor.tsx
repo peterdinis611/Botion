@@ -30,8 +30,8 @@ export function BlockEditor({ noteId, content, onChange }: BlockEditorProps) {
 
   const editor = useCreateBlockNote({
     placeholders: {
-      default: "Začnite písať alebo stlačte '/' pre príkazy…",
-      emptyDocument: "Začnite písať alebo stlačte '/' pre príkazy…",
+      default: "Start writing, or type '/' for commands…",
+      emptyDocument: "Start writing, or type '/' for commands…",
     },
   });
 

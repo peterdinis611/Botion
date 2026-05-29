@@ -70,6 +70,42 @@ export type WorkspaceTagsQueryResult = { workspaceTags: Tag[] };
 export type ArchivedNotesQueryResult = { notes: Note[] };
 export type NotificationsQueryResult = { notifications: Notification[] };
 
+export type WorkspaceCollaborator = {
+  id: string;
+  name?: string | null;
+  email: string;
+  status: "SELF" | "MEMBER" | "PENDING_INVITE" | "NOTE_COLLABORATOR";
+  permission?: string | null;
+  noteId?: string | null;
+};
+
+export type WorkspaceCollaboratorsQueryResult = {
+  workspaceCollaborators: WorkspaceCollaborator[];
+};
+
+export type NoteShare = {
+  id: string;
+  noteId: string;
+  sharedWithUserId: string;
+  permission: string;
+  createdAt: string;
+  sharedWithUser?: { id: string; name: string; email: string } | null;
+};
+
+export type NoteSharesQueryResult = { noteShares: NoteShare[] };
+export type SharePageResult = { sharePageWithCollaborator: NoteShare };
+export type InviteWorkspaceMemberResult = {
+  inviteWorkspaceMember: { success: boolean; message: string };
+};
+
+export type AppEventPayload = {
+  appEvent: {
+    action: string;
+    entityId?: string;
+    note?: Pick<Note, "id" | "title" | "content" | "color" | "isArchived" | "isPinned" | "updatedAt">;
+  };
+};
+
 export type SnapsPanelPreferences = {
   showCaptions: boolean;
   compactCards: boolean;
@@ -97,10 +133,6 @@ export type Snap = {
 export type SnapsQueryResult = { snaps: Snap[] };
 export type CreateSnapResult = { createSnap: Snap };
 export type UpdateSnapResult = { updateSnap: Snap };
-
-export type InviteWorkspaceMemberResult = {
-  inviteWorkspaceMember: { success: boolean; message: string };
-};
 
 export type PageShareLinkQueryResult = {
   pageShareLink: { path: string; title: string };

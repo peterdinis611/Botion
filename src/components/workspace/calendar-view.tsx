@@ -286,10 +286,10 @@ export function CalendarView() {
                       </div>
                     </div>
                     <div className="mt-2 flex justify-end">
-                      <ItemActionsMenu label="Akcie udalosti" contentClassName="w-44">
+                      <ItemActionsMenu label="Event actions" contentClassName="w-44">
                         <DropdownMenuItem onClick={() => openEdit(event)}>
                           <Pencil className="mr-2 h-4 w-4" />
-                          Upraviť
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -297,7 +297,7 @@ export function CalendarView() {
                           onClick={() => void handleDelete(event)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Zmazať
+                          Delete
                         </DropdownMenuItem>
                       </ItemActionsMenu>
                     </div>

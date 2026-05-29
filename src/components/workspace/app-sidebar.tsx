@@ -6,6 +6,7 @@ import {
   FileInput,
   LayoutTemplate,
   LogOut,
+  Network,
   PanelLeft,
   PanelLeftClose,
   Plus,
@@ -62,6 +63,7 @@ export function AppSidebar({
 
   const isSettings = pathname === "/workspace/settings";
   const isCalendar = pathname === "/workspace/calendar";
+  const isGraphs = pathname.startsWith("/workspace/graphs");
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -175,10 +177,16 @@ export function AppSidebar({
                   label="Updates"
                 />
                 <SidebarNavItem
+                  href="/workspace/graphs"
+                  active={isGraphs}
+                  icon={<Network className="h-4 w-4 stroke-[1.5]" />}
+                  label="Graphs"
+                />
+                <SidebarNavItem
                   href="/workspace?archived=1"
                   active={!!filters.archived && !isSettings}
                   icon={<Trash2 className="h-4 w-4 stroke-[1.5]" />}
-                  label="Kôš"
+                  label="Trash"
                   onClick={() =>
                     router.push(
                       buildWorkspaceHref(searchParams, {

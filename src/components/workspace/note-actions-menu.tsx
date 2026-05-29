@@ -20,6 +20,7 @@ export function NoteActionsMenu({
   size = "sm",
   showPin = true,
   showOpen = true,
+  showDeleteInMenu = true,
   className,
   onActionComplete,
 }: {
@@ -31,22 +32,37 @@ export function NoteActionsMenu({
   size?: "sm" | "md";
   showPin?: boolean;
   showOpen?: boolean;
+  /** When false (e.g. trash row with inline buttons), hide trash-only actions from ⋯ menu */
+  showDeleteInMenu?: boolean;
   className?: string;
   onActionComplete?: () => void;
 }) {
   const router = useRouter();
   const { busy, moveToTrash, restoreFromTrash, togglePin, deletePermanently } =
-    useNoteActions({
-      onComplete: onActionComplete,
-    });
+    useNoteActions();
 
   const noteHref = href ?? `/workspace/notes/${noteId}${isArchived ? "?archived=1" : ""}`;
 
-  function afterTrash() {
+  async function handleMoveToTrash() {
+    await moveToTrash(noteId);
     onActionComplete?.();
     if (!isArchived) {
       router.push("/workspace?archived=1");
     }
+  }
+
+  async function handleRestore() {
+    await restoreFromTrash(noteId);
+    onActionComplete?.();
+  }
+
+  async function handleDeletePermanently() {
+    await deletePermanently(noteId, title);
+    onActionComplete?.();
+  }
+
+  if (!showDeleteInMenu && isArchived) {
+    return null;
   }
 
   return (
@@ -54,13 +70,13 @@ export function NoteActionsMenu({
       size={size}
       className={cn(className)}
       contentClassName="w-52"
-      label="Akcie stránky"
+      label="Page actions"
     >
       {showOpen && href && (
         <DropdownMenuItem asChild>
           <Link href={noteHref}>
             <ExternalLink className="mr-2 h-4 w-4" />
-            Otvoriť
+            Open
           </Link>
         </DropdownMenuItem>
       )}
@@ -71,38 +87,39 @@ export function NoteActionsMenu({
           onClick={() => void togglePin(noteId, isPinned)}
         >
           <Pin className="mr-2 h-4 w-4" />
-          {isPinned ? "Odopnúť" : "Pripnúť"}
+          {isPinned ? "Unpin" : "Pin"}
         </DropdownMenuItem>
       )}
 
       {isArchived ? (
-        <DropdownMenuItem
-          disabled={busy}
-          onClick={() => void restoreFromTrash(noteId)}
-        >
-          <RotateCcw className="mr-2 h-4 w-4" />
-          Obnoviť zo koša
-        </DropdownMenuItem>
+        <>
+          <DropdownMenuItem
+            disabled={busy}
+            onClick={() => void handleRestore()}
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Restore
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            disabled={busy}
+            className="text-destructive focus:text-destructive"
+            onClick={() => void handleDeletePermanently()}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete permanently
+          </DropdownMenuItem>
+        </>
       ) : (
         <DropdownMenuItem
           disabled={busy}
-          onClick={() => void moveToTrash(noteId).then(afterTrash)}
+          className="text-destructive focus:text-destructive"
+          onClick={() => void handleMoveToTrash()}
         >
           <Archive className="mr-2 h-4 w-4" />
-          Presunúť do koša
+          Move to trash
         </DropdownMenuItem>
       )}
-
-      <DropdownMenuSeparator />
-
-      <DropdownMenuItem
-        disabled={busy}
-        className="text-destructive focus:text-destructive"
-        onClick={() => void deletePermanently(noteId, title)}
-      >
-        <Trash2 className="mr-2 h-4 w-4" />
-        Zmazať natrvalo
-      </DropdownMenuItem>
     </ItemActionsMenu>
   );
 }

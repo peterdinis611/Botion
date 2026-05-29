@@ -31,7 +31,7 @@ export function NotebookActionsMenu({
     const label = notebookDisplayName(name);
     if (
       !confirm(
-        `Zmazať workspace „${label}“? Stránky zostanú, len sa odpoja od workspace.`,
+        `Delete workspace "${label}"? Pages will remain but will be unlinked from this workspace.`,
       )
     ) {
       return;
@@ -46,7 +46,7 @@ export function NotebookActionsMenu({
   }
 
   return (
-    <ItemActionsMenu label="Akcie workspace" contentClassName="w-52">
+    <ItemActionsMenu label="Workspace actions" contentClassName="w-52">
       {onNewPage && (
         <DropdownMenuItem
           onClick={(e) => {
@@ -55,7 +55,7 @@ export function NotebookActionsMenu({
           }}
         >
           <FilePlus className="mr-2 h-4 w-4" />
-          Nová stránka
+          New page
         </DropdownMenuItem>
       )}
       {onNewPage && <DropdownMenuSeparator />}
@@ -65,7 +65,7 @@ export function NotebookActionsMenu({
         onClick={() => void handleDelete()}
       >
         <Trash2 className="mr-2 h-4 w-4" />
-        Zmazať workspace
+        Delete workspace
       </DropdownMenuItem>
     </ItemActionsMenu>
   );

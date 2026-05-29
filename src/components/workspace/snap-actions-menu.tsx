@@ -20,13 +20,13 @@ export function SnapActionsMenu({
 }) {
   return (
     <ItemActionsMenu
-      label="Akcie snapu"
+      label="Snap actions"
       className={className}
       contentClassName="w-44"
     >
       <DropdownMenuItem onClick={onEdit}>
         <Pencil className="mr-2 h-4 w-4" />
-        Upraviť
+        Edit
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
@@ -35,7 +35,7 @@ export function SnapActionsMenu({
         onClick={onDelete}
       >
         <Trash2 className="mr-2 h-4 w-4" />
-        Zmazať
+        Delete
       </DropdownMenuItem>
     </ItemActionsMenu>
   );

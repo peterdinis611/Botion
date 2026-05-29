@@ -222,7 +222,7 @@ export function SidebarWorkspaceTags({
                   </span>
                 )}
               </button>
-              <ItemActionsMenu label="Akcie tagu" contentClassName="w-44">
+              <ItemActionsMenu label="Tag actions" contentClassName="w-44">
                 <DropdownMenuItem
                   onClick={() => {
                     setEditingId(tag.id);
@@ -230,7 +230,7 @@ export function SidebarWorkspaceTags({
                   }}
                 >
                   <Pencil className="mr-2 h-4 w-4" />
-                  Premenovať
+                  Rename
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -238,7 +238,7 @@ export function SidebarWorkspaceTags({
                   onClick={() => void handleRemove(tag.id)}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Zmazať
+                  Delete
                 </DropdownMenuItem>
               </ItemActionsMenu>
             </li>
