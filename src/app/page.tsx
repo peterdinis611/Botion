@@ -1,15 +1,5 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { getToken } from "@/lib/auth";
+import { LandingPage } from "@/components/landing/landing-page";
 
 export default function HomePage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace(getToken() ? "/workspace" : "/login");
-  }, [router]);
-
-  return null;
+  return <LandingPage />;
 }

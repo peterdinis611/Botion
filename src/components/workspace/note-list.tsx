@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StaggerItem, StaggerList } from "@/components/motion/stagger-list";
+import { NoteActionsMenu } from "@/components/workspace/note-actions-menu";
 import { NoteListFilters } from "@/components/workspace/note-list-filters";
 import type { Tag } from "@/graphql/types";
 import { useCommandPalette } from "@/hooks/use-command-palette";
 import { excerpt } from "@/lib/content";
+import { displayStoredTitle } from "@/lib/icon-emoji";
 import { cn } from "@/lib/utils";
 
 export type NoteListItem = {
@@ -19,6 +21,7 @@ export type NoteListItem = {
   title: string;
   content: string;
   isPinned: boolean;
+  isArchived?: boolean;
   updatedAt: string;
 };
 
@@ -41,6 +44,7 @@ export function NoteList({
   totalCount,
   tags = [],
   loading = false,
+  trashMode = false,
 }: {
   notes: NoteListItem[];
   search: string;
@@ -49,6 +53,7 @@ export function NoteList({
   totalCount?: number;
   tags?: Tag[];
   loading?: boolean;
+  trashMode?: boolean;
 }) {
   const pathname = usePathname();
   const { openPalette } = useCommandPalette();
@@ -129,32 +134,44 @@ export function NoteList({
               {notes.map((note) => {
                 const href = `/workspace/notes/${note.id}`;
                 const active = pathname === href;
+                const noteHref = trashMode ? `${href}?archived=1` : href;
                 return (
                   <StaggerItem key={note.id}>
-                    <Link
-                      href={href}
+                    <div
                       className={cn(
-                        "mb-0.5 block rounded-lg px-3 py-2.5 transition-colors",
+                        "group relative mb-0.5 flex items-stretch rounded-lg transition-colors",
                         active ? "bg-sidebar-accent shadow-sm" : "hover:bg-muted/60",
                       )}
                     >
-                      <div className="flex items-start gap-2">
-                        {note.isPinned && (
-                          <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium leading-snug text-foreground">
-                            {note.title || "Untitled"}
-                          </p>
-                          <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                            {excerpt(note.content, 100)}
-                          </p>
-                          <p className="mt-1.5 text-[10px] font-medium text-muted-foreground/70">
-                            {formatDate(note.updatedAt)}
-                          </p>
+                      <Link href={noteHref} className="min-w-0 flex-1 px-3 py-2.5 pr-9">
+                        <div className="flex items-start gap-2">
+                          {note.isPinned && !trashMode && (
+                            <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium leading-snug text-foreground">
+                              {displayStoredTitle(note.title)}
+                            </p>
+                            <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                              {excerpt(note.content, 100)}
+                            </p>
+                            <p className="mt-1.5 text-[10px] font-medium text-muted-foreground/70">
+                              {formatDate(note.updatedAt)}
+                            </p>
+                          </div>
                         </div>
+                      </Link>
+                      <div className="absolute right-1 top-1.5">
+                        <NoteActionsMenu
+                          noteId={note.id}
+                          title={note.title}
+                          isArchived={trashMode || note.isArchived}
+                          isPinned={note.isPinned}
+                          href={noteHref}
+                          showOpen={false}
+                        />
                       </div>
-                    </Link>
+                    </div>
                   </StaggerItem>
                 );
               })}

@@ -1,10 +1,10 @@
 "use client";
 
-import { Code2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { InviteDialog } from "@/components/workspace/invite-dialog";
+import { NoteActionsMenu } from "@/components/workspace/note-actions-menu";
 import { ShareDialog } from "@/components/workspace/share-dialog";
 import { cn } from "@/lib/utils";
 
@@ -18,10 +18,20 @@ const PLACEHOLDER_MEMBERS = [
 export function DocumentHeader({
   title,
   icon,
+  noteId,
+  noteTitle,
+  noteIsArchived,
+  noteIsPinned,
+  onNoteActionComplete,
   className,
 }: {
   title: string;
   icon?: React.ReactNode;
+  noteId?: string;
+  noteTitle?: string;
+  noteIsArchived?: boolean;
+  noteIsPinned?: boolean;
+  onNoteActionComplete?: () => void;
   className?: string;
 }) {
   const [shareOpen, setShareOpen] = useState(false);
@@ -44,13 +54,19 @@ export function DocumentHeader({
           <span className="truncate text-[13px] font-medium text-foreground">
             {title}
           </span>
-          <button
-            type="button"
-            className="shrink-0 text-muted-foreground/80 transition-colors hover:text-foreground"
-            aria-label="Page options"
-          >
-            <Code2 className="h-3.5 w-3.5" />
-          </button>
+          {noteId && (
+            <NoteActionsMenu
+              noteId={noteId}
+              title={noteTitle}
+              isArchived={noteIsArchived}
+              isPinned={noteIsPinned}
+              showOpen={false}
+              showPin={false}
+              size="sm"
+              className="opacity-100"
+              onActionComplete={onNoteActionComplete}
+            />
+          )}
         </div>
 
         <div className="flex shrink-0 items-center gap-6">
@@ -98,6 +114,7 @@ export function DocumentHeader({
         open={shareOpen}
         onOpenChange={setShareOpen}
         pageTitle={title}
+        noteId={noteId}
       />
       <InviteDialog open={inviteOpen} onOpenChange={setInviteOpen} />
     </>

@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Botion — Notes workspace",
-  description: "A Notion-style notes workspace powered by GraphQL",
+  title: "Botion — All-in-one workspace",
+  description:
+    "Write, plan, and capture ideas with notes, tags, and Snaps in one workspace.",
 };
 
 export default function RootLayout({

@@ -7,13 +7,15 @@ import { WorkspaceCreateProvider } from "@/hooks/use-workspace-create";
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthGuard>
-      <WorkspaceNotificationSubscriber />
-      <SidebarProvider>
-        <WorkspaceCreateProvider>
-          <Suspense fallback={<WorkspaceLoading />}>{children}</Suspense>
-        </WorkspaceCreateProvider>
-      </SidebarProvider>
-    </AuthGuard>
+    <Suspense fallback={<WorkspaceLoading />}>
+      <AuthGuard>
+        <WorkspaceNotificationSubscriber />
+        <SidebarProvider>
+          <WorkspaceCreateProvider>
+            <Suspense fallback={<WorkspaceLoading />}>{children}</Suspense>
+          </WorkspaceCreateProvider>
+        </SidebarProvider>
+      </AuthGuard>
+    </Suspense>
   );
 }

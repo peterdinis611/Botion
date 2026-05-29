@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { ItemActionsMenu } from "@/components/workspace/item-actions-menu";
 import { FadeIn } from "@/components/motion/fade-in";
 import { StaggerItem, StaggerList } from "@/components/motion/stagger-list";
 import { Button } from "@/components/ui/button";
@@ -304,6 +305,46 @@ export function GraphsListView() {
   );
 }
 
+function GraphActionsMenu({
+  onDuplicate,
+  onDelete,
+  className,
+}: {
+  onDuplicate: () => void;
+  onDelete: () => void;
+  className?: string;
+}) {
+  return (
+    <ItemActionsMenu
+      size="md"
+      label="Akcie grafu"
+      className={className}
+      contentClassName="w-44"
+    >
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          onDuplicate();
+        }}
+      >
+        <Copy className="mr-2 h-4 w-4" />
+        Duplikovať
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem
+        className="text-destructive focus:text-destructive"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+      >
+        <Trash2 className="mr-2 h-4 w-4" />
+        Zmazať
+      </DropdownMenuItem>
+    </ItemActionsMenu>
+  );
+}
+
 function GraphStats({ graph }: { graph: GraphListItem }) {
   const counts = countGraphElements(graph.nodesJson, graph.edgesJson);
   return (
@@ -351,31 +392,11 @@ function GraphCard({
           })}
         </p>
       </Link>
-      <div className="absolute right-2 top-2 z-10 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={(e) => {
-            e.preventDefault();
-            onDuplicate();
-          }}
-          title="Duplicate"
-        >
-          <Copy className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-destructive hover:text-destructive"
-          onClick={(e) => {
-            e.preventDefault();
-            onDelete();
-          }}
-          title="Delete"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+      <div
+        className="absolute right-2 top-2 z-10"
+        onClick={(e) => e.preventDefault()}
+      >
+        <GraphActionsMenu onDuplicate={onDuplicate} onDelete={onDelete} />
       </div>
     </li>
   );
@@ -402,26 +423,7 @@ function GraphListRow({
       <p className="hidden shrink-0 text-xs text-muted-foreground sm:block">
         {new Date(graph.updatedAt).toLocaleDateString()}
       </p>
-      <div className="flex shrink-0 gap-0.5">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={onDuplicate}
-          title="Duplicate"
-        >
-          <Copy className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-destructive hover:text-destructive"
-          onClick={onDelete}
-          title="Delete"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </div>
+      <GraphActionsMenu onDuplicate={onDuplicate} onDelete={onDelete} className="opacity-100" />
     </li>
   );
 }

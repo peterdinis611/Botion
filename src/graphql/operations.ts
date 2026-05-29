@@ -37,6 +37,18 @@ export const NOTEBOOK_FIELDS = gql`
   }
 `;
 
+export const TAG_FIELDS = gql`
+  fragment TagFields on Tag {
+    id
+    name
+    color
+    notebookId
+    sortOrder
+    noteCount
+    createdAt
+  }
+`;
+
 export const LOGIN_MUTATION = gql`
   mutation Login($input: LoginInput!) {
     login(input: $input) {
@@ -126,14 +138,22 @@ export const WORKSPACE_QUERY = gql`
       ...NoteFields
     }
     tags {
-      id
-      name
-      color
+      ...TagFields
     }
   }
   ${FOLDER_FIELDS}
   ${NOTEBOOK_FIELDS}
   ${NOTE_FIELDS}
+  ${TAG_FIELDS}
+`;
+
+export const WORKSPACE_TAGS_QUERY = gql`
+  query WorkspaceTags($notebookId: ID!) {
+    workspaceTags(notebookId: $notebookId) {
+      ...TagFields
+    }
+  }
+  ${TAG_FIELDS}
 `;
 
 export const NOTE_QUERY = gql`
@@ -141,13 +161,12 @@ export const NOTE_QUERY = gql`
     note(id: $id) {
       ...NoteFields
       tags {
-        id
-        name
-        color
+        ...TagFields
       }
     }
   }
   ${NOTE_FIELDS}
+  ${TAG_FIELDS}
 `;
 
 export const NOTES_LIST_QUERY = gql`
@@ -157,6 +176,7 @@ export const NOTES_LIST_QUERY = gql`
     $isPinned: Boolean
     $searchQuery: String
     $includeArchived: Boolean
+    $onlyArchived: Boolean
     $tagIds: [String!]
   ) {
     notes(
@@ -165,6 +185,7 @@ export const NOTES_LIST_QUERY = gql`
       isPinned: $isPinned
       searchQuery: $searchQuery
       includeArchived: $includeArchived
+      onlyArchived: $onlyArchived
       tagIds: $tagIds
     ) {
       ...NoteFields
@@ -206,6 +227,18 @@ export const CREATE_NOTEBOOK_MUTATION = gql`
   ${NOTEBOOK_FIELDS}
 `;
 
+export const REMOVE_NOTEBOOK_MUTATION = gql`
+  mutation RemoveNotebook($id: ID!) {
+    removeNotebook(id: $id)
+  }
+`;
+
+export const REMOVE_FOLDER_MUTATION = gql`
+  mutation RemoveFolder($id: ID!) {
+    removeFolder(id: $id)
+  }
+`;
+
 export const CREATE_FOLDER_MUTATION = gql`
   mutation CreateFolder($input: CreateFolderInput!) {
     createFolder(input: $input) {
@@ -218,20 +251,40 @@ export const CREATE_FOLDER_MUTATION = gql`
 export const CREATE_TAG_MUTATION = gql`
   mutation CreateTag($input: CreateTagInput!) {
     createTag(input: $input) {
-      id
-      name
-      color
+      ...TagFields
     }
+  }
+  ${TAG_FIELDS}
+`;
+
+export const UPDATE_TAG_MUTATION = gql`
+  mutation UpdateTag($input: UpdateTagInput!) {
+    updateTag(input: $input) {
+      ...TagFields
+    }
+  }
+  ${TAG_FIELDS}
+`;
+
+export const REMOVE_TAG_MUTATION = gql`
+  mutation RemoveTag($id: ID!) {
+    removeTag(id: $id)
   }
 `;
 
-export const ARCHIVED_NOTES_QUERY = gql`
-  query ArchivedNotes {
-    notes(includeArchived: true) {
+export const TRASH_NOTES_QUERY = gql`
+  query TrashNotes {
+    notes(onlyArchived: true) {
       ...NoteFields
     }
   }
   ${NOTE_FIELDS}
+`;
+
+export const EMPTY_TRASH_MUTATION = gql`
+  mutation EmptyTrash {
+    emptyTrash
+  }
 `;
 
 export const NOTIFICATIONS_QUERY = gql`
@@ -454,4 +507,22 @@ export const REORDER_SNAPS_MUTATION = gql`
     }
   }
   ${SNAP_FIELDS}
+`;
+
+export const INVITE_WORKSPACE_MEMBER_MUTATION = gql`
+  mutation InviteWorkspaceMember($input: InviteWorkspaceMemberInput!) {
+    inviteWorkspaceMember(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const PAGE_SHARE_LINK_QUERY = gql`
+  query PageShareLink($noteId: ID!) {
+    pageShareLink(noteId: $noteId) {
+      path
+      title
+    }
+  }
 `;

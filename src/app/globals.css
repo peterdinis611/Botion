@@ -28,6 +28,17 @@
   --panel: #f3f3f1;
   --tag: #b8860b;
   --tag-foreground: #8b6914;
+  --landing-accent: #d4a574;
+  --landing-accent-hover: #c49563;
+  --landing-step-bg: rgba(212, 165, 116, 0.22);
+  --landing-illust-surface: #ffffff;
+  --landing-illust-muted: #f3f4f2;
+  --landing-illust-accent: #e8f5f3;
+  --landing-illust-border: #e8e8e6;
+  --landing-illust-panel: #f7f7f5;
+  --landing-blob-1: #f5e6d8;
+  --landing-blob-2: #e0f2f1;
+  --landing-blob-3: #ede9fe;
 }
 
 .dark {
@@ -57,6 +68,17 @@
   --panel: #1a1a1a;
   --tag: #b8a04a;
   --tag-foreground: #d4c078;
+  --landing-accent: #c9a06a;
+  --landing-accent-hover: #d4b07a;
+  --landing-step-bg: rgba(201, 160, 106, 0.25);
+  --landing-illust-surface: #2a2a2a;
+  --landing-illust-muted: #333333;
+  --landing-illust-accent: #1e3330;
+  --landing-illust-border: #404040;
+  --landing-illust-panel: #1f1f1f;
+  --landing-blob-1: #3d3428;
+  --landing-blob-2: #1e3330;
+  --landing-blob-3: #2a2840;
 }
 
 @theme inline {
@@ -86,6 +108,8 @@
   --color-panel: var(--panel);
   --color-tag: var(--tag);
   --color-tag-foreground: var(--tag-foreground);
+  --color-landing-accent: var(--landing-accent);
+  --color-landing-accent-hover: var(--landing-accent-hover);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -201,22 +225,97 @@ body {
   margin: 1.25rem 0;
 }
 
-/* BlockNote */
-.blocknote-wrapper .bn-container {
+/* BlockNote — Notion-like page editor */
+.blocknote-notion .bn-container {
   --bn-colors-editor-background: transparent;
   --bn-colors-menu-background: var(--popover);
   --bn-colors-tooltip-background: var(--popover);
   --bn-colors-tooltip-text: var(--popover-foreground);
   --bn-colors-border: var(--border);
-  --bn-colors-shadow: transparent;
+  --bn-colors-shadow: 0 8px 30px rgb(0 0 0 / 0.12);
   --bn-colors-hovered-background: var(--accent);
-  --bn-colors-selected-background: var(--accent);
+  --bn-colors-selected-background: color-mix(in oklch, var(--accent) 80%, var(--primary) 20%);
   --bn-colors-disabled-text: var(--muted-foreground);
   --bn-colors-side-menu: var(--muted-foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-.blocknote-wrapper .bn-editor {
-  padding-left: 2.5rem;
-  padding-right: 0.5rem;
+.blocknote-notion .bn-editor {
+  padding: 0.5rem 0.5rem 2rem 3rem;
+  min-height: 50vh;
 }
+
+.blocknote-notion .bn-block-group {
+  margin-top: 0.2rem;
+}
+
+.blocknote-notion .bn-block-content {
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+}
+
+.blocknote-notion [data-content-type="heading"] .bn-block-content {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-top: 0.35em;
+}
+
+.blocknote-notion [data-content-type="heading"][data-level="1"] .bn-block-content {
+  font-size: 1.75rem;
+}
+
+.blocknote-notion [data-content-type="heading"][data-level="2"] .bn-block-content {
+  font-size: 1.4rem;
+}
+
+.blocknote-notion [data-content-type="heading"][data-level="3"] .bn-block-content {
+  font-size: 1.15rem;
+}
+
+.blocknote-notion .bn-inline-content:has(> .ProseMirror-trailingBreak:only-child)::before,
+.blocknote-notion .bn-inline-content:empty::before {
+  color: color-mix(in oklch, var(--muted-foreground) 55%, transparent);
+  font-style: normal;
+}
+
+.blocknote-notion .bn-side-menu {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.blocknote-notion .bn-block-outer:hover .bn-side-menu,
+.blocknote-notion .bn-block-outer:focus-within .bn-side-menu {
+  opacity: 1;
+}
+
+.blocknote-notion .bn-side-menu button {
+  border-radius: 6px;
+}
+
+.blocknote-notion .bn-side-menu button:hover {
+  background: var(--accent);
+}
+
+.note-editor-body {
+  position: relative;
+}
+
+.note-editor-body::before {
+  content: "";
+  position: absolute;
+  top: -0.5rem;
+  left: 2.5rem;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--border) 70%, transparent) 12%,
+    color-mix(in oklch, var(--border) 70%, transparent) 88%,
+    transparent
+  );
+  pointer-events: none;
+}
+

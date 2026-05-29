@@ -9,6 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useApolloClient } from "@apollo/client/react";
 import {
   clearAuth,
   getStoredUser,
@@ -16,6 +17,8 @@ import {
   type StoredUser,
   setAuth,
 } from "@/lib/auth";
+import { resetSessionExpiredHandling } from "@/lib/session-expired";
+import { markJustLoggedIn } from "@/lib/session-flash";
 
 type AuthContextValue = {
   user: StoredUser | null;
@@ -29,6 +32,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const apolloClient = useApolloClient();
   const [user, setUser] = useState<StoredUser | null>(null);
   const [isReady, setIsReady] = useState(false);
 
@@ -38,6 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback((token: string, nextUser: StoredUser) => {
+    resetSessionExpiredHandling();
+    markJustLoggedIn();
     setAuth(token, nextUser);
     setUser(nextUser);
   }, []);
@@ -45,14 +51,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(() => {
     clearAuth();
     setUser(null);
-    router.push("/login");
-  }, [router]);
+    void apolloClient.clearStore().finally(() => {
+      router.replace("/login");
+    });
+  }, [router, apolloClient]);
 
   const value = useMemo(
     () => ({
       user,
       isReady,
-      isAuthenticated: Boolean(getToken() && user),
+      isAuthenticated: Boolean(getToken()),
       login,
       logout,
     }),

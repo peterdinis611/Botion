@@ -3,10 +3,10 @@
 import { Check, Plus, Type } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { WorkspaceTagChips } from "@/components/workspace/sidebar-workspace-tags";
+import type { Tag } from "@/graphql/types";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { cn } from "@/lib/utils";
-
-const TAGS = ["morning", "ideas", "todo's"];
 const CHECKLIST_KEY = "botion-demo-checklist";
 
 type CheckItem = { id: string; label: string; done: boolean };
@@ -73,8 +73,18 @@ function ChecklistItem({
   );
 }
 
-export function WorkspaceHomeContent() {
+export function WorkspaceHomeContent({
+  tags = [],
+  notebookId,
+}: {
+  tags?: Tag[];
+  notebookId?: string;
+}) {
   const { createNewPage } = useWorkspaceCreate();
+
+  function startWriting() {
+    void createNewPage(notebookId);
+  }
   const [left, setLeft] = useState<CheckItem[]>(DEFAULT_LEFT);
   const [right, setRight] = useState<CheckItem[]>(DEFAULT_RIGHT);
 
@@ -102,13 +112,15 @@ export function WorkspaceHomeContent() {
           Quick Notes
         </h1>
 
-        <div className="mb-6 flex flex-wrap gap-x-3 gap-y-1">
-          {TAGS.map((tag) => (
-            <span key={tag} className="text-[14px] text-tag">
-              #{tag}
-            </span>
-          ))}
-        </div>
+        <WorkspaceTagChips tags={tags} notebookId={notebookId} />
+
+        <button
+          type="button"
+          onClick={startWriting}
+          className="mb-8 block w-full cursor-text rounded-lg border border-dashed border-border/60 px-4 py-3 text-left text-[15px] leading-[1.7] text-muted-foreground transition-colors hover:border-border hover:bg-muted/30 hover:text-foreground"
+        >
+          Click here to start writing…
+        </button>
 
         <p className="mb-8 text-[15px] leading-[1.7] text-muted-foreground">
           We are a company that helps people build their own businesses. We provide

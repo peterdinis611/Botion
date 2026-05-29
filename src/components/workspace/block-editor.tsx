@@ -4,7 +4,7 @@ import type { PartialBlock } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useTheme } from "next-themes";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { isHtmlContent, parseBlockContent, serializeBlockContent } from "@/lib/content";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
@@ -24,59 +24,68 @@ function plainTextToBlocks(text: string): PartialBlock[] {
 
 export function BlockEditor({ noteId, content, onChange }: BlockEditorProps) {
   const { resolvedTheme } = useTheme();
-  const migratedRef = useRef<string | null>(null);
-
-  const initialBlocks = useMemo((): PartialBlock[] | undefined => {
-    const blocks = parseBlockContent(content);
-    if (blocks) return blocks;
-    return undefined;
-  }, [noteId]);
+  const loadedNoteIdRef = useRef<string | null>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
 
   const editor = useCreateBlockNote({
-    initialContent: initialBlocks,
+    placeholders: {
+      default: "Začnite písať alebo stlačte '/' pre príkazy…",
+      emptyDocument: "Začnite písať alebo stlačte '/' pre príkazy…",
+    },
   });
 
-  useEffect(() => {
-    if (!editor || migratedRef.current === noteId) return;
-    migratedRef.current = noteId;
+  const loadContent = useCallback(
+    async (serialized: string) => {
+      if (!editor) return;
 
-    const existing = parseBlockContent(content);
-    if (existing) {
-      editor.replaceBlocks(editor.document, existing);
-      return;
-    }
+      const existing = parseBlockContent(serialized);
+      if (existing) {
+        editor.replaceBlocks(editor.document, existing);
+        return;
+      }
 
-    if (!content.trim()) return;
+      if (!serialized.trim()) {
+        editor.replaceBlocks(editor.document, [{ type: "paragraph", content: "" }]);
+        return;
+      }
 
-    void (async () => {
       let blocks: PartialBlock[];
-      if (isHtmlContent(content)) {
-        blocks = await editor.tryParseHTMLToBlocks(content);
+      if (isHtmlContent(serialized)) {
+        blocks = await editor.tryParseHTMLToBlocks(serialized);
       } else {
-        blocks = plainTextToBlocks(content);
+        blocks = plainTextToBlocks(serialized);
       }
       editor.replaceBlocks(editor.document, blocks);
-    })();
-  }, [editor, content, noteId]);
+    },
+    [editor],
+  );
+
+  useEffect(() => {
+    if (!editor || loadedNoteIdRef.current === noteId) return;
+    loadedNoteIdRef.current = noteId;
+    void loadContent(content);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor, noteId, loadContent]);
 
   useEffect(() => {
     if (!editor) return;
 
     const unsubscribe = editor.onChange(() => {
-      onChange(serializeBlockContent(editor.document));
+      onChangeRef.current(serializeBlockContent(editor.document));
     });
 
     return () => {
       unsubscribe();
     };
-  }, [editor, onChange]);
+  }, [editor]);
 
   return (
-    <div className="blocknote-wrapper rounded-lg border border-border/60 bg-card/30">
+    <div className="blocknote-wrapper blocknote-notion -mx-1 mt-1">
       <BlockNoteView
         editor={editor}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
-        className="min-h-[50vh]"
+        className="min-h-[58vh]"
       />
     </div>
   );

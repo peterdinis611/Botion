@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
+import { useEffect } from "react";
 import { PageTransition } from "@/components/motion/page-transition";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AppSidebar } from "@/components/workspace/app-sidebar";
@@ -8,6 +9,7 @@ import { CommandPalette } from "@/components/workspace/command-palette";
 import { QuickActionsFab } from "@/components/workspace/quick-actions-fab";
 import { WORKSPACE_QUERY } from "@/graphql/operations";
 import type { WorkspaceQueryResult } from "@/graphql/types";
+import { clearLoginGracePeriod } from "@/lib/session-flash";
 import { SnapsPanelProvider } from "@/components/workspace/snaps-panel-context";
 import { CommandPaletteProvider } from "@/hooks/use-command-palette";
 import { useSidebar } from "@/hooks/use-sidebar";
@@ -23,7 +25,11 @@ export function WorkspaceFrame({
   hideQuickFab?: boolean;
 }) {
   const { collapsed } = useSidebar();
-  const { data, loading } = useQuery<WorkspaceQueryResult>(WORKSPACE_QUERY);
+  const { data, loading, error } = useQuery<WorkspaceQueryResult>(WORKSPACE_QUERY);
+
+  useEffect(() => {
+    if (data && !error) clearLoginGracePeriod();
+  }, [data, error]);
 
   if (loading && !data) {
     return (
@@ -46,7 +52,6 @@ export function WorkspaceFrame({
           <AppSidebar
             folders={data?.folders ?? []}
             notebooks={data?.notebooks ?? []}
-            tags={data?.tags ?? []}
           />
           <PageTransition
             className={cn("flex min-h-0 min-w-0 flex-1", className ?? "flex-col")}

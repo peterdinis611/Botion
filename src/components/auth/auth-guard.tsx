@@ -1,21 +1,26 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getToken } from "@/lib/auth";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { isReady, isAuthenticated } = useAuth();
+  const { isReady } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!isReady) return;
     if (!getToken()) {
-      router.replace("/login");
+      const next = encodeURIComponent(
+        `${pathname}${searchParams.toString() ? `?${searchParams}` : ""}`,
+      );
+      router.replace(`/login?next=${next}`);
     }
-  }, [isReady, router]);
+  }, [isReady, router, pathname, searchParams]);
 
   if (!isReady) {
     return (
@@ -26,7 +31,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!isAuthenticated && !getToken()) {
+  if (!getToken()) {
     return null;
   }
 

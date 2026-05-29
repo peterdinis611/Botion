@@ -3,14 +3,22 @@
 import { useMutation } from "@apollo/client/react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FadeIn } from "@/components/motion/fade-in";
+import { PasswordInput } from "@/components/auth/password-input";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LOGIN_MUTATION, REGISTER_MUTATION } from "@/graphql/operations";
+import {
+  assertNoMutationError,
+  getGraphQLErrorMessage,
+} from "@/lib/graphql-error";
+import { clearAuth } from "@/lib/auth";
+import { resetSessionExpiredHandling } from "@/lib/session-expired";
+import { consumeSessionExpiredFlash } from "@/lib/session-flash";
 
 type AuthMode = "login" | "register";
 
@@ -20,12 +28,26 @@ type AuthResponse = {
 };
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    resetSessionExpiredHandling();
+    clearAuth();
+
+    if (consumeSessionExpiredFlash()) {
+      setInfoMessage("Your session expired. Please sign in again.");
+    }
+
+    const prefill = searchParams.get("email");
+    if (prefill) setEmail(prefill);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
+  }, []);
 
   const [loginMutation, { loading: loginLoading }] = useMutation<{
     login: AuthResponse;
@@ -39,36 +61,49 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    setFormError(null);
+    setInfoMessage(null);
+    resetSessionExpiredHandling();
+
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail) {
+      setFormError("Enter your email address.");
+      return;
+    }
 
     try {
       if (mode === "login") {
-        const { data } = await loginMutation({
-          variables: { input: { email, password } },
+        const result = await loginMutation({
+          variables: { input: { email: trimmedEmail, password } },
         });
-        if (!data?.login) throw new Error("Login failed");
-        login(data.login.token, data.login.user);
+        assertNoMutationError(result);
+        if (!result.data?.login?.token) {
+          throw new Error("Login failed. Please try again.");
+        }
+        login(result.data.login.token, result.data.login.user);
       } else {
-        const { data } = await registerMutation({
-          variables: { input: { name, email, password } },
+        const result = await registerMutation({
+          variables: {
+            input: { name: name.trim(), email: trimmedEmail, password },
+          },
         });
-        if (!data?.register) throw new Error("Registration failed");
-        login(data.register.token, data.register.user);
+        assertNoMutationError(result);
+        if (!result.data?.register?.token) {
+          throw new Error("Registration failed. Please try again.");
+        }
+        login(result.data.register.token, result.data.register.user);
       }
-      router.push("/workspace");
+
+      const next = searchParams.get("next");
+      const destination =
+        next?.startsWith("/workspace") ? next : "/workspace";
+      window.location.assign(destination);
     } catch (err: unknown) {
-      const message =
-        err &&
-        typeof err === "object" &&
-        "graphQLErrors" in err &&
-        Array.isArray((err as { graphQLErrors: { message: string }[] }).graphQLErrors)
-          ? (err as { graphQLErrors: { message: string }[] }).graphQLErrors[0]?.message
-          : err instanceof Error
-            ? err.message
-            : "Something went wrong";
-      setError(message ?? "Something went wrong");
+      setFormError(getGraphQLErrorMessage(err));
     }
   }
+
+  const displayError = formError;
 
   return (
     <FadeIn className="w-full max-w-sm space-y-6" variant="scale">
@@ -94,6 +129,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
               placeholder="Your name"
               required
               minLength={2}
+              autoComplete="name"
             />
           </div>
         )}
@@ -106,29 +142,36 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             required
+            autoComplete="email"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
+            onChange={setPassword}
             required
             minLength={8}
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
           />
+          <p className="text-xs text-muted-foreground">At least 8 characters</p>
         </div>
 
-        {error && (
+        {infoMessage && !displayError && (
+          <p className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+            {infoMessage}
+          </p>
+        )}
+
+        {displayError && (
           <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {error}
+            {displayError}
           </p>
         )}
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="animate-spin" />}
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {mode === "login" ? "Sign in" : "Create account"}
         </Button>
       </form>

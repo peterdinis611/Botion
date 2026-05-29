@@ -13,6 +13,11 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { ItemActionsMenu } from "@/components/workspace/item-actions-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarEventDialog } from "@/components/workspace/calendar-event-dialog";
 import {
@@ -280,25 +285,21 @@ export function CalendarView() {
                         )}
                       </div>
                     </div>
-                    <div className="mt-2 flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={() => openEdit(event)}
-                        title="Edit"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => void handleDelete(event)}
-                        title="Delete"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                    <div className="mt-2 flex justify-end">
+                      <ItemActionsMenu label="Akcie udalosti" contentClassName="w-44">
+                        <DropdownMenuItem onClick={() => openEdit(event)}>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Upraviť
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => void handleDelete(event)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Zmazať
+                        </DropdownMenuItem>
+                      </ItemActionsMenu>
                     </div>
                         </motion.li>
                       ))}

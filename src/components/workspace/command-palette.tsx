@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@apollo/client/react";
-import { Archive, Clock, FileText, FolderOpen, Plus, Search, Star } from "lucide-react";
+import { Clock, FileText, FolderOpen, Plus, Search, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
@@ -17,6 +17,9 @@ import { SearchHighlight } from "@/components/workspace/search-highlight";
 import { CREATE_NOTE_MUTATION, WORKSPACE_QUERY } from "@/graphql/operations";
 import type { CreateNoteResult, Note, WorkspaceQueryResult } from "@/graphql/types";
 import { useCommandPalette } from "@/hooks/use-command-palette";
+import { displayStoredTitle } from "@/lib/icon-emoji";
+import { notebookDisplayName } from "@/lib/workspace-icons";
+import { buildWorkspaceHref } from "@/lib/workspace-url";
 import {
   getRecentNoteIds,
   noteSearchSubtitle,
@@ -40,7 +43,7 @@ export function CommandPalette({
   const [createNote] = useMutation<CreateNoteResult>(CREATE_NOTE_MUTATION);
 
   const notebookMap = useMemo(
-    () => new Map(notebooks.map((nb) => [nb.id, nb.name])),
+    () => new Map(notebooks.map((nb) => [nb.id, notebookDisplayName(nb.name)])),
     [notebooks],
   );
 
@@ -137,9 +140,21 @@ export function CommandPalette({
             <Star className="h-4 w-4" />
             Pinned
           </CommandItem>
-          <CommandItem onSelect={() => navigate("/workspace?archived=1")}>
-            <Archive className="h-4 w-4" />
-            Archive
+          <CommandItem
+            onSelect={() =>
+              navigate(
+                buildWorkspaceHref(new URLSearchParams(), {
+                  archived: true,
+                  clearNotebook: true,
+                  clearFolder: true,
+                  clearTag: true,
+                  pinned: false,
+                }),
+              )
+            }
+          >
+            <Trash2 className="h-4 w-4" />
+            Kôš
           </CommandItem>
         </CommandGroup>
 
@@ -155,7 +170,7 @@ export function CommandPalette({
                 >
                   <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">{note.title || "Untitled"}</p>
+                    <p className="truncate font-medium">{displayStoredTitle(note.title)}</p>
                     <p className="truncate text-xs text-muted-foreground">
                       {noteSearchSubtitle(note.content)}
                     </p>
@@ -180,7 +195,10 @@ export function CommandPalette({
                   <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium leading-snug">
-                      <SearchHighlight text={note.title || "Untitled"} query={query} />
+                      <SearchHighlight
+                        text={displayStoredTitle(note.title)}
+                        query={query}
+                      />
                     </p>
                     <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
                       <SearchHighlight
@@ -214,7 +232,7 @@ export function CommandPalette({
                     className="h-2.5 w-2.5 shrink-0 rounded-sm"
                     style={{ backgroundColor: nb.color }}
                   />
-                  <SearchHighlight text={nb.name} query={query} />
+                  <SearchHighlight text={notebookDisplayName(nb.name)} query={query} />
                 </CommandItem>
               ))}
             </CommandGroup>

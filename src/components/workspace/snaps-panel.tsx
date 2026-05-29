@@ -1,15 +1,15 @@
 "use client";
 
 import { useMutation, useQuery } from "@apollo/client/react";
-import { Code2, Minus, Pencil, Plus, Trash2 } from "lucide-react";
+import { Minus, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ItemActionsMenu } from "@/components/workspace/item-actions-menu";
+import { SnapActionsMenu } from "@/components/workspace/snap-actions-menu";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -157,37 +157,30 @@ export function SnapsPanel({
       >
         <div className="flex items-center justify-between px-5 py-3.5">
           <h2 className="text-[14px] font-semibold text-foreground">Snaps</h2>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="text-muted-foreground/80 hover:text-foreground"
-                aria-label="Snap options"
-              >
-                <Code2 className="h-3.5 w-3.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {activeSnap && (
-                <>
-                  <DropdownMenuItem onClick={() => setEditOpen(true)}>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit details
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => void handleDelete(activeSnap.id)}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete snap
-                  </DropdownMenuItem>
-                </>
-              )}
-              {!activeSnap && (
-                <DropdownMenuItem onClick={openAddSnap}>Add snap</DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ItemActionsMenu
+            label="Možnosti Snaps"
+            className="h-7 w-7 opacity-100"
+            contentClassName="w-44"
+          >
+            {activeSnap ? (
+              <>
+                <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Upraviť
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive"
+                  onClick={() => void handleDelete(activeSnap.id)}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Zmazať
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem onClick={openAddSnap}>Pridať snap</DropdownMenuItem>
+            )}
+          </ItemActionsMenu>
         </div>
 
         <ScrollArea className="flex-1 px-4">
@@ -284,22 +277,36 @@ export function SnapsPanel({
               {sortedSnaps.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {sortedSnaps.map((snap) => (
-                    <button
+                    <div
                       key={snap.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedId(snap.id);
-                        setZoomIndex(1);
-                      }}
                       className={cn(
-                        "relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border",
+                        "group/snap relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border",
                         snap.id === activeSnap.id
                           ? "border-foreground/50"
                           : "border-border/50 opacity-70 hover:opacity-100",
                       )}
                     >
-                      <SnapImage fileId={snap.fileId} alt={snap.title} fill />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedId(snap.id);
+                          setZoomIndex(1);
+                        }}
+                        className="absolute inset-0"
+                      >
+                        <SnapImage fileId={snap.fileId} alt={snap.title} fill />
+                      </button>
+                      <div className="absolute right-0.5 top-0.5 z-10">
+                        <SnapActionsMenu
+                          className="h-6 w-6 bg-background/80 opacity-0 backdrop-blur-sm group-hover/snap:opacity-100"
+                          onEdit={() => {
+                            setSelectedId(snap.id);
+                            setEditOpen(true);
+                          }}
+                          onDelete={() => void handleDelete(snap.id)}
+                        />
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}

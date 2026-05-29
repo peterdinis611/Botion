@@ -1,3 +1,5 @@
+import { splitLeadingEmoji } from "@/lib/icon-emoji";
+
 const NOTEBOOK_EMOJIS = ["🎯", "🏅", "🕐", "🎵", "❓", "💻", "📱", "📓", "✨", "🔮"];
 
 const NAME_EMOJI: Record<string, string> = {
@@ -11,8 +13,15 @@ const NAME_EMOJI: Record<string, string> = {
   swift: "🐦",
 };
 
+export function notebookDisplayName(name: string): string {
+  const { label } = splitLeadingEmoji(name);
+  return label || name;
+}
+
 export function notebookEmoji(id: string, name?: string): string {
   if (name) {
+    const { emoji } = splitLeadingEmoji(name);
+    if (emoji) return emoji;
     const key = name.trim().toLowerCase();
     if (NAME_EMOJI[key]) return NAME_EMOJI[key];
   }

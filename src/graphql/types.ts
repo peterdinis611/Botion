@@ -2,6 +2,10 @@ export type Tag = {
   id: string;
   name: string;
   color: string;
+  notebookId?: string | null;
+  sortOrder?: number;
+  noteCount: number;
+  createdAt?: string;
 };
 
 export type Note = {
@@ -61,6 +65,8 @@ export type UpdateNoteResult = { updateNote: Note };
 export type CreateNotebookResult = { createNotebook: Notebook };
 export type CreateFolderResult = { createFolder: Folder };
 export type CreateTagResult = { createTag: Tag };
+export type UpdateTagResult = { updateTag: Tag };
+export type WorkspaceTagsQueryResult = { workspaceTags: Tag[] };
 export type ArchivedNotesQueryResult = { notes: Note[] };
 export type NotificationsQueryResult = { notifications: Notification[] };
 
@@ -91,6 +97,14 @@ export type Snap = {
 export type SnapsQueryResult = { snaps: Snap[] };
 export type CreateSnapResult = { createSnap: Snap };
 export type UpdateSnapResult = { updateSnap: Snap };
+
+export type InviteWorkspaceMemberResult = {
+  inviteWorkspaceMember: { success: boolean; message: string };
+};
+
+export type PageShareLinkQueryResult = {
+  pageShareLink: { path: string; title: string };
+};
 
 export type MeUser = {
   id: string;

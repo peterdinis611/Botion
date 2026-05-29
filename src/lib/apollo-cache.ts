@@ -12,6 +12,7 @@ const typePolicies: TypePolicies = {
           "isPinned",
           "searchQuery",
           "includeArchived",
+          "onlyArchived",
           "tagIds",
         ],
         merge(_existing, incoming) {

@@ -33,7 +33,8 @@ import {
   WORKSPACE_QUERY,
 } from "@/graphql/operations";
 import type { Folder, Notebook } from "@/graphql/types";
-import { folderEmoji, notebookEmoji } from "@/lib/workspace-icons";
+import { NotebookActionsMenu } from "@/components/workspace/notebook-actions-menu";
+import { folderEmoji, notebookDisplayName, notebookEmoji } from "@/lib/workspace-icons";
 import { cn } from "@/lib/utils";
 
 const folderKey = (id: string) => `folder:${id}`;
@@ -371,17 +372,26 @@ function NotebookRow({
         <span className="text-sm leading-none" aria-hidden>
           {notebookEmoji(notebook.id, notebook.name)}
         </span>
-        <span className={cn("truncate", active && "font-medium")}>{notebook.name}</span>
+        <span className={cn("truncate", active && "font-medium")}>
+          {notebookDisplayName(notebook.name)}
+        </span>
       </button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-7 w-7 shrink-0 opacity-0 group-hover/nb:opacity-100"
-        onClick={onNewPage}
-        title="New page"
-      >
-        <Plus className="h-3 w-3" />
-      </Button>
+      <div className="flex shrink-0 items-center gap-0.5 pr-0.5">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7 opacity-0 group-hover/nb:opacity-100"
+          onClick={onNewPage}
+          title="New page"
+        >
+          <Plus className="h-3 w-3" />
+        </Button>
+        <NotebookActionsMenu
+          notebookId={notebook.id}
+          name={notebook.name}
+          onNewPage={onNewPage}
+        />
+      </div>
     </div>
   );
 }

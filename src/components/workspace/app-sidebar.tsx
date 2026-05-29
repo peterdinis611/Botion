@@ -33,9 +33,10 @@ import {
 } from "@/components/ui/tooltip";
 import { ImportNoteDialog } from "@/components/workspace/import-note-dialog";
 import { SidebarFlatWorkspace } from "@/components/workspace/sidebar-flat-workspace";
+import { SidebarWorkspaceTags } from "@/components/workspace/sidebar-workspace-tags";
 import { useSnapsPanelOptional } from "@/components/workspace/snaps-panel-context";
 import { TemplatesDialog } from "@/components/workspace/templates-dialog";
-import type { Folder, Notebook, Tag as TagType } from "@/graphql/types";
+import type { Folder, Notebook } from "@/graphql/types";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { cn } from "@/lib/utils";
@@ -44,11 +45,9 @@ import { buildWorkspaceHref, parseWorkspaceFilters } from "@/lib/workspace-url";
 export function AppSidebar({
   folders,
   notebooks,
-  tags: _tags,
 }: {
   folders: Folder[];
   notebooks: Notebook[];
-  tags: TagType[];
 }) {
   const { user, logout } = useAuth();
   const router = useRouter();
@@ -56,7 +55,7 @@ export function AppSidebar({
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
   const { collapsed, toggleCollapsed } = useSidebar();
-  const { openFolderDialog, openNotebookDialog } = useWorkspaceCreate();
+  const { openFolderDialog, openNotebookDialog, createNewPage } = useWorkspaceCreate();
   const snapsPanel = useSnapsPanelOptional();
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -78,8 +77,11 @@ export function AppSidebar({
             collapsed && "flex-col px-2",
           )}
         >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px] border border-border/80 bg-black text-[13px] font-bold text-white">
-            N
+          <div
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[6px] border border-border/80 bg-black text-[13px] font-bold text-white"
+            aria-hidden
+          >
+            B
           </div>
           {!collapsed && (
             <>
@@ -125,13 +127,22 @@ export function AppSidebar({
                   size="icon"
                   className="h-5 w-5 text-muted-foreground hover:text-foreground"
                   onClick={() => openNotebookDialog()}
-                  title="Add page"
+                  title="New workspace"
                 >
                   <Plus className="h-3.5 w-3.5" />
                 </Button>
               </div>
 
-              <SidebarFlatWorkspace notebooks={notebooks} />
+              <SidebarFlatWorkspace
+                notebooks={notebooks}
+                onCreateWorkspace={() => openNotebookDialog()}
+                onNewPage={(notebookId) => void createNewPage(notebookId)}
+              />
+
+              <SidebarWorkspaceTags
+                notebookId={filters.notebookId}
+                collapsed={collapsed}
+              />
 
               <div className="mt-5">
                 <p className="mb-1 px-2 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
@@ -167,13 +178,15 @@ export function AppSidebar({
                   href="/workspace?archived=1"
                   active={!!filters.archived && !isSettings}
                   icon={<Trash2 className="h-4 w-4 stroke-[1.5]" />}
-                  label="Trash"
+                  label="Kôš"
                   onClick={() =>
                     router.push(
                       buildWorkspaceHref(searchParams, {
                         archived: true,
                         pinned: false,
                         clearTag: true,
+                        clearNotebook: true,
+                        clearFolder: true,
                       }),
                     )
                   }

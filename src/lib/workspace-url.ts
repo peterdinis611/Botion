@@ -50,13 +50,23 @@ export function buildWorkspaceHref(
     clearTag?: boolean;
     clearPinned?: boolean;
     clearArchived?: boolean;
+    clearNotebook?: boolean;
+    clearFolder?: boolean;
   },
 ): string {
   const filters = parseWorkspaceFilters(current);
 
   const next: WorkspaceFilters = {
-    notebookId: patch.notebookId !== undefined ? patch.notebookId : filters.notebookId,
-    folderId: patch.folderId !== undefined ? patch.folderId : filters.folderId,
+    notebookId: patch.clearNotebook
+      ? undefined
+      : patch.notebookId !== undefined
+        ? patch.notebookId
+        : filters.notebookId,
+    folderId: patch.clearFolder
+      ? undefined
+      : patch.folderId !== undefined
+        ? patch.folderId
+        : filters.folderId,
     pinned: patch.pinned !== undefined ? patch.pinned : filters.pinned,
     archived: patch.archived !== undefined ? patch.archived : filters.archived,
     tagId: patch.clearTag

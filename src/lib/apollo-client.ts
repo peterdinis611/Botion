@@ -1,12 +1,19 @@
 import { ApolloClient, HttpLink, split } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
+import { ErrorLink } from "@apollo/client/link/error";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { LocalStorageWrapper, persistCache } from "apollo3-cache-persist";
 import { createClient } from "graphql-ws";
 import { APOLLO_CACHE_KEY, createApolloCache } from "./apollo-cache";
+import { authLink } from "./apollo-auth-link";
 import { getToken } from "./auth";
 import { getGraphqlHttpUri, getGraphqlWsUri } from "./graphql-uri";
+import {
+  handleSessionExpired,
+  isAuthError,
+  registerApolloClient,
+  shouldHandleSessionExpired,
+} from "./session-expired";
 
 export async function initApolloClient() {
   const cache = createApolloCache();
@@ -23,16 +30,6 @@ export async function initApolloClient() {
   }
 
   const httpLink = new HttpLink({ uri: getGraphqlHttpUri() });
-
-  const authLink = setContext((_, { headers }) => {
-    const token = getToken();
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-      },
-    };
-  });
 
   const wsLink =
     typeof window !== "undefined"
@@ -69,8 +66,17 @@ export async function initApolloClient() {
       )
     : authLink.concat(httpLink);
 
-  return new ApolloClient({
-    link: splitLink,
+  const errorLink = new ErrorLink(({ error, operation }) => {
+    if (
+      isAuthError(error) &&
+      shouldHandleSessionExpired(operation.operationName)
+    ) {
+      handleSessionExpired();
+    }
+  });
+
+  const client = new ApolloClient({
+    link: errorLink.concat(splitLink),
     cache,
     defaultOptions: {
       watchQuery: {
@@ -81,4 +87,7 @@ export async function initApolloClient() {
       },
     },
   });
+
+  registerApolloClient(client);
+  return client;
 }

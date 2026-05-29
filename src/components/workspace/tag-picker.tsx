@@ -27,11 +27,13 @@ export function TagPicker({
   noteId,
   selectedTags,
   allTags,
+  notebookId,
   variant = "default",
 }: {
   noteId: string;
   selectedTags: TagType[];
   allTags: TagType[];
+  notebookId?: string | null;
   variant?: "default" | "muted-gold";
 }) {
   const client = useApolloClient();
@@ -65,7 +67,13 @@ export function TagPicker({
     if (!newTagName.trim()) return;
     const color = TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];
     const { data } = await createTag({
-      variables: { input: { name: newTagName.trim(), color } },
+      variables: {
+        input: {
+          name: newTagName.trim(),
+          color,
+          notebookId: notebookId ?? undefined,
+        },
+      },
     });
     const created = data?.createTag;
     if (created) {

@@ -4,6 +4,8 @@ import { useMutation } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { WorkspaceCreateDialogs } from "@/components/workspace/workspace-create-dialogs";
+import { ALL_PICKER_EMOJIS } from "@/lib/emoji-picker-data";
+import { joinWithLeadingEmoji, pickRandomEmoji } from "@/lib/icon-emoji";
 import {
   CREATE_FOLDER_MUTATION,
   CREATE_NOTE_MUTATION,
@@ -30,7 +32,15 @@ export function WorkspaceCreateProvider({ children }: { children: React.ReactNod
   const router = useRouter();
   const [dialog, setDialog] = useState<CreateDialog>(null);
   const [name, setName] = useState("");
+  const [emoji, setEmoji] = useState("✨");
   const [targetFolderId, setTargetFolderId] = useState<string | undefined>();
+
+  const resetDialog = useCallback(() => {
+    setDialog(null);
+    setName("");
+    setEmoji(pickRandomEmoji(ALL_PICKER_EMOJIS));
+    setTargetFolderId(undefined);
+  }, []);
 
   const refetch = [{ query: WORKSPACE_QUERY }];
 
@@ -47,6 +57,7 @@ export function WorkspaceCreateProvider({ children }: { children: React.ReactNod
   const openFolderDialog = useCallback(() => {
     setDialog("folder");
     setName("");
+    setEmoji(pickRandomEmoji(ALL_PICKER_EMOJIS));
     setTargetFolderId(undefined);
   }, []);
 
@@ -54,6 +65,7 @@ export function WorkspaceCreateProvider({ children }: { children: React.ReactNod
     setDialog("notebook");
     setTargetFolderId(folderId);
     setName("");
+    setEmoji(pickRandomEmoji(ALL_PICKER_EMOJIS));
   }, []);
 
   const createNewPage = useCallback(
@@ -77,27 +89,33 @@ export function WorkspaceCreateProvider({ children }: { children: React.ReactNod
   );
 
   async function handleCreate() {
-    if (!name.trim()) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const displayName = joinWithLeadingEmoji(emoji, trimmed);
 
-    if (dialog === "folder") {
-      await createFolder({
-        variables: { input: { name: name.trim(), color: "#64748b" } },
-      });
-    } else if (dialog === "notebook") {
-      await createNotebook({
-        variables: {
-          input: {
-            name: name.trim(),
-            color: "#94a3b8",
-            folderId: targetFolderId,
+    try {
+      if (dialog === "folder") {
+        await createFolder({
+          variables: { input: { name: displayName, color: "#64748b" } },
+        });
+      } else if (dialog === "notebook") {
+        const { data } = await createNotebook({
+          variables: {
+            input: {
+              name: displayName,
+              color: "#94a3b8",
+              folderId: targetFolderId,
+            },
           },
-        },
-      });
+        });
+        const notebookId = data?.createNotebook?.id;
+        if (notebookId) {
+          router.push(`/workspace?notebook=${notebookId}`);
+        }
+      }
+    } finally {
+      resetDialog();
     }
-
-    setDialog(null);
-    setName("");
-    setTargetFolderId(undefined);
   }
 
   const value = useMemo(
@@ -115,8 +133,10 @@ export function WorkspaceCreateProvider({ children }: { children: React.ReactNod
       <WorkspaceCreateDialogs
         dialog={dialog}
         name={name}
+        emoji={emoji}
         onNameChange={setName}
-        onClose={() => setDialog(null)}
+        onEmojiChange={setEmoji}
+        onClose={resetDialog}
         onCreate={handleCreate}
       />
     </WorkspaceCreateContext.Provider>
