@@ -1,6 +1,6 @@
 const SESSION_EXPIRED_KEY = "botion_session_expired";
 const LOGIN_GRACE_KEY = "botion_login_at";
-const LOGIN_GRACE_MS = 15_000;
+const LOGIN_GRACE_MS = 60_000;
 
 export function markSessionExpiredFlash() {
   if (typeof window === "undefined") return;

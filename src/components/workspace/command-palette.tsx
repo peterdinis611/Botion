@@ -1,6 +1,5 @@
 "use client";
 
-import { useMutation } from "@apollo/client/react";
 import { Clock, FileText, FolderOpen, Plus, Search, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -14,9 +13,9 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { SearchHighlight } from "@/components/workspace/search-highlight";
-import { CREATE_NOTE_MUTATION, WORKSPACE_QUERY } from "@/graphql/operations";
-import type { CreateNoteResult, Note, WorkspaceQueryResult } from "@/graphql/types";
+import type { Note, WorkspaceQueryResult } from "@/graphql/types";
 import { useCommandPalette } from "@/hooks/use-command-palette";
+import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { displayStoredTitle } from "@/lib/icon-emoji";
 import { notebookDisplayName } from "@/lib/workspace-icons";
 import { buildWorkspaceHref } from "@/lib/workspace-url";
@@ -39,8 +38,8 @@ export function CommandPalette({
 }) {
   const router = useRouter();
   const { open, setOpen } = useCommandPalette();
+  const { openNewPageDialog, createNewPage } = useWorkspaceCreate();
   const [query, setQuery] = useState("");
-  const [createNote] = useMutation<CreateNoteResult>(CREATE_NOTE_MUTATION);
 
   const notebookMap = useMemo(
     () => new Map(notebooks.map((nb) => [nb.id, notebookDisplayName(nb.name)])),
@@ -87,15 +86,16 @@ export function CommandPalette({
     router.push(path);
   }
 
-  async function handleNewNote(notebookId?: string) {
-    const { data } = await createNote({
-      variables: {
-        input: { title: "Untitled", content: "", notebookId },
-      },
-      refetchQueries: [{ query: WORKSPACE_QUERY }],
-    });
-    const id = data?.createNote?.id;
-    if (id) navigateToNote(id);
+  function handleNewNote(notebookId?: string) {
+    setOpen(false);
+    setQuery("");
+    openNewPageDialog(notebookId);
+  }
+
+  function handleQuickBlank(notebookId?: string) {
+    setOpen(false);
+    setQuery("");
+    void createNewPage(notebookId);
   }
 
   return (

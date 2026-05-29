@@ -4,7 +4,7 @@ import {
   Bell,
   ChevronDown,
   FileInput,
-  LayoutTemplate,
+  FilePlus,
   LogOut,
   Network,
   PanelLeft,
@@ -36,7 +36,6 @@ import { ImportNoteDialog } from "@/components/workspace/import-note-dialog";
 import { SidebarFlatWorkspace } from "@/components/workspace/sidebar-flat-workspace";
 import { SidebarWorkspaceTags } from "@/components/workspace/sidebar-workspace-tags";
 import { useSnapsPanelOptional } from "@/components/workspace/snaps-panel-context";
-import { TemplatesDialog } from "@/components/workspace/templates-dialog";
 import type { Folder, Notebook } from "@/graphql/types";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
@@ -56,9 +55,9 @@ export function AppSidebar({
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
   const { collapsed, toggleCollapsed } = useSidebar();
-  const { openFolderDialog, openNotebookDialog, createNewPage } = useWorkspaceCreate();
+  const { openFolderDialog, openNotebookDialog, createNewPage, openNewPageDialog } =
+    useWorkspaceCreate();
   const snapsPanel = useSnapsPanelOptional();
-  const [templatesOpen, setTemplatesOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
 
   const isSettings = pathname === "/workspace/settings";
@@ -153,11 +152,11 @@ export function AppSidebar({
                 <SidebarNavItem
                   href="/workspace"
                   active={false}
-                  icon={<LayoutTemplate className="h-4 w-4 stroke-[1.5]" />}
-                  label="Templates"
+                  icon={<FilePlus className="h-4 w-4 stroke-[1.5]" />}
+                  label="New page"
                   onClick={(e) => {
                     e.preventDefault();
-                    setTemplatesOpen(true);
+                    openNewPageDialog(filters.notebookId);
                   }}
                 />
                 <SidebarNavItem
@@ -258,7 +257,6 @@ export function AppSidebar({
         </div>
       </aside>
 
-      <TemplatesDialog open={templatesOpen} onOpenChange={setTemplatesOpen} />
       <ImportNoteDialog open={importOpen} onOpenChange={setImportOpen} />
     </TooltipProvider>
   );

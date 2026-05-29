@@ -1,7 +1,7 @@
 import type { ApolloClient } from "@apollo/client";
 import type { ErrorLike } from "@apollo/client";
 import { CombinedGraphQLErrors } from "@apollo/client/errors";
-import { clearAuth } from "@/lib/auth";
+import { clearAuth, getToken } from "@/lib/auth";
 import {
   isWithinLoginGracePeriod,
   markSessionExpiredFlash,
@@ -10,12 +10,22 @@ import {
 let apolloClient: ApolloClient | null = null;
 let handling = false;
 
-function isSessionExpiredMessage(message: string): boolean {
-  const lower = message.toLowerCase();
-  return (
-    lower.includes("invalid or expired token") ||
-    lower.includes("authorization header is missing")
-  );
+function isInvalidOrExpiredTokenMessage(message: string): boolean {
+  return message.toLowerCase().includes("invalid or expired token");
+}
+
+function isMissingAuthHeaderMessage(message: string): boolean {
+  return message.toLowerCase().includes("authorization header is missing");
+}
+
+function messageIndicatesSessionExpired(message: string): boolean {
+  if (isInvalidOrExpiredTokenMessage(message)) {
+    return true;
+  }
+  if (isMissingAuthHeaderMessage(message)) {
+    return !getToken();
+  }
+  return false;
 }
 
 export function registerApolloClient(client: ApolloClient) {
@@ -28,10 +38,10 @@ export function resetSessionExpiredHandling() {
 
 export function isAuthError(error: ErrorLike): boolean {
   if (CombinedGraphQLErrors.is(error)) {
-    return error.errors.some((e) => isSessionExpiredMessage(e.message));
+    return error.errors.some((e) => messageIndicatesSessionExpired(e.message));
   }
   if (error instanceof Error) {
-    return isSessionExpiredMessage(error.message);
+    return messageIndicatesSessionExpired(error.message);
   }
   return false;
 }
@@ -62,6 +72,7 @@ export function handleSessionExpired() {
   ) {
     return;
   }
+
   handling = true;
 
   clearAuth();

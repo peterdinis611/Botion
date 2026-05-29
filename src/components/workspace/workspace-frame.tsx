@@ -34,7 +34,7 @@ export function WorkspaceFrame({
   if (loading && !data) {
     return (
       <div className="flex h-screen overflow-hidden bg-background">
-        <Skeleton className={cn("shrink-0", collapsed ? "w-[52px]" : "w-[220px]")} />
+        <Skeleton className={cn("shrink-0", collapsed ? "w-13" : "w-55")} />
         <Skeleton className="flex-1" />
       </div>
     );
@@ -59,7 +59,6 @@ export function WorkspaceFrame({
             {children}
           </PageTransition>
         </div>
-        {!hideQuickFab && <QuickActionsFab />}
       </SnapsPanelProvider>
     </CommandPaletteProvider>
   );

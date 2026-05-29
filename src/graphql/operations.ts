@@ -293,8 +293,18 @@ export const NOTIFICATIONS_QUERY = gql`
       id
       type
       message
+      metadata
       isRead
       createdAt
+    }
+  }
+`;
+
+export const ACCEPT_WORKSPACE_INVITE_MUTATION = gql`
+  mutation AcceptWorkspaceInvite($input: AcceptWorkspaceInviteInput!) {
+    acceptWorkspaceInvite(input: $input) {
+      success
+      message
     }
   }
 `;
@@ -320,6 +330,7 @@ export const NOTIFICATION_ADDED_SUBSCRIPTION = gql`
       id
       type
       message
+      metadata
       isRead
       createdAt
     }

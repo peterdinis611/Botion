@@ -7,6 +7,7 @@ import { WorkspaceTagChips } from "@/components/workspace/sidebar-workspace-tags
 import type { Tag } from "@/graphql/types";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { cn } from "@/lib/utils";
+import { QuickActionsFab } from "./quick-actions-fab";
 const CHECKLIST_KEY = "botion-demo-checklist";
 
 type CheckItem = { id: string; label: string; done: boolean };
@@ -60,7 +61,7 @@ function ChecklistItem({
       />
       <span
         className={cn(
-          "mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border",
+          "mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-[5px] border",
           item.done
             ? "border-transparent bg-muted-foreground/30 text-foreground"
             : "border-muted-foreground/40 bg-transparent",
@@ -80,10 +81,10 @@ export function WorkspaceHomeContent({
   tags?: Tag[];
   notebookId?: string;
 }) {
-  const { createNewPage } = useWorkspaceCreate();
+  const { openNewPageDialog } = useWorkspaceCreate();
 
   function startWriting() {
-    void createNewPage(notebookId);
+    openNewPageDialog(notebookId);
   }
   const [left, setLeft] = useState<CheckItem[]>(DEFAULT_LEFT);
   const [right, setRight] = useState<CheckItem[]>(DEFAULT_RIGHT);
@@ -107,7 +108,7 @@ export function WorkspaceHomeContent({
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <div className="mx-auto w-full max-w-[720px] flex-1 overflow-y-auto px-10 py-10 pb-24">
+      <div className="mx-auto w-full max-w-180 flex-1 overflow-y-auto px-10 py-10 pb-24">
         <h1 className="mb-4 text-[2rem] font-bold leading-tight tracking-tight text-foreground">
           Quick Notes
         </h1>
@@ -151,24 +152,7 @@ export function WorkspaceHomeContent({
       </div>
 
       <div className="pointer-events-none absolute bottom-8 left-10 z-10 flex gap-2">
-        <Button
-          size="icon"
-          variant="secondary"
-          className="pointer-events-auto h-10 w-10 rounded-full border border-border/60 bg-card shadow-sm hover:bg-muted"
-          onClick={() => void createNewPage()}
-          aria-label="New page"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-        <Button
-          size="icon"
-          variant="secondary"
-          className="pointer-events-auto h-10 w-10 rounded-full border border-border/60 bg-card shadow-sm hover:bg-muted"
-          aria-label="Text formatting"
-          onClick={() => void createNewPage()}
-        >
-          <Type className="h-4 w-4" />
-        </Button>
+        <QuickActionsFab />
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ import {
   assertNoMutationError,
   getGraphQLErrorMessage,
 } from "@/lib/graphql-error";
-import { clearAuth } from "@/lib/auth";
+import { clearAuth, getToken } from "@/lib/auth";
 import { resetSessionExpiredHandling } from "@/lib/session-expired";
 import { consumeSessionExpiredFlash } from "@/lib/session-flash";
 
@@ -38,10 +38,16 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
 
   useEffect(() => {
     resetSessionExpiredHandling();
-    clearAuth();
 
     if (consumeSessionExpiredFlash()) {
+      clearAuth();
       setInfoMessage("Your session expired. Please sign in again.");
+    } else if (getToken()) {
+      const next = searchParams.get("next");
+      const destination =
+        next?.startsWith("/workspace") ? next : "/workspace";
+      window.location.replace(destination);
+      return;
     }
 
     const prefill = searchParams.get("email");

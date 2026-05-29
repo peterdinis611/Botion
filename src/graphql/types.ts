@@ -45,8 +45,13 @@ export type Notification = {
   id: string;
   type: string;
   message: string;
+  metadata?: string | null;
   isRead: boolean;
   createdAt: string;
+};
+
+export type AcceptWorkspaceInviteResult = {
+  acceptWorkspaceInvite: { success: boolean; message: string };
 };
 
 export type WorkspaceQueryResult = {
