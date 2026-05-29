@@ -55,7 +55,7 @@ export function NoteList({
   const isFiltering = search.trim().length > 0;
 
   return (
-    <div className="flex h-full w-[280px] shrink-0 flex-col border-r border-border bg-background/50">
+    <div className="flex h-full w-[240px] shrink-0 flex-col border-r border-border/60 bg-panel">
       <div className="space-y-2 border-b border-border px-3 py-3">
         <div className="flex items-baseline justify-between gap-2 px-0.5">
           <h2 className="truncate text-sm font-semibold text-foreground">{title}</h2>

@@ -18,13 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  BookMarked,
-  ChevronRight,
-  FolderClosed,
-  GripVertical,
-  Plus,
-} from "lucide-react";
+import { ChevronRight, GripVertical, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -39,6 +33,7 @@ import {
   WORKSPACE_QUERY,
 } from "@/graphql/operations";
 import type { Folder, Notebook } from "@/graphql/types";
+import { folderEmoji, notebookEmoji } from "@/lib/workspace-icons";
 import { cn } from "@/lib/utils";
 
 const folderKey = (id: string) => `folder:${id}`;
@@ -211,10 +206,9 @@ export function SidebarWorkspaceTree({
                       className="flex min-w-0 flex-1 items-center gap-2 py-1.5 pr-1 text-left text-sm"
                       onClick={() => router.push(`/workspace?folder=${folder.id}`)}
                     >
-                      <FolderClosed
-                        className="h-4 w-4 shrink-0 opacity-80"
-                        style={{ color: folder.color }}
-                      />
+                      <span className="text-base leading-none" aria-hidden>
+                        {folderEmoji(folder.id, folder.name)}
+                      </span>
                       <span className={cn("truncate", isFolderActive && "font-medium")}>
                         {folder.name}
                       </span>
@@ -374,10 +368,9 @@ function NotebookRow({
         onClick={onSelect}
         className="flex min-w-0 flex-1 items-center gap-2 py-1.5 pl-2 pr-1 text-left text-sm"
       >
-        <BookMarked
-          className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-          style={{ color: active ? notebook.color : undefined }}
-        />
+        <span className="text-sm leading-none" aria-hidden>
+          {notebookEmoji(notebook.id, notebook.name)}
+        </span>
         <span className={cn("truncate", active && "font-medium")}>{notebook.name}</span>
       </button>
       <Button

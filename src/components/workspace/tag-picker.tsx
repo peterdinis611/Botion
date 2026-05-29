@@ -19,6 +19,7 @@ import type {
   UpdateNoteResult,
 } from "@/graphql/types";
 import { upsertNoteInCache } from "@/lib/cache-updates";
+import { cn } from "@/lib/utils";
 
 const TAG_COLORS = ["#0d9488", "#059669", "#d97706", "#dc2626", "#2563eb", "#64748b"];
 
@@ -26,10 +27,12 @@ export function TagPicker({
   noteId,
   selectedTags,
   allTags,
+  variant = "default",
 }: {
   noteId: string;
   selectedTags: TagType[];
   allTags: TagType[];
+  variant?: "default" | "muted-gold";
 }) {
   const client = useApolloClient();
   const [open, setOpen] = useState(false);
@@ -77,12 +80,20 @@ export function TagPicker({
         <Badge
           key={tag.id}
           variant="outline"
-          className="cursor-pointer gap-1"
-          style={{ borderColor: tag.color, color: tag.color }}
+          className={cn(
+            "cursor-pointer gap-0.5 border-transparent bg-transparent px-0 py-0 text-[13px] font-normal shadow-none hover:bg-transparent",
+            variant === "muted-gold"
+              ? "text-tag hover:text-tag-foreground"
+              : "",
+          )}
+          style={
+            variant === "default"
+              ? { borderColor: tag.color, color: tag.color }
+              : undefined
+          }
           onClick={() => toggleTag(tag)}
         >
-          {tag.name}
-          <span className="text-muted-foreground">×</span>
+          #{tag.name}
         </Badge>
       ))}
 

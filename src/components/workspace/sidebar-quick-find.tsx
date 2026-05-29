@@ -20,7 +20,7 @@ export function SidebarQuickFind({
         onClick={openPalette}
         title="Quick find (⌘K)"
         className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-md border border-border/80 bg-background/60 text-muted-foreground shadow-sm transition-colors hover:bg-sidebar-accent hover:text-foreground",
+          "flex h-9 w-9 items-center justify-center rounded-lg border border-border/50 bg-sidebar-accent/50 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground",
           className,
         )}
       >
@@ -34,7 +34,7 @@ export function SidebarQuickFind({
       type="button"
       onClick={openPalette}
       className={cn(
-        "flex w-full items-center gap-2 rounded-md border border-border/80 bg-background/60 px-2.5 py-2 text-left text-sm text-muted-foreground shadow-sm transition-colors hover:bg-sidebar-accent hover:text-foreground",
+        "flex w-full items-center gap-2 rounded-lg border border-border/50 bg-sidebar-accent/40 px-2.5 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground",
         className,
       )}
     >

@@ -31,7 +31,7 @@ export function QuickActionsFab() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed bottom-5 right-5 z-50"
+      className="pointer-events-none fixed bottom-5 right-[320px] z-50"
       initial={{ opacity: 0, scale: 0.85, y: 16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
