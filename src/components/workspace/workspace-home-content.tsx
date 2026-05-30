@@ -1,13 +1,16 @@
 "use client";
 
-import { Check, Plus, Type } from "lucide-react";
+import { Check, FilePlus, PenLine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WorkspaceTagChips } from "@/components/workspace/sidebar-workspace-tags";
-import type { Tag } from "@/graphql/types";
+import { WorkspacePagesList } from "@/components/workspace/workspace-pages-list";
+import type { Note, Tag } from "@/graphql/types";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
+import type { WorkspaceFilters } from "@/lib/workspace-url";
 import { cn } from "@/lib/utils";
 import { QuickActionsFab } from "./quick-actions-fab";
+
 const CHECKLIST_KEY = "botion-demo-checklist";
 
 type CheckItem = { id: string; label: string; done: boolean };
@@ -77,15 +80,15 @@ function ChecklistItem({
 export function WorkspaceHomeContent({
   tags = [],
   notebookId,
+  notes = [],
+  filters,
 }: {
   tags?: Tag[];
   notebookId?: string;
+  notes?: Note[];
+  filters: WorkspaceFilters;
 }) {
   const { openNewPageDialog } = useWorkspaceCreate();
-
-  function startWriting() {
-    openNewPageDialog(notebookId);
-  }
   const [left, setLeft] = useState<CheckItem[]>(DEFAULT_LEFT);
   const [right, setRight] = useState<CheckItem[]>(DEFAULT_RIGHT);
 
@@ -108,47 +111,79 @@ export function WorkspaceHomeContent({
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <div className="mx-auto w-full max-w-180 flex-1 overflow-y-auto px-10 py-10 pb-24">
-        <h1 className="mb-4 text-[2rem] font-bold leading-tight tracking-tight text-foreground">
-          Quick Notes
-        </h1>
+      <div className="mx-auto w-full max-w-180 flex-1 overflow-y-auto px-8 py-8 pb-24 sm:px-10 sm:py-10">
+        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-[2rem] font-bold leading-tight tracking-tight text-foreground">
+              {notebookId ? "Workspace home" : "Quick Notes"}
+            </h1>
+            <p className="mt-1.5 max-w-lg text-sm text-muted-foreground">
+              Pages live here and in the sidebar. Deleting always sends them to trash first.
+            </p>
+          </div>
+          <Button
+            className="gap-1.5 shadow-sm"
+            onClick={() => openNewPageDialog(notebookId)}
+          >
+            <FilePlus className="h-4 w-4" />
+            New page
+          </Button>
+        </div>
 
         <WorkspaceTagChips tags={tags} notebookId={notebookId} />
 
-        <button
-          type="button"
-          onClick={startWriting}
-          className="mb-8 block w-full cursor-text rounded-lg border border-dashed border-border/60 px-4 py-3 text-left text-[15px] leading-[1.7] text-muted-foreground transition-colors hover:border-border hover:bg-muted/30 hover:text-foreground"
-        >
-          Click here to start writing…
-        </button>
-
-        <p className="mb-8 text-[15px] leading-[1.7] text-muted-foreground">
-          We are a company that helps people build their own businesses. We provide
-          tools, resources, and support to help entrepreneurs succeed in their ventures.
-        </p>
-
-        <div className="mb-10 grid grid-cols-1 gap-x-10 gap-y-3 sm:grid-cols-2">
-          <div className="space-y-3">
-            {left.map((item) => (
-              <ChecklistItem key={item.id} item={item} onToggle={toggle} />
-            ))}
-          </div>
-          <div className="space-y-3">
-            {right.map((item) => (
-              <ChecklistItem key={item.id} item={item} onToggle={toggle} />
-            ))}
-          </div>
+        <div className="mb-8">
+          <button
+            type="button"
+            onClick={() => openNewPageDialog(notebookId)}
+            className="group flex w-full items-center gap-3 rounded-xl border border-dashed border-border/60 bg-muted/15 px-4 py-3.5 text-left transition-colors hover:border-primary/30 hover:bg-primary/5"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-background shadow-sm">
+              <PenLine className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+            </span>
+            <span>
+              <span className="block text-sm font-medium text-foreground">
+                Start writing
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Blank page or pick a template
+              </span>
+            </span>
+          </button>
         </div>
 
-        <h2 className="mb-3 text-xl font-bold text-foreground">Brief</h2>
-        <p className="text-[15px] leading-[1.7] text-muted-foreground">
-          We are creating a website for a company that helps people build their own
-          businesses. The website will feature a clean, modern design with intuitive
-          navigation and compelling content that showcases our services and success
-          stories. Our goal is to convert visitors into clients by clearly communicating
-          the value we provide.
-        </p>
+        <div className="mb-12">
+          <WorkspacePagesList
+            notes={notes}
+            notebookId={notebookId}
+            filters={filters}
+          />
+        </div>
+
+        <details className="rounded-xl border border-border/40 bg-muted/10 px-5 py-4">
+          <summary className="cursor-pointer text-sm font-medium text-foreground">
+            Demo checklist & brief
+          </summary>
+          <div className="mt-4 space-y-6">
+            <div className="grid grid-cols-1 gap-x-10 gap-y-3 sm:grid-cols-2">
+              <div className="space-y-3">
+                {left.map((item) => (
+                  <ChecklistItem key={item.id} item={item} onToggle={toggle} />
+                ))}
+              </div>
+              <div className="space-y-3">
+                {right.map((item) => (
+                  <ChecklistItem key={item.id} item={item} onToggle={toggle} />
+                ))}
+              </div>
+            </div>
+            <p className="text-[15px] leading-[1.7] text-muted-foreground">
+              We are creating a website for a company that helps people build their own
+              businesses. The website will feature a clean, modern design with intuitive
+              navigation and compelling content.
+            </p>
+          </div>
+        </details>
       </div>
 
       <div className="pointer-events-none absolute bottom-8 left-10 z-10 flex gap-2">

@@ -8,6 +8,7 @@ export const NOTE_FIELDS = gql`
     color
     isArchived
     isPinned
+    sortOrder
     notebookId
     createdAt
     updatedAt
@@ -324,6 +325,21 @@ export const MARK_ALL_NOTIFICATIONS_READ = gql`
   }
 `;
 
+export const REMOVE_NOTIFICATION_MUTATION = gql`
+  mutation RemoveNotification($id: ID!) {
+    removeNotification(id: $id)
+  }
+`;
+
+export const REORDER_NOTES_MUTATION = gql`
+  mutation ReorderNotes($ids: [ID!]!, $notebookId: ID) {
+    reorderNotes(ids: $ids, notebookId: $notebookId) {
+      ...NoteFields
+    }
+  }
+  ${NOTE_FIELDS}
+`;
+
 export const NOTIFICATION_ADDED_SUBSCRIPTION = gql`
   subscription NotificationAdded {
     notificationAdded {
@@ -529,6 +545,15 @@ export const INVITE_WORKSPACE_MEMBER_MUTATION = gql`
   }
 `;
 
+export const CANCEL_WORKSPACE_INVITE_MUTATION = gql`
+  mutation CancelWorkspaceInvite($input: CancelWorkspaceInviteInput!) {
+    cancelWorkspaceInvite(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const WORKSPACE_COLLABORATORS_QUERY = gql`
   query WorkspaceCollaborators($noteId: ID) {
     workspaceCollaborators(noteId: $noteId) {
@@ -538,6 +563,7 @@ export const WORKSPACE_COLLABORATORS_QUERY = gql`
       status
       permission
       noteId
+      inviteId
     }
   }
 `;

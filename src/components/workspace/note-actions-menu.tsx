@@ -2,13 +2,18 @@
 
 import { Archive, ExternalLink, Pin, RotateCcw, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ItemActionsMenu } from "@/components/workspace/item-actions-menu";
 import { useNoteActions } from "@/hooks/use-note-actions";
+import {
+  navigateAfterNoteAction,
+  type NoteActionResult,
+} from "@/lib/note-navigation";
+import { parseWorkspaceFilters } from "@/lib/workspace-url";
 import { cn } from "@/lib/utils";
 
 export function NoteActionsMenu({
@@ -35,9 +40,11 @@ export function NoteActionsMenu({
   /** When false (e.g. trash row with inline buttons), hide trash-only actions from ⋯ menu */
   showDeleteInMenu?: boolean;
   className?: string;
-  onActionComplete?: () => void;
+  onActionComplete?: (action: NoteActionResult) => void;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const filters = parseWorkspaceFilters(searchParams);
   const { busy, moveToTrash, restoreFromTrash, togglePin, deletePermanently } =
     useNoteActions();
 
@@ -45,20 +52,22 @@ export function NoteActionsMenu({
 
   async function handleMoveToTrash() {
     await moveToTrash(noteId);
-    onActionComplete?.();
     if (!isArchived) {
-      router.push("/workspace?archived=1");
+      navigateAfterNoteAction(router, filters, "trash");
     }
+    onActionComplete?.("trash");
   }
 
   async function handleRestore() {
     await restoreFromTrash(noteId);
-    onActionComplete?.();
+    navigateAfterNoteAction(router, filters, "restore");
+    onActionComplete?.("restore");
   }
 
   async function handleDeletePermanently() {
     await deletePermanently(noteId, title);
-    onActionComplete?.();
+    navigateAfterNoteAction(router, filters, "permanent-delete");
+    onActionComplete?.("permanent-delete");
   }
 
   if (!showDeleteInMenu && isArchived) {

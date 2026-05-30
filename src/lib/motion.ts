@@ -50,3 +50,17 @@ export const slideInRight: Variants = {
   hidden: { opacity: 0, x: 12 },
   visible: { opacity: 1, x: 0, transition: transitionBase },
 };
+
+export const listItemExit: Variants = {
+  visible: { opacity: 1, x: 0, height: "auto" },
+  exit: {
+    opacity: 0,
+    x: 16,
+    height: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    transition: { duration: 0.18, ease: easeOut },
+  },
+};

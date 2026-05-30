@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ItemActionsMenu } from "@/components/workspace/item-actions-menu";
-import { REMOVE_NOTEBOOK_MUTATION, WORKSPACE_QUERY } from "@/graphql/operations";
+import { REMOVE_NOTEBOOK_MUTATION, TRASH_NOTES_QUERY, WORKSPACE_QUERY } from "@/graphql/operations";
 import { notebookDisplayName } from "@/lib/workspace-icons";
 import { buildWorkspaceHref } from "@/lib/workspace-url";
 
@@ -24,14 +24,14 @@ export function NotebookActionsMenu({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [removeNotebook, { loading }] = useMutation(REMOVE_NOTEBOOK_MUTATION, {
-    refetchQueries: [{ query: WORKSPACE_QUERY }],
+    refetchQueries: [{ query: WORKSPACE_QUERY }, { query: TRASH_NOTES_QUERY }],
   });
 
   async function handleDelete() {
     const label = notebookDisplayName(name);
     if (
       !confirm(
-        `Delete workspace "${label}"? Pages will remain but will be unlinked from this workspace.`,
+        `Delete workspace "${label}"? All pages inside will move to trash.`,
       )
     ) {
       return;

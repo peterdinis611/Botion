@@ -141,7 +141,7 @@ export function TrashView() {
               <h1 className="text-[2rem] font-bold tracking-tight text-foreground">Trash</h1>
             </div>
             <p className="text-sm text-muted-foreground">
-              Pages stay here until you restore them or delete them permanently.
+              Pages stay here until you restore them or delete them permanently from trash.
             </p>
           </div>
           {notes.length > 0 && (

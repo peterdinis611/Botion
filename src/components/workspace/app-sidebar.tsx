@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@apollo/client/react";
 import {
   Bell,
   ChevronDown,
@@ -36,7 +37,8 @@ import { ImportNoteDialog } from "@/components/workspace/import-note-dialog";
 import { SidebarFlatWorkspace } from "@/components/workspace/sidebar-flat-workspace";
 import { SidebarWorkspaceTags } from "@/components/workspace/sidebar-workspace-tags";
 import { useSnapsPanelOptional } from "@/components/workspace/snaps-panel-context";
-import type { Folder, Notebook } from "@/graphql/types";
+import { TRASH_NOTES_QUERY } from "@/graphql/operations";
+import type { Folder, Note, Notebook } from "@/graphql/types";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { cn } from "@/lib/utils";
@@ -45,9 +47,11 @@ import { buildWorkspaceHref, parseWorkspaceFilters } from "@/lib/workspace-url";
 export function AppSidebar({
   folders,
   notebooks,
+  notes = [],
 }: {
   folders: Folder[];
   notebooks: Notebook[];
+  notes?: Note[];
 }) {
   const { user, logout } = useAuth();
   const router = useRouter();
@@ -55,13 +59,18 @@ export function AppSidebar({
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
   const { collapsed, toggleCollapsed } = useSidebar();
-  const { openFolderDialog, openNotebookDialog, createNewPage, openNewPageDialog } =
+  const { openFolderDialog, openNotebookDialog, openNewPageDialog } =
     useWorkspaceCreate();
-  const snapsPanel = useSnapsPanelOptional();
   const [importOpen, setImportOpen] = useState(false);
+
+  const { data: trashData } = useQuery<{ notes: Note[] }>(TRASH_NOTES_QUERY, {
+    fetchPolicy: "cache-first",
+  });
+  const trashCount = trashData?.notes?.length ?? 0;
 
   const isSettings = pathname === "/workspace/settings";
   const isCalendar = pathname === "/workspace/calendar";
+
   const isGraphs = pathname.startsWith("/workspace/graphs");
 
   return (
@@ -69,7 +78,7 @@ export function AppSidebar({
       <aside
         className={cn(
           "flex h-full shrink-0 flex-col border-r border-border/50 bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-out",
-          collapsed ? "w-[52px]" : "w-[220px]",
+          collapsed ? "w-13" : "w-55",
         )}
       >
         <div
@@ -136,8 +145,9 @@ export function AppSidebar({
 
               <SidebarFlatWorkspace
                 notebooks={notebooks}
+                notes={notes}
                 onCreateWorkspace={() => openNotebookDialog()}
-                onNewPage={(notebookId) => void createNewPage(notebookId)}
+                onNewPage={(notebookId) => openNewPageDialog(notebookId)}
               />
 
               <SidebarWorkspaceTags
@@ -185,7 +195,9 @@ export function AppSidebar({
                   href="/workspace?archived=1"
                   active={!!filters.archived && !isSettings}
                   icon={<Trash2 className="h-4 w-4 stroke-[1.5]" />}
-                  label="Trash"
+                  label={
+                    trashCount > 0 ? `Trash (${trashCount})` : "Trash"
+                  }
                   onClick={() =>
                     router.push(
                       buildWorkspaceHref(searchParams, {
@@ -206,14 +218,6 @@ export function AppSidebar({
         <div className="p-2">
           {!collapsed ? (
             <>
-              <Button
-                variant="ghost"
-                className="mb-1 h-9 w-full justify-start gap-2 px-2.5 text-[13px] font-normal text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
-                onClick={() => snapsPanel?.openAddSnap()}
-              >
-                <Plus className="h-4 w-4" />
-                Add snap
-              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
@@ -247,11 +251,16 @@ export function AppSidebar({
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={() => openNewPageDialog(filters.notebookId)}
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right">Add snap</TooltipContent>
+              <TooltipContent side="right">New page</TooltipContent>
             </Tooltip>
           )}
         </div>

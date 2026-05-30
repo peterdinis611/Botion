@@ -15,6 +15,7 @@ export type Note = {
   color: string;
   isArchived: boolean;
   isPinned: boolean;
+  sortOrder: number;
   notebookId?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -82,6 +83,11 @@ export type WorkspaceCollaborator = {
   status: "SELF" | "MEMBER" | "PENDING_INVITE" | "NOTE_COLLABORATOR";
   permission?: string | null;
   noteId?: string | null;
+  inviteId?: string | null;
+};
+
+export type CancelWorkspaceInviteResult = {
+  cancelWorkspaceInvite: { success: boolean; message: string };
 };
 
 export type WorkspaceCollaboratorsQueryResult = {

@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AppSidebar } from "@/components/workspace/app-sidebar";
 import { CommandPalette } from "@/components/workspace/command-palette";
 import { QuickActionsFab } from "@/components/workspace/quick-actions-fab";
-import { WORKSPACE_QUERY } from "@/graphql/operations";
+import { TRASH_NOTES_QUERY, WORKSPACE_QUERY } from "@/graphql/operations";
 import type { WorkspaceQueryResult } from "@/graphql/types";
 import { clearLoginGracePeriod } from "@/lib/session-flash";
 import { SnapsPanelProvider } from "@/components/workspace/snaps-panel-context";
@@ -26,6 +26,8 @@ export function WorkspaceFrame({
 }) {
   const { collapsed } = useSidebar();
   const { data, loading, error } = useQuery<WorkspaceQueryResult>(WORKSPACE_QUERY);
+
+  useQuery(TRASH_NOTES_QUERY, { fetchPolicy: "cache-first" });
 
   useEffect(() => {
     if (data && !error) clearLoginGracePeriod();
@@ -52,6 +54,7 @@ export function WorkspaceFrame({
           <AppSidebar
             folders={data?.folders ?? []}
             notebooks={data?.notebooks ?? []}
+            notes={data?.notes ?? []}
           />
           <PageTransition
             className={cn("flex min-h-0 min-w-0 flex-1", className ?? "flex-col")}

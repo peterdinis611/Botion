@@ -162,8 +162,12 @@ export function WorkspaceCreateProvider({ children }: { children: React.ReactNod
         const notebookId = data?.createNotebook?.id;
         if (notebookId) {
           router.push(`/workspace?notebook=${notebookId}`);
+          setNewPageNotebookHint(notebookId);
+          setNewPageOpen(true);
         }
       }
+    } catch (error) {
+      console.error("[workspace create]", error);
     } finally {
       resetDialog();
     }

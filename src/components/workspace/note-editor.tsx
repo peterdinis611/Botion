@@ -45,11 +45,9 @@ function parseNoteTitle(stored: string) {
 export function NoteEditor({
   note,
   allTags,
-  onDeleted,
 }: {
   note: EditorNote;
   allTags: Tag[];
-  onDeleted?: () => void;
 }) {
   const client = useApolloClient();
   const initial = parseNoteTitle(note.title);
@@ -254,7 +252,6 @@ export function NoteEditor({
                 showOpen={false}
                 size="md"
                 className="opacity-100"
-                onActionComplete={onDeleted}
               />
             </div>
           </div>

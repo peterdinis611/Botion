@@ -15,7 +15,6 @@ export function DocumentHeader({
   noteTitle,
   noteIsArchived,
   noteIsPinned,
-  onNoteActionComplete,
   className,
 }: {
   title: string;
@@ -24,7 +23,6 @@ export function DocumentHeader({
   noteTitle?: string;
   noteIsArchived?: boolean;
   noteIsPinned?: boolean;
-  onNoteActionComplete?: () => void;
   className?: string;
 }) {
   const [peopleOpen, setPeopleOpen] = useState(false);
@@ -57,7 +55,6 @@ export function DocumentHeader({
               showPin={false}
               size="sm"
               className="opacity-100"
-              onActionComplete={onNoteActionComplete}
             />
           )}
         </div>

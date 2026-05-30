@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@apollo/client/react";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DocumentHeader } from "@/components/workspace/document-header";
@@ -23,7 +23,7 @@ import type {
 } from "@/graphql/types";
 import { splitLeadingEmoji } from "@/lib/icon-emoji";
 import { notebookDisplayName, notebookEmoji } from "@/lib/workspace-icons";
-import { buildWorkspacePath, parseWorkspaceFilters } from "@/lib/workspace-url";
+import { parseWorkspaceFilters } from "@/lib/workspace-url";
 
 export function WorkspaceShell({
   noteId,
@@ -32,7 +32,6 @@ export function WorkspaceShell({
   noteId?: string;
   children?: React.ReactNode;
 }) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
 
@@ -121,17 +120,6 @@ export function WorkspaceShell({
           noteTitle={noteData?.note?.title}
           noteIsArchived={noteData?.note?.isArchived}
           noteIsPinned={noteData?.note?.isPinned}
-          onNoteActionComplete={() =>
-            noteId &&
-            router.push(
-              buildWorkspacePath(
-                "/workspace",
-                filters.archived
-                  ? { ...filters, archived: true }
-                  : { ...filters, archived: false },
-              ),
-            )
-          }
         />
 
         {noteId ? (
@@ -146,16 +134,6 @@ export function WorkspaceShell({
                 tags: noteData.note.tags,
               }}
               allTags={tagsForScope}
-              onDeleted={() =>
-                router.push(
-                  buildWorkspacePath(
-                    "/workspace",
-                    filters.archived
-                      ? { ...filters, archived: true }
-                      : { ...filters, archived: false },
-                  ),
-                )
-              }
             />
           ) : (
             notFound()
@@ -167,6 +145,8 @@ export function WorkspaceShell({
             <WorkspaceHomeContent
               tags={tagsForScope}
               notebookId={filters.notebookId}
+              notes={data?.notes ?? []}
+              filters={filters}
             />
           ))
         )}

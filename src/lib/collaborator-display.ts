@@ -43,12 +43,27 @@ export function collaboratorRoleLabel(
     case "PENDING_INVITE":
       return "Invite pending";
     case "NOTE_COLLABORATOR":
-      return permission === "WRITE" ? "Can edit this page" : "Page access";
+      return permission === "WRITE" ? "Can edit" : "View only";
     case "MEMBER":
-      return "Workspace · shared pages";
+      return "Workspace member";
     case "SELF":
-      return "You";
+      return "Owner";
     default:
       return "Member";
+  }
+}
+
+export function collaboratorBadgeVariant(
+  status: WorkspaceCollaborator["status"],
+): "default" | "secondary" | "outline" {
+  switch (status) {
+    case "PENDING_INVITE":
+      return "outline";
+    case "NOTE_COLLABORATOR":
+      return "default";
+    case "SELF":
+      return "secondary";
+    default:
+      return "secondary";
   }
 }
