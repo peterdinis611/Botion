@@ -13,20 +13,20 @@ Next.js web app for Botion: landing page, auth, and a workspace UI for notes, Sn
 - **@dnd-kit** — Sidebar page reordering
 - **sonner** — Save and action toasts
 - **framer-motion** — UI motion
+- **Bun** — Package manager and runtime for local development
 
 ## Prerequisites
 
-- **Node.js** 20+
-- **pnpm**
+- **Bun** 1.1+ ([install](https://bun.sh))
 - [Backend](../backend/README.md) running on port **3000**
 
 ## Quick start
 
 ```bash
 cd frontend
-pnpm install
+bun install
 cp .env.local.example .env.local
-pnpm dev
+bun dev
 ```
 
 Open **http://localhost:3001**.
@@ -95,12 +95,12 @@ src/
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Dev server on port **3001** |
-| `pnpm build` | Production build |
-| `pnpm start` | Run production build |
-| `pnpm lint` | ESLint |
-| `pnpm check` | Biome check (format + lint) |
-| `pnpm format` | Biome format write |
+| `bun dev` | Dev server on port **3001** |
+| `bun run build` | Production build |
+| `bun run start` | Run production build |
+| `bun run lint` | ESLint |
+| `bun run check` | Biome check (format + lint) |
+| `bun run format` | Biome format write |
 
 ## Development notes
 
