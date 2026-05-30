@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Botion — Frontend
 
-## Getting Started
+Next.js web app for Botion: landing page, auth, and a workspace UI for notes, Snaps, graphs, calendar, trash, and collaboration.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js 16** (App Router) — React 19
+- **Apollo Client 4** — GraphQL + `graphql-ws` subscriptions
+- **BlockNote** — Block-based page editor
+- **Tailwind CSS 4** — Styling with light/dark theme
+- **Radix UI** + **shadcn-style** components in `src/components/ui/`
+- **@xyflow/react** — Graph editor
+- **@dnd-kit** — Sidebar page reordering
+- **sonner** — Save and action toasts
+- **framer-motion** — UI motion
+
+## Prerequisites
+
+- **Node.js** 20+
+- **pnpm**
+- [Backend](../backend/README.md) running on port **3000**
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+cd frontend
+pnpm install
+cp .env.local.example .env.local
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open **http://localhost:3001**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Default API URLs (no `.env.local` needed for local dev):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- HTTP: `http://localhost:3000/graphql`
+- WebSocket: `ws://localhost:3000/graphql`
 
-## Learn More
+## Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.local.example` to `.env.local`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `NEXT_PUBLIC_GRAPHQL_URL` | `http://localhost:3000/graphql` | GraphQL HTTP endpoint |
+| `NEXT_PUBLIC_GRAPHQL_WS_URL` | derived from HTTP | GraphQL subscriptions (`ws://` / `wss://`) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Main routes
 
-## Deploy on Vercel
+| Path | Description |
+|------|-------------|
+| `/` | Marketing landing (demo CTA, features, pricing) |
+| `/login`, `/register` | Auth (+ **Try free demo**) |
+| `/workspace` | Home / filtered note list |
+| `/workspace/notes/[noteId]` | Page editor (auto-save + toast) |
+| `/workspace/graphs` | Graph list |
+| `/workspace/graphs/[graphId]` | React Flow editor (auto-save) |
+| `/workspace/calendar` | Calendar / updates |
+| `/workspace/settings` | Profile and preferences |
+| `/workspace?archived=1` | Trash |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Route-level `loading.tsx`, `error.tsx`, and `not-found.tsx` provide consistent status UI.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+```
+src/
+├── app/                    # Next.js App Router pages and layouts
+├── components/
+│   ├── auth/               # Login, register, demo account
+│   ├── landing/            # Marketing sections and illustrations
+│   ├── layout/             # Status pages, loading shells
+│   ├── providers/          # Apollo, auth, theme
+│   ├── ui/                 # Shared UI primitives
+│   └── workspace/          # Sidebar, editor, Snaps, dialogs, …
+├── graphql/
+│   ├── operations.ts       # Queries, mutations, subscriptions
+│   └── types.ts            # TypeScript result types
+├── hooks/                  # Sidebar, notifications, workspace create, …
+└── lib/                    # Apollo, auth, content, URLs, cache helpers
+```
+
+## Features (UI)
+
+- **Auto-save** — Notes and graphs debounce saves; success/error toasts via `sonner`
+- **Trash** — Soft-deleted pages (`isArchived`); restore or empty trash
+- **Drag & drop** — Reorder pages in the sidebar (`reorderNotes`)
+- **Snaps panel** — References beside the document
+- **People / sharing** — Page editors and workspace invites
+- **Notifications** — Bell panel + GraphQL subscription
+- **Command palette** — ⌘K quick navigation
+- **Demo account** — One-click workspace with sample content (no signup)
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Dev server on port **3001** |
+| `pnpm build` | Production build |
+| `pnpm start` | Run production build |
+| `pnpm lint` | ESLint |
+| `pnpm check` | Biome check (format + lint) |
+| `pnpm format` | Biome format write |
+
+## Development notes
+
+- Auth token and user live in `localStorage` (`botion_token`, `botion_user`); Apollo cache can persist via `apollo3-cache-persist`.
+- Page content uses BlockNote serialization (`__BOTION_BLOCKS:v1__` prefix in `lib/content.ts`).
+- GraphQL errors and session expiry are handled in `lib/session-expired.ts` (redirect to login).
+- For backend schema changes, restart the API and refresh; Apollo refetches on mutations where configured.
+
+## Related
+
+- [Backend README](../backend/README.md)
