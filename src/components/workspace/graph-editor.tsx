@@ -56,6 +56,8 @@ import {
   parseImportPayload,
   serializeFlow,
 } from "@/lib/graph-flow";
+import { getGraphQLErrorMessage } from "@/lib/graphql-error";
+import { toastSaveError, toastSaveSuccess } from "@/lib/save-toast";
 
 const nodeTypes = {
   [GRAPH_NODE_TYPE]: GraphFlowNode,
@@ -134,21 +136,27 @@ function GraphEditorCanvas({
   const saveNow = useCallback(async () => {
     if (!graph) return;
     setSaveState("saving");
-    const payload = serializeFlow(nodes, edges, viewport);
-    await updateGraph({
-      variables: {
-        input: {
-          id: graph.id,
-          title: titleRef.current.trim() || "Untitled graph",
-          description: descriptionRef.current.trim() || undefined,
-          nodesJson: payload.nodesJson,
-          edgesJson: payload.edgesJson,
-          viewportJson: payload.viewportJson,
+    try {
+      const payload = serializeFlow(nodes, edges, viewport);
+      await updateGraph({
+        variables: {
+          input: {
+            id: graph.id,
+            title: titleRef.current.trim() || "Untitled graph",
+            description: descriptionRef.current.trim() || undefined,
+            nodesJson: payload.nodesJson,
+            edgesJson: payload.edgesJson,
+            viewportJson: payload.viewportJson,
+          },
         },
-      },
-    });
-    setSaveState("saved");
-    setTimeout(() => setSaveState("idle"), 2000);
+      });
+      setSaveState("saved");
+      toastSaveSuccess("Graph saved");
+      setTimeout(() => setSaveState("idle"), 2000);
+    } catch (err: unknown) {
+      setSaveState("idle");
+      toastSaveError("Couldn't save graph", getGraphQLErrorMessage(err));
+    }
   }, [graph, nodes, edges, viewport, updateGraph]);
 
   useEffect(() => {

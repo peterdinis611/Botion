@@ -14,8 +14,10 @@ import type { Tag, UpdateNoteResult } from "@/graphql/types";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useNoteCollaboration } from "@/hooks/use-note-collaboration";
 import { removeNoteFromCache, upsertNoteInCache } from "@/lib/cache-updates";
+import { getGraphQLErrorMessage } from "@/lib/graphql-error";
 import { joinWithLeadingEmoji, splitLeadingEmoji } from "@/lib/icon-emoji";
 import { pushRecentNoteId } from "@/lib/search";
+import { toastSaveError, toastSaveSuccess } from "@/lib/save-toast";
 import { cn } from "@/lib/utils";
 
 export type EditorNote = {
@@ -141,7 +143,10 @@ export function NoteEditor({
           if (patch.content !== undefined) lastSaved.current.content = patch.content;
           if (patch.color !== undefined) lastSaved.current.color = patch.color;
           lastSavedUpdatedAt.current = data.updateNote.updatedAt;
+          toastSaveSuccess();
         }
+      } catch (err: unknown) {
+        toastSaveError(undefined, getGraphQLErrorMessage(err));
       } finally {
         setSaving(false);
       }
