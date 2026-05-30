@@ -76,6 +76,19 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 
+export const CREATE_DEMO_ACCOUNT_MUTATION = gql`
+  mutation CreateDemoAccount {
+    createDemoAccount {
+      token
+      user {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
+
 export const ME_QUERY = gql`
   query Me {
     me {

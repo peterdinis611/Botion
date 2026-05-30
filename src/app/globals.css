@@ -127,6 +127,26 @@
   }
 }
 
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-illustration-float {
+    animation: none;
+  }
+}
+
+.hero-illustration-float {
+  animation: hero-float 6s ease-in-out infinite;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

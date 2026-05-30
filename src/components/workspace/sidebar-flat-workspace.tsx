@@ -106,6 +106,28 @@ export function SidebarFlatWorkspace({
 
   return (
     <div className="space-y-0.5">
+      <Link
+        href={buildWorkspaceHref(searchParams, {
+          clearNotebook: true,
+          clearFolder: true,
+          clearTag: true,
+          archived: false,
+          pinned: false,
+        })}
+        className={cn(
+          "mb-1 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors",
+          isHome
+            ? "bg-sidebar-accent font-medium text-foreground"
+            : "text-muted-foreground hover:bg-sidebar-accent/80 hover:text-foreground",
+        )}
+      >
+        <span className="text-base leading-none">🎯</span>
+        <span className="truncate">Acme Inc.</span>
+        <span className="ml-auto shrink-0 rounded-md bg-muted/50 px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground">
+          {inbox.length + [...byNotebook.values()].reduce((n, p) => n + p.length, 0)}
+        </span>
+      </Link>
+
       {sorted.map((nb) => {
         const active = activeNotebookId === nb.id;
         const isOpen = expanded.has(nb.id);

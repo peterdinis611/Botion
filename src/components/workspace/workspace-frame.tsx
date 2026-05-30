@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { PageTransition } from "@/components/motion/page-transition";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AppSidebar } from "@/components/workspace/app-sidebar";
+import { DemoAccountBanner } from "@/components/workspace/demo-account-banner";
 import { CommandPalette } from "@/components/workspace/command-palette";
 import { QuickActionsFab } from "@/components/workspace/quick-actions-fab";
 import { TRASH_NOTES_QUERY, WORKSPACE_QUERY } from "@/graphql/operations";
@@ -56,11 +57,14 @@ export function WorkspaceFrame({
             notebooks={data?.notebooks ?? []}
             notes={data?.notes ?? []}
           />
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          <DemoAccountBanner />
           <PageTransition
             className={cn("flex min-h-0 min-w-0 flex-1", className ?? "flex-col")}
           >
             {children}
           </PageTransition>
+        </div>
         </div>
       </SnapsPanelProvider>
     </CommandPaletteProvider>

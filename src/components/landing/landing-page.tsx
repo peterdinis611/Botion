@@ -14,6 +14,7 @@ import {
   LandingWorkspacesSection,
 } from "@/components/landing/landing-sections";
 import { ThemeToggle } from "@/components/workspace/theme-toggle";
+import { LandingHeaderDemoLink } from "@/components/landing/landing-header-demo";
 import { getToken } from "@/lib/auth";
 
 const NAV = [
@@ -72,6 +73,7 @@ export function LandingPage() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <LandingHeaderDemoLink isLoggedIn={isLoggedIn} />
             <button
               type="button"
               className="rounded-md px-2 py-1 text-sm text-muted-foreground md:hidden"

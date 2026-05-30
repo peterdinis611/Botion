@@ -5,8 +5,10 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { FadeIn } from "@/components/motion/fade-in";
 import { PasswordInput } from "@/components/auth/password-input";
+import { TryDemoButton } from "@/components/auth/try-demo-button";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -181,6 +183,19 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           {mode === "login" ? "Sign in" : "Create account"}
         </Button>
       </form>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center" aria-hidden>
+          <span className="w-full border-t border-border" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">or</span>
+        </div>
+      </div>
+
+      <Suspense fallback={null}>
+        <TryDemoButton label="Continue with free demo" />
+      </Suspense>
 
       <p className="text-center text-sm text-muted-foreground">
         {mode === "login" ? (

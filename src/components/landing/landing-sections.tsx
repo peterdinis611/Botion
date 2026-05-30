@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { HeroIllustration } from "@/components/landing/hero-illustration";
+import { LandingCtaDemo } from "@/components/landing/landing-cta-demo";
+import { LandingDemoCta } from "@/components/landing/landing-demo-cta";
+import { LandingPricingDemo } from "@/components/landing/landing-pricing-demo";
 import { SnapsPreviewIllustration } from "@/components/landing/snaps-preview-illustration";
 import { WorkspacePreviewIllustration } from "@/components/landing/workspace-preview-illustration";
 import { Button } from "@/components/ui/button";
@@ -69,10 +72,15 @@ export function LandingHeroSection({
         <p className="mt-3 text-sm text-muted-foreground">
           For teams & individuals — Web, Mac, Windows (web app today).
         </p>
+        <LandingDemoCta isLoggedIn={isLoggedIn} />
       </div>
 
       <div className="relative flex justify-center md:justify-end">
-        <HeroIllustration className="h-auto w-full max-w-[520px]" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[min(100%,420px)] w-[min(100%,520px)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] bg-[radial-gradient(ellipse_at_center,var(--landing-blob-2),transparent_70%)] opacity-50 blur-2xl"
+        />
+        <HeroIllustration className="hero-illustration-float relative h-auto w-full max-w-[600px]" />
       </div>
     </section>
   );
@@ -277,6 +285,9 @@ export function LandingPricingSection() {
                 Get started free
               </Button>
             </Link>
+            <div className="mt-3">
+              <LandingPricingDemo />
+            </div>
           </div>
           <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8">
             <p className="text-sm font-medium text-muted-foreground">Team</p>
@@ -313,6 +324,7 @@ export function LandingCtaSection() {
               Create free account
             </Button>
           </Link>
+          <LandingCtaDemo />
           <Link href="/login">
             <Button
               size="lg"

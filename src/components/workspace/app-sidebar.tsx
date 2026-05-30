@@ -3,7 +3,6 @@
 import { useQuery } from "@apollo/client/react";
 import {
   Bell,
-  ChevronDown,
   FileInput,
   FilePlus,
   LogOut,
@@ -35,6 +34,8 @@ import {
 } from "@/components/ui/tooltip";
 import { ImportNoteDialog } from "@/components/workspace/import-note-dialog";
 import { SidebarFlatWorkspace } from "@/components/workspace/sidebar-flat-workspace";
+import { SidebarWorkspaceSearch, filterNotesForSidebar } from "@/components/workspace/sidebar-workspace-search";
+import { SidebarWorkspaceSwitcher } from "@/components/workspace/sidebar-workspace-switcher";
 import { SidebarWorkspaceTags } from "@/components/workspace/sidebar-workspace-tags";
 import { useSnapsPanelOptional } from "@/components/workspace/snaps-panel-context";
 import { TRASH_NOTES_QUERY } from "@/graphql/operations";
@@ -62,6 +63,9 @@ export function AppSidebar({
   const { openFolderDialog, openNotebookDialog, openNewPageDialog } =
     useWorkspaceCreate();
   const [importOpen, setImportOpen] = useState(false);
+  const [sidebarQuery, setSidebarQuery] = useState("");
+
+  const filteredNotes = filterNotesForSidebar(notes, sidebarQuery);
 
   const { data: trashData } = useQuery<{ notes: Note[] }>(TRASH_NOTES_QUERY, {
     fetchPolicy: "cache-first",
@@ -95,16 +99,11 @@ export function AppSidebar({
           </div>
           {!collapsed && (
             <>
-              <span className="min-w-0 flex-1 truncate text-[14px] font-semibold">
-                Botion
-              </span>
-              <button
-                type="button"
-                className="shrink-0 text-muted-foreground hover:text-foreground"
-                aria-label="Switch workspace"
-              >
-                <ChevronDown className="h-4 w-4" />
-              </button>
+              <SidebarWorkspaceSwitcher
+                notebooks={notebooks}
+                notes={notes}
+                onCreateWorkspace={() => openNotebookDialog()}
+              />
             </>
           )}
           <Button
@@ -143,9 +142,16 @@ export function AppSidebar({
                 </Button>
               </div>
 
-              <SidebarFlatWorkspace
+              <SidebarWorkspaceSearch
                 notebooks={notebooks}
                 notes={notes}
+                query={sidebarQuery}
+                onQueryChange={setSidebarQuery}
+              />
+
+              <SidebarFlatWorkspace
+                notebooks={notebooks}
+                notes={filteredNotes}
                 onCreateWorkspace={() => openNotebookDialog()}
                 onNewPage={(notebookId) => openNewPageDialog(notebookId)}
               />
