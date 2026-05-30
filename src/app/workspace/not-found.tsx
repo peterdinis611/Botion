@@ -4,10 +4,11 @@ import { StatusPage, StatusPageLink } from "@/components/layout/status-page";
 export default function WorkspaceNotFound() {
   return (
     <StatusPage
+      code={404}
       icon={FolderSearch}
-      title="Workspace page not found"
-      description="The view you're looking for doesn't exist. Pick a note from the sidebar or search with ⌘K."
-      className="min-h-screen"
+      title="Workspace view not found"
+      description="The view you're looking for doesn't exist or was removed."
+      hint="Use ⌘K to search notes, or pick one from the sidebar."
     >
       <StatusPageLink href="/workspace">All notes</StatusPageLink>
       <StatusPageLink href="/workspace?pinned=1" variant="secondary">

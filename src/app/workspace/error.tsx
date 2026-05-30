@@ -1,9 +1,7 @@
 "use client";
 
 import { AlertCircle } from "lucide-react";
-import { useEffect } from "react";
-import { StatusPage, StatusPageLink } from "@/components/layout/status-page";
-import { Button } from "@/components/ui/button";
+import { RouteErrorPage } from "@/components/layout/route-error-page";
 
 export default function WorkspaceError({
   error,
@@ -12,21 +10,17 @@ export default function WorkspaceError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
   return (
-    <StatusPage
+    <RouteErrorPage
+      error={error}
+      reset={reset}
+      code={500}
       icon={AlertCircle}
       title="Couldn't load workspace"
-      description="We had trouble loading your notes. This is often a connection issue — make sure the backend is running and try again."
-      className="min-h-screen"
-    >
-      <Button onClick={reset}>Try again</Button>
-      <StatusPageLink href="/workspace" variant="secondary">
-        Reload workspace
-      </StatusPageLink>
-    </StatusPage>
+      description="We had trouble loading your notes and workspace data."
+      hint="Make sure the backend is running on port 3000, then try again."
+      secondaryHref="/workspace"
+      secondaryLabel="Reload workspace"
+    />
   );
 }

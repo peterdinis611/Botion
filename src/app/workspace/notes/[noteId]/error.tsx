@@ -1,9 +1,7 @@
 "use client";
 
 import { FileWarning } from "lucide-react";
-import { useEffect } from "react";
-import { StatusPage, StatusPageLink } from "@/components/layout/status-page";
-import { Button } from "@/components/ui/button";
+import { RouteErrorPage } from "@/components/layout/route-error-page";
 
 export default function NoteError({
   error,
@@ -12,21 +10,17 @@ export default function NoteError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
   return (
-    <StatusPage
+    <RouteErrorPage
+      error={error}
+      reset={reset}
+      code={500}
       icon={FileWarning}
       title="Couldn't open this page"
-      description="The note failed to load. It may have been deleted, or there was a network error while fetching it."
-      className="min-h-screen"
-    >
-      <Button onClick={reset}>Try again</Button>
-      <StatusPageLink href="/workspace" variant="secondary">
-        Back to workspace
-      </StatusPageLink>
-    </StatusPage>
+      description="The note failed to load — it may have been deleted or there was a network error."
+      hint="Your other notes are still safe in the workspace."
+      secondaryHref="/workspace"
+      secondaryLabel="Back to workspace"
+    />
   );
 }

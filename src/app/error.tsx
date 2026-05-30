@@ -1,9 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { useEffect } from "react";
-import { StatusPage, StatusPageLink } from "@/components/layout/status-page";
-import { Button } from "@/components/ui/button";
+import { RouteErrorPage } from "@/components/layout/route-error-page";
 
 export default function GlobalError({
   error,
@@ -12,20 +10,17 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
   return (
-    <StatusPage
+    <RouteErrorPage
+      error={error}
+      reset={reset}
+      code={500}
       icon={AlertTriangle}
       title="Something went wrong"
-      description="An unexpected error occurred. You can try again or return to the home page."
-    >
-      <Button onClick={reset}>Try again</Button>
-      <StatusPageLink href="/" variant="secondary">
-        Go home
-      </StatusPageLink>
-    </StatusPage>
+      description="An unexpected error occurred while loading this page."
+      hint="If the problem persists, try signing out and back in."
+      secondaryHref="/"
+      secondaryLabel="Go home"
+    />
   );
 }
