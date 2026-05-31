@@ -1,8 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@apollo/client/react";
-import { Minus, Pencil, Plus, Trash2 } from "lucide-react";
-import Image from "next/image";
+import { ImagePlus, Minus, Pencil, Plus, Trash2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ItemActionsMenu } from "@/components/workspace/item-actions-menu";
@@ -320,22 +319,18 @@ export function SnapsPanel({
             >
               <div
                 className={cn(
-                  "relative w-full overflow-hidden rounded-xl border border-border/50 bg-card transition-opacity hover:opacity-90",
+                  "relative flex w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-xl border border-dashed border-border/60 bg-muted/20 p-6 text-center transition-colors hover:border-primary/30 hover:bg-primary/5",
                   compact ? "aspect-[3/4]" : "aspect-[4/5]",
                 )}
               >
-                <Image
-                  src="/snaps-preview.png"
-                  alt="Example snap"
-                  fill
-                  className="object-cover object-top opacity-50"
-                  sizes="260px"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-background/50 p-4 text-center text-xs text-muted-foreground">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-background shadow-sm">
+                  <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                </span>
+                <p className="text-xs text-muted-foreground">
                   {creating
                     ? "Uploading…"
                     : "Upload screenshots and references as snaps"}
-                </div>
+                </p>
               </div>
             </button>
           )}
