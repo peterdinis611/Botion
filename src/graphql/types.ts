@@ -114,7 +114,18 @@ export type AppEventPayload = {
     action: string;
     entityId?: string;
     note?: Pick<Note, "id" | "title" | "content" | "color" | "isArchived" | "isPinned" | "updatedAt">;
+    calendarEvent?: CalendarEvent;
   };
+};
+
+export type DailyBriefing = {
+  date: string;
+  calendarEvents: CalendarEvent[];
+  importantNotes: Note[];
+};
+
+export type DailyBriefingQueryResult = {
+  dailyBriefing: DailyBriefing;
 };
 
 export type SnapsPanelPreferences = {

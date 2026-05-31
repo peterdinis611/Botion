@@ -3,6 +3,7 @@
 import { Check, FilePlus, PenLine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DailyBriefSection } from "@/components/workspace/daily-brief-section";
 import { WorkspaceTagChips } from "@/components/workspace/sidebar-workspace-tags";
 import { WorkspacePagesList } from "@/components/workspace/workspace-pages-list";
 import type { Note, Tag } from "@/graphql/types";
@@ -129,6 +130,8 @@ export function WorkspaceHomeContent({
             New page
           </Button>
         </div>
+
+        <DailyBriefSection />
 
         <WorkspaceTagChips tags={tags} notebookId={notebookId} />
 

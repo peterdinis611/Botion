@@ -633,8 +633,28 @@ export const APP_EVENT_SUBSCRIPTION = gql`
         isPinned
         updatedAt
       }
+      calendarEvent {
+        ...CalendarEventFields
+      }
     }
   }
+  ${CALENDAR_EVENT_FIELDS}
+`;
+
+export const DAILY_BRIEFING_QUERY = gql`
+  query DailyBriefing($date: String!) {
+    dailyBriefing(date: $date) {
+      date
+      calendarEvents {
+        ...CalendarEventFields
+      }
+      importantNotes {
+        ...NoteFields
+      }
+    }
+  }
+  ${CALENDAR_EVENT_FIELDS}
+  ${NOTE_FIELDS}
 `;
 
 export const PAGE_SHARE_LINK_QUERY = gql`
