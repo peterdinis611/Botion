@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { WORKSPACE_QUERY } from "@/graphql/operations";
 import type { Note, WorkspaceQueryResult } from "@/graphql/types";
-import { displayStoredTitle } from "@/lib/icon-emoji";
+import { filterNotesBySearch } from "@/lib/search";
 import { sidebarPagePrimary } from "@/lib/workspace-pages";
 
 export function GraphPagePickerDialog({
@@ -33,13 +33,7 @@ export function GraphPagePickerDialog({
 
   const notes = useMemo(() => {
     const list = (data?.notes ?? []).filter((n) => !n.isArchived);
-    const q = query.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter((note) => {
-      const title = displayStoredTitle(note.title).toLowerCase();
-      const preview = sidebarPagePrimary(note).toLowerCase();
-      return title.includes(q) || preview.includes(q);
-    });
+    return filterNotesBySearch(list, query);
   }, [data?.notes, query]);
 
   function handlePick(note: Note) {

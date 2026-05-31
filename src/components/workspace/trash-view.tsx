@@ -13,6 +13,7 @@ import type { Note } from "@/graphql/types";
 import { useNoteActions } from "@/hooks/use-note-actions";
 import { excerpt } from "@/lib/content";
 import { displayStoredTitle, splitLeadingEmoji } from "@/lib/icon-emoji";
+import { filterNotesBySearch } from "@/lib/search";
 import { cn } from "@/lib/utils";
 
 function formatDeletedAt(iso: string) {
@@ -109,11 +110,10 @@ export function TrashView() {
 
   const notes = data?.notes ?? [];
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return notes;
-    return notes.filter((n) => displayStoredTitle(n.title).toLowerCase().includes(q));
-  }, [notes, search]);
+  const filtered = useMemo(
+    () => filterNotesBySearch(notes, search),
+    [notes, search],
+  );
 
   async function handleEmptyTrash() {
     if (notes.length === 0) return;

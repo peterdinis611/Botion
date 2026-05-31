@@ -1,4 +1,7 @@
+import Fuse, { type FuseOptionKey, type IFuseOptions } from "fuse.js";
 import { excerpt, stripHtml } from "@/lib/content";
+import { displayStoredTitle } from "@/lib/icon-emoji";
+import { sidebarPagePrimary } from "@/lib/workspace-pages";
 
 export type SearchableNote = {
   id: string;
@@ -24,50 +27,128 @@ export type SearchHit<T> = {
   score: number;
 };
 
-/** Simple relevance scoring — earlier matches and title matches rank higher. */
-export function scoreMatch(text: string, query: string): number {
-  const hay = text.toLowerCase();
-  const q = query.toLowerCase().trim();
-  if (!q) return 1;
-  if (hay === q) return 100;
-  if (hay.startsWith(q)) return 80;
-  const idx = hay.indexOf(q);
-  if (idx === -1) return 0;
-  return Math.max(10, 60 - idx);
+const DEFAULT_FUSE_OPTIONS = {
+  threshold: 0.45,
+  ignoreLocation: true,
+  minMatchCharLength: 1,
+  distance: 100,
+} satisfies IFuseOptions<unknown>;
+
+function fuseSearch<T>(
+  items: T[],
+  query: string,
+  keys: FuseOptionKey<T>[],
+  options?: { limit?: number },
+): SearchHit<T>[] {
+  const q = query.trim();
+  if (!q) {
+    return items.map((item) => ({ item, score: 1 }));
+  }
+
+  const fuse = new Fuse(items, { ...DEFAULT_FUSE_OPTIONS, keys });
+  const results = fuse.search(q, options?.limit ? { limit: options.limit } : undefined);
+
+  return results.map((result) => ({
+    item: result.item,
+    score: 1 - (result.score ?? 1),
+  }));
 }
+
+type NoteSearchDocument = SearchableNote & {
+  titlePlain: string;
+  contentPlain: string;
+};
+
+function toNoteSearchDocument(note: SearchableNote): NoteSearchDocument {
+  return {
+    ...note,
+    titlePlain: stripHtml(note.title || "Untitled"),
+    contentPlain: stripHtml(note.content),
+  };
+}
+
+const NOTE_SEARCH_KEYS: FuseOptionKey<NoteSearchDocument>[] = [
+  { name: "titlePlain", weight: 0.55 },
+  { name: "contentPlain", weight: 0.35 },
+];
 
 export function searchNotes(
   notes: SearchableNote[],
   query: string,
+  limit = 50,
 ): SearchHit<SearchableNote>[] {
   const q = query.trim();
   if (!q) {
-    return notes
-      .slice()
+    return [...notes]
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
       .map((item) => ({ item, score: 1 }));
   }
 
-  return notes
-    .map((note) => {
-      const titleScore = scoreMatch(note.title || "Untitled", q) * 2;
-      const bodyScore = scoreMatch(stripHtml(note.content), q);
-      return { item: note, score: titleScore + bodyScore };
-    })
-    .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score);
+  const docs = notes.map(toNoteSearchDocument);
+  const byId = new Map(notes.map((note) => [note.id, note]));
+
+  return fuseSearch(docs, q, NOTE_SEARCH_KEYS, { limit }).map((hit) => ({
+    item: byId.get(hit.item.id) ?? hit.item,
+    score: hit.score,
+  }));
 }
 
 export function searchByName<T extends { name: string }>(
   items: T[],
   query: string,
+  limit = 50,
 ): SearchHit<T>[] {
+  return fuseSearch(items, query, ["name"], { limit });
+}
+
+type SidebarPageSearchDocument = {
+  id: string;
+  label: string;
+  titlePlain: string;
+  contentPlain: string;
+};
+
+function toSidebarPageDocument(
+  note: Pick<SearchableNote, "id" | "title" | "content">,
+): SidebarPageSearchDocument {
+  return {
+    id: note.id,
+    label: sidebarPagePrimary(note),
+    titlePlain: displayStoredTitle(note.title),
+    contentPlain: stripHtml(note.content),
+  };
+}
+
+const SIDEBAR_PAGE_KEYS: FuseOptionKey<SidebarPageSearchDocument>[] = [
+  { name: "label", weight: 0.5 },
+  { name: "titlePlain", weight: 0.35 },
+  { name: "contentPlain", weight: 0.15 },
+];
+
+/** Fuzzy page search for sidebar, graph picker, etc. Returns matching note ids in rank order. */
+export function searchPageIds(
+  notes: Pick<SearchableNote, "id" | "title" | "content">[],
+  query: string,
+): string[] {
   const q = query.trim();
-  if (!q) return items.map((item) => ({ item, score: 1 }));
-  return items
-    .map((item) => ({ item, score: scoreMatch(item.name, q) }))
-    .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score);
+  if (!q) return notes.map((note) => note.id);
+
+  const docs = notes.map(toSidebarPageDocument);
+  return fuseSearch(docs, q, SIDEBAR_PAGE_KEYS).map((hit) => hit.item.id);
+}
+
+export function filterNotesBySearch<T extends Pick<SearchableNote, "id" | "title" | "content">>(
+  notes: T[],
+  query: string,
+): T[] {
+  const q = query.trim();
+  if (!q) return notes;
+
+  const order = searchPageIds(notes, q);
+  const rank = new Map(order.map((id, index) => [id, index]));
+  return notes
+    .filter((note) => rank.has(note.id))
+    .sort((a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0));
 }
 
 export function noteSearchSubtitle(content: string): string {

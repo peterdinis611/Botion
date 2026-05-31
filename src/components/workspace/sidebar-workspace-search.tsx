@@ -4,19 +4,15 @@ import { Search, X } from "lucide-react";
 import { useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import type { Note, Notebook } from "@/graphql/types";
+import { filterNotesBySearch } from "@/lib/search";
 import { notebookDisplayName, notebookEmoji } from "@/lib/workspace-icons";
-import { groupPagesByNotebook, sidebarPagePrimary } from "@/lib/workspace-pages";
-import { cn } from "@/lib/utils";
+import { sidebarPagePrimary } from "@/lib/workspace-pages";
 
 export function useSidebarPageFilter(notes: Note[], query: string) {
   return useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (!q) return null;
-
-    return notes.filter((note) => {
-      const label = sidebarPagePrimary(note).toLowerCase();
-      return label.includes(q) || note.content.toLowerCase().includes(q);
-    });
+    return filterNotesBySearch(notes, q);
   }, [notes, query]);
 }
 
@@ -93,10 +89,5 @@ export function SidebarWorkspaceSearch({
 }
 
 export function filterNotesForSidebar(notes: Note[], query: string): Note[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return notes;
-  return notes.filter((note) => {
-    const label = sidebarPagePrimary(note).toLowerCase();
-    return label.includes(q) || note.content.toLowerCase().includes(q);
-  });
+  return filterNotesBySearch(notes, query);
 }
