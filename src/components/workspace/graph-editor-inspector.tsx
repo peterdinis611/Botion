@@ -1,6 +1,8 @@
 "use client";
 
 import type { Edge, Node } from "@xyflow/react";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -86,6 +88,18 @@ export function GraphEditorInspector({
             <p className="text-xs text-muted-foreground">
               Type: {nodeData.kind ?? "default"}
             </p>
+            {nodeData.noteId && (
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Linked page</p>
+                <Link
+                  href={`/workspace/notes/${nodeData.noteId}`}
+                  className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                >
+                  Open in workspace
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            )}
           </section>
         )}
 

@@ -1,11 +1,12 @@
 "use client";
 
-import { Handle, type NodeProps, Position, useReactFlow } from "@xyflow/react";
+import { type NodeProps, useReactFlow } from "@xyflow/react";
 import { memo, useCallback, useEffect, useState } from "react";
+import { GraphNodeHandles } from "@/components/workspace/graph-node-handles";
 import type { GraphNodeData } from "@/lib/graph-flow";
 import { cn } from "@/lib/utils";
 
-function GraphNodeComponent({ id, data, selected }: NodeProps) {
+function GraphNodeComponent({ id, data, selected, isConnectable }: NodeProps) {
   const nodeData = data as GraphNodeData;
   const { updateNodeData } = useReactFlow();
   const [editing, setEditing] = useState(false);
@@ -26,7 +27,7 @@ function GraphNodeComponent({ id, data, selected }: NodeProps) {
   return (
     <div
       className={cn(
-        "min-w-[120px] rounded-lg border-2 bg-card px-3 py-2 shadow-sm",
+        "relative min-w-[120px] rounded-lg border-2 bg-card px-3 py-2 shadow-sm",
         selected && "ring-2 ring-primary ring-offset-2 ring-offset-background",
         !borderColor && "border-border",
       )}
@@ -34,10 +35,10 @@ function GraphNodeComponent({ id, data, selected }: NodeProps) {
         borderColor ? { borderColor, backgroundColor: `${borderColor}18` } : undefined
       }
     >
-      <Handle type="target" position={Position.Top} className="!bg-primary" />
+      <GraphNodeHandles isConnectable={isConnectable} />
       {editing ? (
         <input
-          className="w-full bg-transparent text-sm font-medium outline-none"
+          className="nodrag nopan w-full bg-transparent text-sm font-medium outline-none"
           value={label}
           autoFocus
           onChange={(e) => setLabel(e.target.value)}
@@ -53,26 +54,13 @@ function GraphNodeComponent({ id, data, selected }: NodeProps) {
       ) : (
         <button
           type="button"
-          className="w-full text-left text-sm font-medium"
+          className="nodrag nopan w-full text-left text-sm font-medium"
           onDoubleClick={() => setEditing(true)}
           title="Double-click to rename"
         >
           {nodeData.label ?? "Node"}
         </button>
       )}
-      <Handle type="source" position={Position.Bottom} className="!bg-primary" />
-      <Handle
-        type="source"
-        position={Position.Left}
-        id="left"
-        className="!bg-primary"
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="right"
-        className="!bg-primary"
-      />
     </div>
   );
 }

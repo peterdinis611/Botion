@@ -1,11 +1,12 @@
 "use client";
 
-import { Handle, type NodeProps, Position, useReactFlow } from "@xyflow/react";
+import { type NodeProps, useReactFlow } from "@xyflow/react";
 import { memo, useCallback, useEffect, useState } from "react";
+import { GraphNodeHandles } from "@/components/workspace/graph-node-handles";
 import type { GraphNodeData } from "@/lib/graph-flow";
 import { cn } from "@/lib/utils";
 
-function GraphDecisionNodeComponent({ id, data, selected }: NodeProps) {
+function GraphDecisionNodeComponent({ id, data, selected, isConnectable }: NodeProps) {
   const nodeData = data as GraphNodeData;
   const { updateNodeData } = useReactFlow();
   const [editing, setEditing] = useState(false);
@@ -25,7 +26,7 @@ function GraphDecisionNodeComponent({ id, data, selected }: NodeProps) {
 
   return (
     <div className="relative flex h-[100px] w-[100px] items-center justify-center">
-      <Handle type="target" position={Position.Top} className="!bg-primary" />
+      <GraphNodeHandles isConnectable={isConnectable} />
       <div
         className={cn(
           "absolute inset-2 rotate-45 rounded-md border-2 shadow-sm",
@@ -39,7 +40,7 @@ function GraphDecisionNodeComponent({ id, data, selected }: NodeProps) {
       <div className="relative z-10 max-w-[72px] text-center">
         {editing ? (
           <input
-            className="w-full bg-transparent text-center text-xs font-semibold outline-none"
+            className="nodrag nopan w-full bg-transparent text-center text-xs font-semibold outline-none"
             value={label}
             autoFocus
             onChange={(e) => setLabel(e.target.value)}
@@ -52,26 +53,13 @@ function GraphDecisionNodeComponent({ id, data, selected }: NodeProps) {
         ) : (
           <button
             type="button"
-            className="text-xs font-semibold leading-tight"
+            className="nodrag nopan text-xs font-semibold leading-tight"
             onDoubleClick={() => setEditing(true)}
           >
             {nodeData.label ?? "Decision?"}
           </button>
         )}
       </div>
-      <Handle type="source" position={Position.Bottom} className="!bg-primary" />
-      <Handle
-        type="source"
-        position={Position.Left}
-        id="left"
-        className="!bg-primary"
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="right"
-        className="!bg-primary"
-      />
     </div>
   );
 }

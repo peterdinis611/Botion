@@ -6,6 +6,7 @@ import {
   Background,
   BackgroundVariant,
   type Connection,
+  ConnectionMode,
   Controls,
   type Edge,
   MiniMap,
@@ -32,6 +33,8 @@ import { GraphEditorInspector } from "@/components/workspace/graph-editor-inspec
 import { GraphEditorToolbar } from "@/components/workspace/graph-editor-toolbar";
 import { GraphFlowNode } from "@/components/workspace/graph-node";
 import { GraphNoteNode } from "@/components/workspace/graph-note-node";
+import { GraphPageNode } from "@/components/workspace/graph-page-node";
+import { GraphPagePickerDialog } from "@/components/workspace/graph-page-picker-dialog";
 import {
   GRAPH_QUERY,
   GRAPHS_QUERY,
@@ -43,10 +46,12 @@ import {
   buildExportPayload,
   cloneTemplateWithEdges,
   createNode,
+  createWorkspacePageNode,
   duplicateNodes,
   GRAPH_DECISION_TYPE,
   GRAPH_NODE_TYPE,
   GRAPH_NOTE_TYPE,
+  GRAPH_PAGE_TYPE,
   type GraphNodeData,
   type GraphNodeKind,
   type GraphTemplateId,
@@ -63,6 +68,7 @@ const nodeTypes = {
   [GRAPH_NODE_TYPE]: GraphFlowNode,
   [GRAPH_DECISION_TYPE]: GraphDecisionNode,
   [GRAPH_NOTE_TYPE]: GraphNoteNode,
+  [GRAPH_PAGE_TYPE]: GraphPageNode,
 };
 
 function GraphEditorCanvas({
@@ -100,23 +106,32 @@ function GraphEditorCanvas({
     [graph?.viewportJson],
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [viewport, setViewport] = useState<Viewport | undefined>(initialViewport);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [viewport, setViewport] = useState<Viewport | undefined>(undefined);
   const [snapToGrid, setSnapToGrid] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState<Node[]>([]);
   const [selectedEdges, setSelectedEdges] = useState<Edge[]>([]);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [pagePickerOpen, setPagePickerOpen] = useState(false);
 
-  const hydrated = useRef(false);
+  const hydratedGraphId = useRef<string | null>(null);
+  const localEdits = useRef(0);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const saveGeneration = useRef(0);
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(edges);
+  const viewportRef = useRef(viewport);
   const titleRef = useRef(title);
   const descriptionRef = useRef(description);
+  nodesRef.current = nodes;
+  edgesRef.current = edges;
+  viewportRef.current = viewport;
   titleRef.current = title;
   descriptionRef.current = description;
 
-  const { fitView, zoomIn, zoomOut, deleteElements } = useReactFlow();
+  const { fitView, zoomIn, zoomOut, deleteElements, screenToFlowPosition } = useReactFlow();
 
   useOnSelectionChange({
     onChange: ({ nodes: n, edges: e }) => {
@@ -126,18 +141,46 @@ function GraphEditorCanvas({
   });
 
   useEffect(() => {
-    if (!graph || hydrated.current) return;
-    setNodes(parseFlowNodes(graph.nodesJson));
-    setEdges(parseFlowEdges(graph.edgesJson));
-    setViewport(parseFlowViewport(graph.viewportJson));
-    hydrated.current = true;
-  }, [graph, setNodes, setEdges]);
+    if (hydratedGraphId.current === graphId) return;
+    hydratedGraphId.current = null;
+    localEdits.current = 0;
+    setNodes([]);
+    setEdges([]);
+    setViewport(undefined);
+  }, [graphId, setNodes, setEdges]);
+
+  useEffect(() => {
+    if (!graph || hydratedGraphId.current === graphId) return;
+    const fromServer = parseFlowNodes(graph.nodesJson);
+    const fromServerEdges = parseFlowEdges(graph.edgesJson);
+    const fromServerViewport = parseFlowViewport(graph.viewportJson);
+
+    setNodes((current) => {
+      if (current.length === 0) return fromServer;
+      const serverIds = new Set(fromServer.map((n) => n.id));
+      const localOnly = current.filter((n) => !serverIds.has(n.id));
+      return [...fromServer, ...localOnly];
+    });
+    setEdges((current) => {
+      if (current.length === 0) return fromServerEdges;
+      const serverIds = new Set(fromServerEdges.map((e) => e.id));
+      const localOnly = current.filter((e) => !serverIds.has(e.id));
+      return [...fromServerEdges, ...localOnly];
+    });
+    setViewport(fromServerViewport);
+    hydratedGraphId.current = graphId;
+  }, [graph, graphId, setNodes, setEdges]);
 
   const saveNow = useCallback(async () => {
     if (!graph) return;
+    const generation = ++saveGeneration.current;
     setSaveState("saving");
     try {
-      const payload = serializeFlow(nodes, edges, viewport);
+      const payload = serializeFlow(
+        nodesRef.current,
+        edgesRef.current,
+        viewportRef.current,
+      );
       await updateGraph({
         variables: {
           input: {
@@ -150,17 +193,19 @@ function GraphEditorCanvas({
           },
         },
       });
+      if (generation !== saveGeneration.current) return;
       setSaveState("saved");
       toastSaveSuccess("Graph saved");
       setTimeout(() => setSaveState("idle"), 2000);
     } catch (err: unknown) {
+      if (generation !== saveGeneration.current) return;
       setSaveState("idle");
       toastSaveError("Couldn't save graph", getGraphQLErrorMessage(err));
     }
-  }, [graph, nodes, edges, viewport, updateGraph]);
+  }, [graph, updateGraph]);
 
   useEffect(() => {
-    if (!hydrated.current || !graph) return;
+    if (hydratedGraphId.current !== graphId || !graph) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
       void saveNow();
@@ -168,10 +213,11 @@ function GraphEditorCanvas({
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [nodes, edges, viewport, title, description, saveVersion, graph, saveNow]);
+  }, [nodes, edges, viewport, title, description, saveVersion, graph, graphId, saveNow]);
 
   const onConnect = useCallback(
     (connection: Connection) => {
+      markLocalEdit();
       setEdges((eds) =>
         addEdge(
           {
@@ -186,14 +232,42 @@ function GraphEditorCanvas({
     [setEdges],
   );
 
+  function markLocalEdit() {
+    localEdits.current += 1;
+  }
+
+  function centerFlowPosition() {
+    const pane = document.querySelector(".react-flow");
+    if (!pane) {
+      return { x: 240, y: 160 };
+    }
+    const rect = pane.getBoundingClientRect();
+    return screenToFlowPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    });
+  }
+
   function handleAddNode(kind: GraphNodeKind) {
-    setNodes((nds) => [...nds, createNode(kind, nds.length)]);
+    markLocalEdit();
+    const position = centerFlowPosition();
+    setNodes((nds) => [...nds, createNode(kind, nds.length, position)]);
+  }
+
+  function handleAddWorkspacePage(note: { id: string; title: string }) {
+    markLocalEdit();
+    const position = centerFlowPosition();
+    setNodes((nds) => [
+      ...nds,
+      createWorkspacePageNode(note.id, note.title, nds.length, position),
+    ]);
   }
 
   function handleApplyTemplate(id: GraphTemplateId) {
     if (nodes.length > 0 && !confirm("Replace current canvas with this template?")) {
       return;
     }
+    markLocalEdit();
     const { nodes: n, edges: e } = cloneTemplateWithEdges(id);
     setNodes(n);
     setEdges(e);
@@ -227,6 +301,7 @@ function GraphEditorCanvas({
       return;
     }
     if (!confirm("Import will replace the current canvas. Continue?")) return;
+    markLocalEdit();
     setNodes(parseFlowNodes(JSON.stringify(payload.nodes)));
     setEdges(parseFlowEdges(JSON.stringify(payload.edges)));
     if (payload.title) onTitleChange(payload.title);
@@ -253,6 +328,7 @@ function GraphEditorCanvas({
   }
 
   function handleUpdateNode(id: string, patch: Partial<GraphNodeData>) {
+    markLocalEdit();
     setNodes((nds) =>
       nds.map((n) =>
         n.id === id ? { ...n, data: { ...(n.data as GraphNodeData), ...patch } } : n,
@@ -290,6 +366,7 @@ function GraphEditorCanvas({
         showGrid={showGrid}
         onShowGridChange={setShowGrid}
         onAddNode={handleAddNode}
+        onAddWorkspacePage={() => setPagePickerOpen(true)}
         onApplyTemplate={handleApplyTemplate}
         onFitView={() => fitView({ padding: 0.2 })}
         onZoomIn={() => zoomIn()}
@@ -302,6 +379,12 @@ function GraphEditorCanvas({
         hasSelection={hasSelection}
       />
 
+      <GraphPagePickerDialog
+        open={pagePickerOpen}
+        onOpenChange={setPagePickerOpen}
+        onSelect={handleAddWorkspacePage}
+      />
+
       <div className="flex min-h-0 flex-1">
         <div className="relative min-h-0 flex-1">
           <ReactFlow
@@ -311,8 +394,10 @@ function GraphEditorCanvas({
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             nodeTypes={nodeTypes}
+            connectionMode={ConnectionMode.Loose}
+            connectionRadius={28}
             defaultViewport={initialViewport}
-            fitView={!initialViewport}
+            fitView={!initialViewport && nodes.length > 0}
             onMoveEnd={(_, vp) => setViewport(vp)}
             snapToGrid={snapToGrid}
             snapGrid={[16, 16]}

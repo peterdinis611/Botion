@@ -3,14 +3,18 @@ import type { Edge, Node, Viewport } from "@xyflow/react";
 export const GRAPH_NODE_TYPE = "graphNode";
 export const GRAPH_DECISION_TYPE = "graphDecision";
 export const GRAPH_NOTE_TYPE = "graphNote";
+export const GRAPH_PAGE_TYPE = "graphPage";
 
-export type GraphNodeKind = "default" | "decision" | "note";
+export type GraphNodeKind = "default" | "decision" | "note" | "page";
 
 export type GraphNodeData = {
   label?: string;
   kind?: GraphNodeKind;
   color?: string;
+  /** Free-form sticky note body (legacy / sticky nodes). */
   note?: string;
+  /** Linked workspace page id. */
+  noteId?: string;
 };
 
 export type GraphEdgeData = {
@@ -49,9 +53,11 @@ function node(
   const type =
     kind === "decision"
       ? GRAPH_DECISION_TYPE
-      : kind === "note"
-        ? GRAPH_NOTE_TYPE
-        : GRAPH_NODE_TYPE;
+      : kind === "page"
+        ? GRAPH_PAGE_TYPE
+        : kind === "note"
+          ? GRAPH_NOTE_TYPE
+          : GRAPH_NODE_TYPE;
   return {
     id,
     type,
@@ -190,18 +196,22 @@ export function createNode(
   const type =
     kind === "decision"
       ? GRAPH_DECISION_TYPE
-      : kind === "note"
-        ? GRAPH_NOTE_TYPE
-        : GRAPH_NODE_TYPE;
+      : kind === "page"
+        ? GRAPH_PAGE_TYPE
+        : kind === "note"
+          ? GRAPH_NOTE_TYPE
+          : GRAPH_NODE_TYPE;
   const labels: Record<GraphNodeKind, string> = {
     default: "New node",
     decision: "Decision?",
     note: "Note",
+    page: "Untitled",
   };
   const colors: Partial<Record<GraphNodeKind, string>> = {
     default: "#ffffff",
     decision: "#fef3c7",
     note: "#fef9c3",
+    page: "#e8f5f3",
   };
   return {
     id: crypto.randomUUID(),
@@ -219,20 +229,41 @@ export function createDefaultNode(index = 0): Node {
   return createNode("default", index);
 }
 
+export function createWorkspacePageNode(
+  noteId: string,
+  title: string,
+  index = 0,
+  position?: { x: number; y: number },
+): Node {
+  return {
+    id: crypto.randomUUID(),
+    type: GRAPH_PAGE_TYPE,
+    position: position ?? { x: 120 + index * 48, y: 80 + index * 48 },
+    data: {
+      label: title.trim() || "Untitled",
+      kind: "page",
+      noteId,
+      color: "#e8f5f3",
+    } satisfies GraphNodeData,
+  };
+}
+
 export function parseFlowNodes(json: string): Node[] {
   try {
     const parsed = JSON.parse(json) as Node[];
     if (!Array.isArray(parsed)) return [createDefaultNode()];
     return parsed.map((n) => {
       const data = (n.data ?? {}) as GraphNodeData;
-      const kind = data.kind ?? "default";
+      const kind = data.kind ?? (data.noteId ? "page" : "default");
       const type =
         n.type ??
         (kind === "decision"
           ? GRAPH_DECISION_TYPE
-          : kind === "note"
-            ? GRAPH_NOTE_TYPE
-            : GRAPH_NODE_TYPE);
+          : kind === "page" || data.noteId
+            ? GRAPH_PAGE_TYPE
+            : kind === "note"
+              ? GRAPH_NOTE_TYPE
+              : GRAPH_NODE_TYPE);
       return { ...n, type, data };
     });
   } catch {

@@ -4,6 +4,7 @@ import {
   Copy,
   Diamond,
   Download,
+  FileText,
   Grid3x3,
   Magnet,
   Maximize2,
@@ -37,6 +38,7 @@ export function GraphEditorToolbar({
   showGrid,
   onShowGridChange,
   onAddNode,
+  onAddWorkspacePage,
   onApplyTemplate,
   onFitView,
   onZoomIn,
@@ -54,6 +56,7 @@ export function GraphEditorToolbar({
   showGrid: boolean;
   onShowGridChange: (v: boolean) => void;
   onAddNode: (kind: GraphNodeKind) => void;
+  onAddWorkspacePage: () => void;
   onApplyTemplate: (id: GraphTemplateId) => void;
   onFitView: () => void;
   onZoomIn: () => void;
@@ -78,17 +81,37 @@ export function GraphEditorToolbar({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuLabel>Node type</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onAddNode("default")}>
+          <DropdownMenuItem
+            onSelect={() => {
+              onAddNode("default");
+            }}
+          >
             <Square className="mr-2 h-4 w-4" />
             Box
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onAddNode("decision")}>
+          <DropdownMenuItem
+            onSelect={() => {
+              onAddNode("decision");
+            }}
+          >
             <Diamond className="mr-2 h-4 w-4" />
             Decision
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onAddNode("note")}>
+          <DropdownMenuItem
+            onSelect={() => {
+              onAddNode("note");
+            }}
+          >
             <StickyNote className="mr-2 h-4 w-4" />
             Sticky note
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              onAddWorkspacePage();
+            }}
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            Workspace page
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
