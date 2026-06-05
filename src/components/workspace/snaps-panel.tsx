@@ -25,6 +25,7 @@ import {
 import type { MeQueryResult, Snap, SnapsQueryResult } from "@/graphql/types";
 import { useCreateSnap } from "@/hooks/use-create-snap";
 import { getSnapQueryVariables } from "@/lib/snap-scope";
+import { ui } from "@/lib/ui-surface";
 import { cn } from "@/lib/utils";
 
 const ZOOM_LEVELS = [0.85, 1, 1.15, 1.3];
@@ -138,7 +139,8 @@ export function SnapsPanel({
         ref={panelRef}
         tabIndex={0}
         className={cn(
-          "relative flex h-full w-[280px] shrink-0 flex-col bg-panel outline-none",
+          ui.panel,
+          "outline-none",
           dropActive && "ring-2 ring-inset ring-primary/30",
           className,
         )}
@@ -154,8 +156,11 @@ export function SnapsPanel({
           if (file) void quickUpload(file);
         }}
       >
-        <div className="flex items-center justify-between px-5 py-3.5">
-          <h2 className="text-[14px] font-semibold text-foreground">Snaps</h2>
+        <div className="flex items-center justify-between border-b border-panel-border px-5 py-3">
+          <div>
+            <h2 className="text-sm font-semibold tracking-tight text-foreground">Snaps</h2>
+            <p className="text-[11px] text-muted-foreground">Visual references</p>
+          </div>
           <ItemActionsMenu
             label="Snaps options"
             className="h-7 w-7 opacity-100"

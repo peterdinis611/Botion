@@ -40,7 +40,7 @@ export function SidebarWorkspaceSearch({
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Find a page…"
-          className="h-8 border-border/50 bg-sidebar-accent/40 pl-8 pr-8 text-[13px] shadow-none"
+          className="h-8 border-border/60 bg-background/80 pl-8 pr-8 text-[13px] shadow-none focus-visible:ring-primary/30"
         />
         {query && (
           <button

@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDailyBriefing } from "@/hooks/use-daily-briefing";
 import { formatEventTime, parseDateKey, toDateKey } from "@/lib/calendar-utils";
+import { ui } from "@/lib/ui-surface";
+import { asRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { pageDisplayTitle } from "@/lib/workspace-pages";
 
@@ -39,7 +41,7 @@ function formatBriefDate(dateKey: string): string {
   return label;
 }
 
-export function DailyBriefSection() {
+export function DailyBriefSection({ variant = "default" }: { variant?: "default" | "rail" }) {
   const todayKey = useMemo(() => toDateKey(new Date()), []);
   const [dateKey, setDateKey] = useState(todayKey);
   const { briefing, loading } = useDailyBriefing(dateKey);
@@ -48,16 +50,26 @@ export function DailyBriefSection() {
   const notes = briefing?.importantNotes ?? [];
   const isToday = dateKey === todayKey;
 
+  const isRail = variant === "rail";
+
   return (
-    <section className="mb-10 rounded-2xl border border-border/60 bg-gradient-to-br from-primary/5 via-background to-background p-5 shadow-sm sm:p-6">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <section
+      className={cn(
+        isRail ? "space-y-4" : ui.card,
+        !isRail && "mb-10 overflow-hidden bg-gradient-to-br from-accent/50 via-card to-card p-5 sm:p-6",
+        isRail && "rounded-2xl border border-border/50 bg-card p-4",
+      )}
+    >
+      <div className={cn("flex flex-wrap items-center justify-between gap-3", isRail && "mb-1")}>
         <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Sparkles className="h-5 w-5" />
-          </span>
+          {!isRail && (
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Sparkles className="h-5 w-5" />
+            </span>
+          )}
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-semibold tracking-tight text-foreground">
+              <h2 className={cn("font-semibold tracking-tight text-foreground", isRail ? "text-sm" : "text-lg")}>
                 Your day
               </h2>
               <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
@@ -65,7 +77,7 @@ export function DailyBriefSection() {
                 Live
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">{formatBriefDate(dateKey)}</p>
+            <p className="text-xs text-muted-foreground">{formatBriefDate(dateKey)}</p>
           </div>
         </div>
 
@@ -103,8 +115,8 @@ export function DailyBriefSection() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-border/50 bg-card/80 p-4">
+      <div className={cn(isRail ? "space-y-3" : "grid gap-4 lg:grid-cols-2")}>
+        <div className={cn(ui.cardMuted, "p-4")}>
           <div className="mb-3 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <CalendarDays className="h-4 w-4 text-primary" />
@@ -158,7 +170,7 @@ export function DailyBriefSection() {
           )}
         </div>
 
-        <div className="rounded-xl border border-border/50 bg-card/80 p-4">
+        <div className={cn(ui.cardMuted, "p-4")}>
           <div className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground">
             <Pin className="h-4 w-4 text-primary" />
             Important notes
@@ -181,7 +193,7 @@ export function DailyBriefSection() {
               {notes.map((note) => (
                 <li key={note.id}>
                   <Link
-                    href={`/workspace/notes/${note.id}`}
+                    href={asRoute(`/workspace/notes/${note.id}`)}
                     className={cn(
                       "flex items-start gap-2.5 rounded-lg border border-border/40 bg-background px-3 py-2.5 transition-colors hover:border-primary/30 hover:bg-primary/5",
                     )}

@@ -4,12 +4,12 @@ import { useQuery } from "@apollo/client/react";
 import { notFound, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DocumentHeader } from "@/components/workspace/document-header";
 import { NoteEditor } from "@/components/workspace/note-editor";
-import { SnapsPanel } from "@/components/workspace/snaps-panel";
-import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
+import { SnapsDrawer } from "@/components/workspace/snaps-drawer";
 import { TrashView } from "@/components/workspace/trash-view";
+import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
 import { WorkspaceHomeContent } from "@/components/workspace/workspace-home-content";
+import { WorkspaceTopBar } from "@/components/workspace/workspace-top-bar";
 import {
   NOTE_QUERY,
   WORKSPACE_QUERY,
@@ -22,6 +22,8 @@ import type {
   WorkspaceTagsQueryResult,
 } from "@/graphql/types";
 import { splitLeadingEmoji } from "@/lib/icon-emoji";
+import { ui } from "@/lib/ui-surface";
+import { cn } from "@/lib/utils";
 import { notebookDisplayName, notebookEmoji } from "@/lib/workspace-icons";
 import { parseWorkspaceFilters } from "@/lib/workspace-url";
 
@@ -69,7 +71,7 @@ export function WorkspaceShell({
       const folder = data?.folders.find((f) => f.id === filters.folderId);
       if (folder) return folder.name;
     }
-    return "Acme Inc.";
+    return "Home";
   }, [
     filters.archived,
     noteId,
@@ -107,52 +109,55 @@ export function WorkspaceShell({
         );
       }
     }
-    return <span className="text-[15px] leading-none">🎯</span>;
+    return <span className="text-[15px] leading-none">🏠</span>;
   }, [filters.archived, noteId, noteData?.note, filters.notebookId, data?.notebooks]);
 
   return (
-    <WorkspaceFrame className="flex min-h-0 flex-row" hideQuickFab>
-      <div className="flex min-w-0 flex-1 flex-col border-r border-border/50 bg-background">
-        <DocumentHeader
+    <WorkspaceFrame hideQuickFab>
+      <div className={cn(ui.canvas, "relative flex min-h-0 min-w-0 flex-1 flex-col")}>
+        <WorkspaceTopBar
           title={headerTitle}
           icon={headerIcon}
           noteId={noteId}
           noteTitle={noteData?.note?.title}
           noteIsArchived={noteData?.note?.isArchived}
           noteIsPinned={noteData?.note?.isPinned}
+          notebookId={filters.notebookId}
         />
 
-        {noteId ? (
-          noteLoading || workspaceLoading ? (
-            <div className="flex flex-1 items-center justify-center">
-              <Skeleton className="h-8 w-48" />
-            </div>
-          ) : noteData?.note ? (
-            <NoteEditor
-              note={{
-                ...noteData.note,
-                tags: noteData.note.tags,
-              }}
-              allTags={tagsForScope}
-            />
+        <div className="relative flex min-h-0 flex-1">
+          {noteId ? (
+            noteLoading || workspaceLoading ? (
+              <div className="flex flex-1 items-center justify-center">
+                <Skeleton className="h-8 w-48" />
+              </div>
+            ) : noteData?.note ? (
+              <NoteEditor
+                note={{
+                  ...noteData.note,
+                  tags: noteData.note.tags,
+                }}
+                allTags={tagsForScope}
+              />
+            ) : (
+              notFound()
+            )
+          ) : filters.archived ? (
+            <TrashView />
           ) : (
-            notFound()
-          )
-        ) : filters.archived ? (
-          <TrashView />
-        ) : (
-          (children ?? (
-            <WorkspaceHomeContent
-              tags={tagsForScope}
-              notebookId={filters.notebookId}
-              notes={data?.notes ?? []}
-              filters={filters}
-            />
-          ))
-        )}
-      </div>
+            children ?? (
+              <WorkspaceHomeContent
+                tags={tagsForScope}
+                notebookId={filters.notebookId}
+                notes={data?.notes ?? []}
+                filters={filters}
+              />
+            )
+          )}
 
-      <SnapsPanel notebookId={filters.notebookId} noteId={noteId} />
+          <SnapsDrawer notebookId={filters.notebookId} noteId={noteId} />
+        </div>
+      </div>
     </WorkspaceFrame>
   );
 }

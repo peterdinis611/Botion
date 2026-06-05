@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import type { Notebook } from "@/graphql/types";
 import type { WorkspaceFilters } from "@/lib/workspace-url";
 import { buildWorkspacePath } from "@/lib/workspace-url";
@@ -40,7 +41,7 @@ export function buildNewNotePath(
   noteId: string,
   filters: WorkspaceFilters,
   destination: PageDestination,
-): string {
+): Route {
   const next: WorkspaceFilters = {
     ...filters,
     archived: false,

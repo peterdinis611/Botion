@@ -1,12 +1,15 @@
 "use client";
 
 import { CalendarView } from "@/components/workspace/calendar-view";
-import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
+import { WorkspaceSectionShell } from "@/components/workspace/workspace-section-shell";
 
 export default function CalendarPage() {
   return (
-    <WorkspaceFrame>
+    <WorkspaceSectionShell
+      title="Calendar"
+      icon={<span className="text-[15px] leading-none">📅</span>}
+    >
       <CalendarView />
-    </WorkspaceFrame>
+    </WorkspaceSectionShell>
   );
 }

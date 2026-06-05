@@ -4,6 +4,7 @@ import Link from "next/link";
 import { NoteActionsMenu } from "@/components/workspace/note-actions-menu";
 import type { Note } from "@/graphql/types";
 import { splitLeadingEmoji } from "@/lib/icon-emoji";
+import { asRoute } from "@/lib/routes";
 import type { NoteActionResult } from "@/lib/note-navigation";
 import { pageDisplayTitle } from "@/lib/workspace-pages";
 import { cn } from "@/lib/utils";
@@ -44,7 +45,7 @@ export function PageListItem({
         )}
       >
         <Link
-          href={href}
+          href={asRoute(href)}
           className={cn(
             "flex min-w-0 flex-1 items-center gap-1.5 truncate px-2 py-1.5 text-[12px] transition-colors",
             active
@@ -78,7 +79,7 @@ export function PageListItem({
       )}
     >
       <Link
-        href={href}
+        href={asRoute(href)}
         className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3.5 hover:bg-muted/30"
       >
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted/50 text-base leading-none">

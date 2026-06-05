@@ -1,3 +1,6 @@
+import type { Route } from "next";
+import { asRoute } from "@/lib/routes";
+
 export type WorkspaceFilters = {
   notebookId?: string;
   folderId?: string;
@@ -30,7 +33,7 @@ export function buildWorkspacePath(
   pathname: string,
   filters: WorkspaceFilters,
   noteId?: string,
-): string {
+): Route {
   const params = new URLSearchParams();
 
   if (filters.notebookId) params.set("notebook", filters.notebookId);
@@ -41,7 +44,7 @@ export function buildWorkspacePath(
 
   const base = noteId ? `/workspace/notes/${noteId}` : pathname;
   const qs = params.toString();
-  return qs ? `${base}?${qs}` : base;
+  return asRoute(qs ? `${base}?${qs}` : base);
 }
 
 export function buildWorkspaceHref(
@@ -53,7 +56,7 @@ export function buildWorkspaceHref(
     clearNotebook?: boolean;
     clearFolder?: boolean;
   },
-): string {
+): Route {
   const filters = parseWorkspaceFilters(current);
 
   const next: WorkspaceFilters = {

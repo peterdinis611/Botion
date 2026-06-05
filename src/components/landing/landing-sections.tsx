@@ -33,18 +33,18 @@ export function LandingHeroSection({
   return (
     <section className="mx-auto grid max-w-6xl gap-12 px-6 pb-20 pt-6 md:grid-cols-2 md:items-center md:gap-8 md:px-10 md:pt-12 lg:gap-16">
       <div className="max-w-xl">
-        <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          Notes, Snaps & workspaces in one tool
+        <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-accent/60 px-3.5 py-1.5 text-xs font-semibold text-primary">
+          <Sparkles className="h-3.5 w-3.5" />
+          Notes, Snaps & calm workspaces
         </p>
-        <h1 className="text-[2.75rem] font-bold leading-[1.08] tracking-tight text-foreground md:text-5xl lg:text-[3.25rem]">
-          All-in-one
+        <h1 className="text-[2.75rem] font-bold leading-[1.05] tracking-tight text-foreground md:text-5xl lg:text-[3.35rem]">
+          Think clearly.
           <br />
-          workspace
+          <span className="text-primary">Work in one place.</span>
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground md:text-xl">
-          Write, plan, and capture ideas with pages, tags, and a Snaps panel beside
-          your doc. Botion keeps research and writing in one calm place.
+          Botion blends writing, planning, and visual references — without feeling
+          like a clone of everything else.
         </p>
 
         <form
@@ -56,13 +56,13 @@ export function LandingHeroSection({
             placeholder="Enter your email"
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
-            className="h-12 flex-1 rounded-lg border border-border bg-card px-3 text-base text-foreground shadow-sm outline-none ring-primary/30 focus:ring-2"
+            className="h-12 flex-1 rounded-xl border border-input bg-card px-4 text-base text-foreground shadow-sm outline-none ring-primary/30 focus:ring-2"
             autoComplete="email"
           />
           <Button
             type="submit"
             className={cn(
-              "h-12 shrink-0 rounded-lg px-6 text-base font-medium text-white shadow-sm",
+              "h-12 shrink-0 rounded-xl px-6 text-base font-semibold text-white shadow-sm",
               "bg-landing-accent hover:bg-landing-accent-hover",
             )}
           >

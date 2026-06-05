@@ -2,6 +2,7 @@
 
 import { Clock, FileText, FolderOpen, Plus, Search, Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import type { Route } from "next";
 import { useMemo, useState } from "react";
 import {
   CommandDialog,
@@ -77,13 +78,13 @@ export function CommandPalette({
     pushRecentNoteId(id);
     setOpen(false);
     setQuery("");
-    router.push(`/workspace/notes/${id}`);
+    router.push(`/workspace/notes/${id}` as Route);
   }
 
   function navigate(path: string) {
     setOpen(false);
     setQuery("");
-    router.push(path);
+    router.push(path as Route);
   }
 
   function handleNewNote(notebookId?: string) {

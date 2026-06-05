@@ -14,6 +14,7 @@ import { useNoteActions } from "@/hooks/use-note-actions";
 import { excerpt } from "@/lib/content";
 import { displayStoredTitle, splitLeadingEmoji } from "@/lib/icon-emoji";
 import { filterNotesBySearch } from "@/lib/search";
+import { asRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 function formatDeletedAt(iso: string) {
@@ -41,7 +42,7 @@ function TrashNoteRow({
   return (
     <li className="group flex items-stretch gap-2 rounded-xl border border-border/50 bg-card/40 transition-colors hover:border-border hover:bg-card/70">
       <Link
-        href={noteHref}
+        href={asRoute(noteHref)}
         className="flex min-w-0 flex-1 items-start gap-3 px-4 py-3.5"
       >
         <span className="mt-0.5 text-lg leading-none" aria-hidden>

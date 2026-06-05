@@ -14,6 +14,7 @@ import type { Tag } from "@/graphql/types";
 import { useCommandPalette } from "@/hooks/use-command-palette";
 import { excerpt } from "@/lib/content";
 import { displayStoredTitle } from "@/lib/icon-emoji";
+import { asRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 export type NoteListItem = {
@@ -143,7 +144,7 @@ export function NoteList({
                         active ? "bg-sidebar-accent shadow-sm" : "hover:bg-muted/60",
                       )}
                     >
-                      <Link href={noteHref} className="min-w-0 flex-1 px-3 py-2.5 pr-9">
+                      <Link href={asRoute(noteHref)} className="min-w-0 flex-1 px-3 py-2.5 pr-9">
                         <div className="flex items-start gap-2">
                           {note.isPinned && !trashMode && (
                             <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
@@ -167,7 +168,7 @@ export function NoteList({
                           title={note.title}
                           isArchived={trashMode || note.isArchived}
                           isPinned={note.isPinned}
-                          href={noteHref}
+                          href={asRoute(noteHref)}
                           showOpen={false}
                         />
                       </div>

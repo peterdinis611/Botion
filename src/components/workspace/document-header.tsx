@@ -6,6 +6,7 @@ import { NoteActionsMenu } from "@/components/workspace/note-actions-menu";
 import { NotificationsPanel } from "@/components/workspace/notifications-panel";
 import { PeoplePanel } from "@/components/workspace/people-panel";
 import { useWorkspaceCollaborators } from "@/hooks/use-workspace-collaborators";
+import { ui } from "@/lib/ui-surface";
 import { cn } from "@/lib/utils";
 
 export function DocumentHeader({
@@ -30,21 +31,21 @@ export function DocumentHeader({
 
   return (
     <>
-      <header
-        className={cn(
-          "flex shrink-0 items-center justify-between gap-4 border-b border-border/40 px-6 py-3",
-          className,
-        )}
-      >
-        <div className="flex min-w-0 items-center gap-2">
+      <header className={cn(ui.header, className)}>
+        <div className="flex min-w-0 items-center gap-2.5">
           {icon && (
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted text-base">
               {icon}
             </span>
           )}
-          <span className="truncate text-[13px] font-medium text-foreground">
-            {title}
-          </span>
+          <div className="min-w-0">
+            <span className="block truncate text-sm font-semibold tracking-tight text-foreground">
+              {title}
+            </span>
+            {noteId && (
+              <span className="text-[11px] text-muted-foreground">Page</span>
+            )}
+          </div>
           {noteId && (
             <NoteActionsMenu
               noteId={noteId}
@@ -59,13 +60,13 @@ export function DocumentHeader({
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
-            className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+            className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             onClick={() => setPeopleOpen(true)}
           >
-            People
+            Share
           </button>
 
           <CollaboratorAvatars

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { GraphNodeHandles } from "@/components/workspace/graph-node-handles";
 import type { GraphNodeData } from "@/lib/graph-flow";
+import { asRoute } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 function GraphPageNodeComponent({ data, selected, isConnectable }: NodeProps) {
@@ -36,7 +37,7 @@ function GraphPageNodeComponent({ data, selected, isConnectable }: NodeProps) {
 
       {href && (
         <Link
-          href={href}
+          href={asRoute(href)}
           className="nodrag nopan mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
           onClick={(e) => e.stopPropagation()}
         >

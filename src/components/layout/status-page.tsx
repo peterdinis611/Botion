@@ -1,14 +1,15 @@
+import type { Route } from "next";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export function BotionBrandLink({ href = "/" }: { href?: string }) {
+export function BotionBrandLink({ href = "/" }: { href?: Route | string }) {
   return (
     <Link
-      href={href}
+      href={href as Route}
       className="group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
     >
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-xs font-bold text-background transition-transform group-hover:scale-105">
+      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-xs font-bold text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
         B
       </span>
       <span className="font-medium tracking-tight">Botion</span>
@@ -116,13 +117,13 @@ export function StatusPageLink({
   children,
   variant = "primary",
 }: {
-  href: string;
+  href: Route | string;
   children: React.ReactNode;
   variant?: "primary" | "secondary";
 }) {
   return (
     <Link
-      href={href}
+      href={href as Route}
       className={cn(
         "inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition-colors",
         variant === "primary"

@@ -1,12 +1,15 @@
 "use client";
 
 import { GraphsListView } from "@/components/workspace/graphs-list-view";
-import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
+import { WorkspaceSectionShell } from "@/components/workspace/workspace-section-shell";
 
 export default function GraphsPage() {
   return (
-    <WorkspaceFrame>
+    <WorkspaceSectionShell
+      title="Graphs"
+      icon={<span className="text-[15px] leading-none">🕸️</span>}
+    >
       <GraphsListView />
-    </WorkspaceFrame>
+    </WorkspaceSectionShell>
   );
 }

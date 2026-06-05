@@ -13,8 +13,9 @@ import {
   LandingSnapsSection,
   LandingWorkspacesSection,
 } from "@/components/landing/landing-sections";
-import { ThemeToggle } from "@/components/workspace/theme-toggle";
 import { LandingHeaderDemoLink } from "@/components/landing/landing-header-demo";
+import { ThemeToggle } from "@/components/workspace/theme-toggle";
+import { ui } from "@/lib/ui-surface";
 import { getToken } from "@/lib/auth";
 
 const NAV = [
@@ -50,13 +51,11 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4 md:px-10">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-foreground text-sm font-bold text-background">
-              B
-            </span>
-            <span className="text-lg font-semibold tracking-tight">Botion</span>
+          <Link href="/" className="flex items-center gap-3">
+            <span className={ui.brandMark}>B</span>
+            <span className="text-lg font-bold tracking-tight">Botion</span>
           </Link>
 
           <nav className="hidden items-center gap-8 text-[15px] text-muted-foreground md:flex">

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { NoteActionsMenu } from "@/components/workspace/note-actions-menu";
 import type { Note } from "@/graphql/types";
 import { splitLeadingEmoji } from "@/lib/icon-emoji";
+import { asRoute } from "@/lib/routes";
 import type { NoteActionResult } from "@/lib/note-navigation";
 import {
   formatPageAge,
@@ -51,7 +52,7 @@ function PageRowContent({
       {dragHandle}
 
       <Link
-        href={href}
+        href={asRoute(href)}
         className={cn(
           "flex min-w-0 flex-1 items-center gap-2 py-1.5 pl-1 pr-1 text-[12px] leading-tight",
           active ? "font-medium text-foreground" : "text-muted-foreground",

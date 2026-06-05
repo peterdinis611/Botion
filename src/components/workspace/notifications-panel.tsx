@@ -34,6 +34,7 @@ import {
   notificationTitle,
   parseNotificationMetadata,
 } from "@/lib/notification-display";
+import { asRoute } from "@/lib/routes";
 import { listItemExit, slideInRight, staggerContainer } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -272,7 +273,7 @@ export function NotificationsPanel({
   async function handleOpenNote(path: string, notificationId: string) {
     await markRead({ variables: { id: notificationId } });
     setOpen(false);
-    router.push(path);
+    router.push(asRoute(path));
   }
 
   return (

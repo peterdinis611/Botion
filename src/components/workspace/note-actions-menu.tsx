@@ -13,6 +13,7 @@ import {
   navigateAfterNoteAction,
   type NoteActionResult,
 } from "@/lib/note-navigation";
+import { asRoute } from "@/lib/routes";
 import { parseWorkspaceFilters } from "@/lib/workspace-url";
 import { cn } from "@/lib/utils";
 
@@ -83,7 +84,7 @@ export function NoteActionsMenu({
     >
       {showOpen && href && (
         <DropdownMenuItem asChild>
-          <Link href={noteHref}>
+          <Link href={asRoute(noteHref)}>
             <ExternalLink className="mr-2 h-4 w-4" />
             Open
           </Link>

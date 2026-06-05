@@ -11,6 +11,7 @@ import { notebookDisplayName, notebookEmoji } from "@/lib/workspace-icons";
 import { groupPagesByNotebook } from "@/lib/workspace-pages";
 import { navigateAfterNoteAction } from "@/lib/note-navigation";
 import { buildWorkspaceHref, parseWorkspaceFilters } from "@/lib/workspace-url";
+import { ui } from "@/lib/ui-surface";
 import { cn } from "@/lib/utils";
 
 export function SidebarFlatWorkspace({
@@ -73,10 +74,9 @@ export function SidebarFlatWorkspace({
           type="button"
           onClick={() => router.push("/workspace")}
           className={cn(
-            "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors",
-            isHome
-              ? "bg-sidebar-accent font-medium text-foreground"
-              : "text-muted-foreground hover:bg-sidebar-accent/80 hover:text-foreground",
+            ui.navItem,
+            isHome ? ui.navItemActive : ui.navItemIdle,
+            "w-full",
           )}
         >
           <span className="text-base leading-none">🎯</span>
@@ -115,10 +115,9 @@ export function SidebarFlatWorkspace({
           pinned: false,
         })}
         className={cn(
-          "mb-1 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] transition-colors",
-          isHome
-            ? "bg-sidebar-accent font-medium text-foreground"
-            : "text-muted-foreground hover:bg-sidebar-accent/80 hover:text-foreground",
+          ui.navItem,
+          "mb-1 w-full",
+          isHome ? ui.navItemActive : ui.navItemIdle,
         )}
       >
         <span className="text-base leading-none">🎯</span>
