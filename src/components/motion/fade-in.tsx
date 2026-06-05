@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { fadeIn, fadeUp, scaleIn, transitionBase } from "@/lib/motion";
+import { fadeIn, fadeUp, scaleIn } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 type FadeInProps = {
@@ -29,7 +29,7 @@ export function FadeIn({
       initial="hidden"
       animate="visible"
       variants={variants[variant]}
-      transition={{ ...transitionBase, delay }}
+      transition={{ delay }}
     >
       {children}
     </motion.div>
