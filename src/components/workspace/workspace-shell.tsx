@@ -5,7 +5,6 @@ import { notFound, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NoteEditor } from "@/components/workspace/note-editor";
-import { SnapsDrawer } from "@/components/workspace/snaps-drawer";
 import { TrashView } from "@/components/workspace/trash-view";
 import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
 import { WorkspaceHomeContent } from "@/components/workspace/workspace-home-content";
@@ -155,7 +154,6 @@ export function WorkspaceShell({
             )
           )}
 
-          <SnapsDrawer notebookId={filters.notebookId} noteId={noteId} />
         </div>
       </div>
     </WorkspaceFrame>

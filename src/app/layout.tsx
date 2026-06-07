@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Botion — All-in-one workspace",
   description:
-    "Write, plan, and capture ideas with notes, tags, and Snaps in one workspace.",
+    "Write, plan, and organize ideas with notes, tags, graphs, and calendar in one workspace.",
 };
 
 export default function RootLayout({

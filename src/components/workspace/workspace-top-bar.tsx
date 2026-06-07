@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, FilePlus, Home, Images, Keyboard, Network, Search, Trash2 } from "lucide-react";
+import { CalendarDays, FilePlus, Home, Keyboard, Network, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -12,7 +12,6 @@ import { NotificationsPanel } from "@/components/workspace/notifications-panel";
 import { PeoplePanel } from "@/components/workspace/people-panel";
 import { useCommandPalette } from "@/hooks/use-command-palette";
 import { useShortcutsDialog } from "@/hooks/use-shortcuts-dialog";
-import { useSnapsPanel } from "@/components/workspace/snaps-panel-context";
 import { useWorkspaceCollaborators } from "@/hooks/use-workspace-collaborators";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { asRoute } from "@/lib/routes";
@@ -27,7 +26,6 @@ export function WorkspaceTopBar({
   noteIsArchived,
   noteIsPinned,
   notebookId,
-  showSnapsToggle = true,
   className,
 }: {
   title: string;
@@ -37,14 +35,12 @@ export function WorkspaceTopBar({
   noteIsArchived?: boolean;
   noteIsPinned?: boolean;
   notebookId?: string;
-  showSnapsToggle?: boolean;
   className?: string;
 }) {
   const [peopleOpen, setPeopleOpen] = useState(false);
   const { openPalette } = useCommandPalette();
   const { open: shortcutsOpen, openShortcuts } = useShortcutsDialog();
   const { openNewPageDialog } = useWorkspaceCreate();
-  const { snapsOpen, toggleSnaps } = useSnapsPanel();
   const { collaborators, refetch } = useWorkspaceCollaborators(noteId);
   const pathname = usePathname();
   const router = useRouter();
@@ -177,18 +173,6 @@ export function WorkspaceTopBar({
           >
             <Search className="h-4 w-4" />
           </Button>
-
-          {showSnapsToggle && (
-            <Button
-              variant={snapsOpen ? "secondary" : "ghost"}
-              size="sm"
-              className="hidden gap-1.5 sm:inline-flex"
-              onClick={toggleSnaps}
-            >
-              <Images className="h-4 w-4" />
-              Snaps
-            </Button>
-          )}
 
           <button
             type="button"

@@ -1,10 +1,11 @@
 import type { FormEvent } from "react";
 import {
-  Camera,
+  CalendarDays,
   Check,
   FileText,
   FolderKanban,
   LayoutGrid,
+  Network,
   Share2,
   Sparkles,
   Tags,
@@ -14,7 +15,6 @@ import { HeroIllustration } from "@/components/landing/hero-illustration";
 import { LandingCtaDemo } from "@/components/landing/landing-cta-demo";
 import { LandingDemoCta } from "@/components/landing/landing-demo-cta";
 import { LandingPricingDemo } from "@/components/landing/landing-pricing-demo";
-import { SnapsPreviewIllustration } from "@/components/landing/snaps-preview-illustration";
 import { WorkspacePreviewIllustration } from "@/components/landing/workspace-preview-illustration";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -35,7 +35,7 @@ export function LandingHeroSection({
       <div className="max-w-xl">
         <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-accent/60 px-3.5 py-1.5 text-xs font-semibold text-primary">
           <Sparkles className="h-3.5 w-3.5" />
-          Notes, Snaps & calm workspaces
+          Notes, graphs & calm workspaces
         </p>
         <h1 className="text-[2.75rem] font-bold leading-[1.05] tracking-tight text-foreground md:text-5xl lg:text-[3.35rem]">
           Think clearly.
@@ -43,7 +43,7 @@ export function LandingHeroSection({
           <span className="text-primary">Work in one place.</span>
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-muted-foreground md:text-xl">
-          Botion blends writing, planning, and visual references — without feeling
+          Botion blends writing, planning, and visual thinking — without feeling
           like a clone of everything else.
         </p>
 
@@ -107,9 +107,9 @@ export function LandingFeaturesSection() {
       description: "Write in a clean editor with titles, tags, and autosave — like Notion, tuned for focus.",
     },
     {
-      icon: Camera,
-      title: "Snaps panel",
-      description: "Paste or drop screenshots next to your page. Zoom, caption, and organise visual references.",
+      icon: Network,
+      title: "Graph canvas",
+      description: "Map ideas, flows, and connections on a visual canvas linked to your pages.",
     },
     {
       icon: FolderKanban,
@@ -166,35 +166,6 @@ export function LandingFeaturesSection() {
   );
 }
 
-export function LandingSnapsSection() {
-  return (
-    <section id="snaps" className="border-t border-border/60 bg-card py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 md:grid-cols-2 md:px-10">
-        <SnapsPreviewIllustration className="order-2 md:order-1 h-auto w-full max-w-md justify-self-center" />
-        <div className="order-1 md:order-2">
-          <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Snaps stay beside your writing
-          </h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Collect UI captures, photos, and references in a dedicated panel. Paste
-            from the clipboard or drag files — no more lost screenshots in Downloads.
-          </p>
-          <ul className="mt-6 space-y-3">
-            {["Paste & drag-drop upload", "Per-notebook or per-page scope", "Compact cards & captions"].map(
-              (item) => (
-                <li key={item} className="flex items-center gap-2 text-[15px]">
-                  <Check className="h-4 w-4 shrink-0 text-primary" />
-                  {item}
-                </li>
-              ),
-            )}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function LandingWorkspacesSection() {
   return (
     <section id="workspaces" className="border-t border-border/60 bg-background py-20">
@@ -230,7 +201,7 @@ export function LandingHowItWorksSection() {
   const steps = [
     { step: "1", title: "Create a workspace", text: "Name a notebook for your project — Acme, Thesis, Personal." },
     { step: "2", title: "Write your first page", text: "Open the block editor, add tags, and start drafting." },
-    { step: "3", title: "Add Snaps as you go", text: "Drop visuals into the side panel while you research." },
+    { step: "3", title: "Plan on the calendar", text: "Schedule work and keep important pages within reach." },
   ];
 
   return (
@@ -274,7 +245,7 @@ export function LandingPricingSection() {
             <p className="mt-2 text-4xl font-bold">$0</p>
             <p className="text-sm text-muted-foreground">per month</p>
             <ul className="mt-6 space-y-2 text-[15px]">
-              {["Unlimited pages", "Snaps panel", "Workspaces & tags"].map((f) => (
+              {["Unlimited pages", "Graphs & calendar", "Workspaces & tags"].map((f) => (
                 <li key={f} className="flex gap-2">
                   <Check className="h-4 w-4 text-primary" /> {f}
                 </li>

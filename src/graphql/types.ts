@@ -128,33 +128,9 @@ export type DailyBriefingQueryResult = {
   dailyBriefing: DailyBriefing;
 };
 
-export type SnapsPanelPreferences = {
-  showCaptions: boolean;
-  compactCards: boolean;
-  sortNewestFirst: boolean;
-};
-
 export type UserPreferences = {
   sidebarCollapsed: boolean;
-  snapsPanel: SnapsPanelPreferences;
 };
-
-export type Snap = {
-  id: string;
-  title: string;
-  caption?: string | null;
-  fileId: string;
-  mimeType: string;
-  notebookId?: string | null;
-  noteId?: string | null;
-  sortOrder: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type SnapsQueryResult = { snaps: Snap[] };
-export type CreateSnapResult = { createSnap: Snap };
-export type UpdateSnapResult = { updateSnap: Snap };
 
 export type PageShareLinkQueryResult = {
   pageShareLink: { path: string; title: string };

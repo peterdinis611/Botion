@@ -41,7 +41,7 @@ function SidebarSkeleton({ collapsed = false }: { collapsed?: boolean }) {
 
 function EditorSkeleton({ label }: { label?: string }) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col border-r border-border/50 bg-background">
+    <div className="flex min-w-0 flex-1 flex-col bg-background">
       <Shimmer className="h-12 w-full shrink-0 rounded-none" />
       <div className="mx-auto w-full max-w-[720px] flex-1 space-y-5 px-10 py-10">
         {label && (
@@ -60,19 +60,6 @@ function EditorSkeleton({ label }: { label?: string }) {
   );
 }
 
-function SnapsSkeleton() {
-  return (
-    <div className="flex w-[280px] shrink-0 flex-col bg-panel p-4">
-      <Shimmer className="mb-4 h-4 w-14" />
-      <div className="grid grid-cols-2 gap-2">
-        <Shimmer className="aspect-square rounded-xl" />
-        <Shimmer className="aspect-square rounded-xl" />
-        <Shimmer className="col-span-2 aspect-[16/10] rounded-xl" />
-      </div>
-    </div>
-  );
-}
-
 export function WorkspaceLoading() {
   return (
     <div
@@ -83,7 +70,6 @@ export function WorkspaceLoading() {
     >
       <SidebarSkeleton />
       <EditorSkeleton label="Loading workspace…" />
-      <SnapsSkeleton />
     </div>
   );
 }
@@ -98,7 +84,6 @@ export function NoteLoading() {
     >
       <SidebarSkeleton />
       <EditorSkeleton label="Opening page…" />
-      <SnapsSkeleton />
     </div>
   );
 }

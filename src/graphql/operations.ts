@@ -99,11 +99,6 @@ export const ME_QUERY = gql`
       age
       preferences {
         sidebarCollapsed
-        snapsPanel {
-          showCaptions
-          compactCards
-          sortNewestFirst
-        }
       }
     }
   }
@@ -128,11 +123,6 @@ export const UPDATE_MY_PREFERENCES_MUTATION = gql`
   mutation UpdateMyPreferences($input: UpdateUserPreferencesInput!) {
     updateMyPreferences(input: $input) {
       sidebarCollapsed
-      snapsPanel {
-        showCaptions
-        compactCards
-        sortNewestFirst
-      }
     }
   }
 `;
@@ -490,63 +480,6 @@ export const REMOVE_GRAPH_MUTATION = gql`
   mutation RemoveGraph($id: ID!) {
     removeGraph(id: $id)
   }
-`;
-
-export const SNAP_FIELDS = gql`
-  fragment SnapFields on Snap {
-    id
-    title
-    caption
-    fileId
-    mimeType
-    notebookId
-    noteId
-    sortOrder
-    createdAt
-    updatedAt
-  }
-`;
-
-export const SNAPS_QUERY = gql`
-  query Snaps($scope: SnapListScope, $notebookId: ID, $noteId: ID) {
-    snaps(scope: $scope, notebookId: $notebookId, noteId: $noteId) {
-      ...SnapFields
-    }
-  }
-  ${SNAP_FIELDS}
-`;
-
-export const CREATE_SNAP_MUTATION = gql`
-  mutation CreateSnap($input: CreateSnapInput!) {
-    createSnap(input: $input) {
-      ...SnapFields
-    }
-  }
-  ${SNAP_FIELDS}
-`;
-
-export const UPDATE_SNAP_MUTATION = gql`
-  mutation UpdateSnap($input: UpdateSnapInput!) {
-    updateSnap(input: $input) {
-      ...SnapFields
-    }
-  }
-  ${SNAP_FIELDS}
-`;
-
-export const REMOVE_SNAP_MUTATION = gql`
-  mutation RemoveSnap($id: ID!) {
-    removeSnap(id: $id)
-  }
-`;
-
-export const REORDER_SNAPS_MUTATION = gql`
-  mutation ReorderSnaps($ids: [ID!]!) {
-    reorderSnaps(ids: $ids) {
-      ...SnapFields
-    }
-  }
-  ${SNAP_FIELDS}
 `;
 
 export const INVITE_WORKSPACE_MEMBER_MUTATION = gql`

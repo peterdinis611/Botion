@@ -10,7 +10,6 @@ import {
   LandingHowItWorksSection,
   LandingLogosSection,
   LandingPricingSection,
-  LandingSnapsSection,
   LandingWorkspacesSection,
 } from "@/components/landing/landing-sections";
 import { LandingHeaderDemoLink } from "@/components/landing/landing-header-demo";
@@ -20,7 +19,6 @@ import { getToken } from "@/lib/auth";
 
 const NAV = [
   { label: "Features", href: "#features" },
-  { label: "Snaps", href: "#snaps" },
   { label: "Workspaces", href: "#workspaces" },
   { label: "Pricing", href: "#pricing" },
 ] as const;
@@ -115,7 +113,6 @@ export function LandingPage() {
         />
         <LandingLogosSection />
         <LandingFeaturesSection />
-        <LandingSnapsSection />
         <LandingWorkspacesSection />
         <LandingHowItWorksSection />
         <LandingPricingSection />

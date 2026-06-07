@@ -33,7 +33,7 @@ export function WorkspaceCreateDialogs({
   const title = isNotebook ? "New workspace" : "New folder";
   const placeholder = isNotebook ? "Personal" : "Projects";
   const hint = isNotebook
-    ? "Workspaces group your pages, tags, and snaps in one place."
+    ? "Workspaces group your pages and tags in one place."
     : "Folders help organize multiple workspaces.";
 
   return (
