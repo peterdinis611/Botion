@@ -13,7 +13,7 @@ function GraphPageNodeComponent({ data, selected, isConnectable }: NodeProps) {
   const nodeData = data as GraphNodeData;
   const title = nodeData.label?.trim() || "Untitled";
   const href = nodeData.noteId ? `/workspace/notes/${nodeData.noteId}` : undefined;
-  const bg = nodeData.color ?? "#e8f5f3";
+  const bg = nodeData.color ?? "#e8ecff";
 
   return (
     <div

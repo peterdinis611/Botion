@@ -22,6 +22,7 @@ import {
 } from "@xyflow/react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useHotkey, formatForDisplay } from "@tanstack/react-hotkeys";
 import "@xyflow/react/dist/style.css";
 import { ArrowLeft, Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -340,19 +341,12 @@ function GraphEditorCanvas({
     setEdges((eds) => eds.map((e) => (e.id === id ? { ...e, ...patch } : e)));
   }
 
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-        e.preventDefault();
-        void saveNow();
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === "d") {
-        e.preventDefault();
-        handleDuplicateSelection();
-      }
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+  useHotkey("Mod+S", () => {
+    void saveNow();
+  });
+
+  useHotkey("Mod+D", () => {
+    handleDuplicateSelection();
   });
 
   const hasSelection = nodes.some((n) => n.selected) || edges.some((e) => e.selected);
@@ -421,7 +415,7 @@ function GraphEditorCanvas({
               position="bottom-center"
               className="mb-2 rounded-md border border-border bg-card/90 px-3 py-1.5 text-[11px] text-muted-foreground shadow-sm backdrop-blur"
             >
-              ⌘S save · ⌘D duplicate · Shift+drag multi-select · Del delete
+              {formatForDisplay("Mod+S")} save · {formatForDisplay("Mod+D")} duplicate · Shift+drag multi-select · Del delete
             </Panel>
           </ReactFlow>
         </div>

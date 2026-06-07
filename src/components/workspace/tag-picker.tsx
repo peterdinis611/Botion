@@ -21,7 +21,7 @@ import type {
 import { upsertNoteInCache } from "@/lib/cache-updates";
 import { cn } from "@/lib/utils";
 
-const TAG_COLORS = ["#0d9488", "#059669", "#d97706", "#dc2626", "#2563eb", "#64748b"];
+const TAG_COLORS = ["#4f46e5", "#6366f1", "#d97706", "#dc2626", "#2563eb", "#64748b"];
 
 export function TagPicker({
   noteId,

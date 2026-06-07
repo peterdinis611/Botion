@@ -1,5 +1,6 @@
 "use client";
 
+import { HotkeysProvider } from "@tanstack/react-hotkeys";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { ApolloAppProvider } from "@/components/providers/apollo-provider";
 import { AuthProvider } from "@/components/providers/auth-provider";
@@ -13,10 +14,16 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <MotionProvider>
         <ApolloAppProvider>
           <AuthProvider>
-            <TooltipProvider delayDuration={300}>
-              {children}
-              <Toaster />
-            </TooltipProvider>
+            <HotkeysProvider
+              defaultOptions={{
+                hotkey: { preventDefault: true, ignoreInputs: true },
+              }}
+            >
+              <TooltipProvider delayDuration={300}>
+                {children}
+                <Toaster />
+              </TooltipProvider>
+            </HotkeysProvider>
           </AuthProvider>
         </ApolloAppProvider>
       </MotionProvider>

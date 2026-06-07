@@ -1,15 +1,17 @@
 "use client";
 
-import { CalendarDays, FilePlus, Home, Images, Network, Search, Trash2 } from "lucide-react";
+import { CalendarDays, FilePlus, Home, Images, Keyboard, Network, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ShortcutKey } from "@/components/ui/shortcut-key";
 import { CollaboratorAvatars } from "@/components/workspace/collaborator-avatars";
 import { NoteActionsMenu } from "@/components/workspace/note-actions-menu";
 import { NotificationsPanel } from "@/components/workspace/notifications-panel";
 import { PeoplePanel } from "@/components/workspace/people-panel";
 import { useCommandPalette } from "@/hooks/use-command-palette";
+import { useShortcutsDialog } from "@/hooks/use-shortcuts-dialog";
 import { useSnapsPanel } from "@/components/workspace/snaps-panel-context";
 import { useWorkspaceCollaborators } from "@/hooks/use-workspace-collaborators";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
@@ -40,6 +42,7 @@ export function WorkspaceTopBar({
 }) {
   const [peopleOpen, setPeopleOpen] = useState(false);
   const { openPalette } = useCommandPalette();
+  const { open: shortcutsOpen, openShortcuts } = useShortcutsDialog();
   const { openNewPageDialog } = useWorkspaceCreate();
   const { snapsOpen, toggleSnaps } = useSnapsPanel();
   const { collaborators, refetch } = useWorkspaceCollaborators(noteId);
@@ -48,18 +51,30 @@ export function WorkspaceTopBar({
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
 
-  const navItems = [
+  const navItems: Array<
+    | {
+        label: string;
+        icon: typeof Home;
+        active: boolean;
+        href: string;
+      }
+    | {
+        label: string;
+        icon: typeof Home;
+        active: boolean;
+        onClick: () => void;
+      }
+  > = [
     { href: "/workspace", label: "Home", icon: Home, active: pathname === "/workspace" && !filters.archived },
     { href: "/workspace/calendar", label: "Calendar", icon: CalendarDays, active: pathname === "/workspace/calendar" },
     { href: "/workspace/graphs", label: "Graphs", icon: Network, active: pathname.startsWith("/workspace/graphs") },
     {
-      href: buildWorkspaceHref(searchParams, {
-        archived: true,
-        pinned: false,
-        clearTag: true,
-        clearNotebook: true,
-        clearFolder: true,
-      }),
+      label: "Shortcuts",
+      icon: Keyboard,
+      active: shortcutsOpen,
+      onClick: openShortcuts,
+    },
+    {
       label: "Trash",
       icon: Trash2,
       active: Boolean(filters.archived),
@@ -74,7 +89,7 @@ export function WorkspaceTopBar({
           }),
         ),
     },
-  ] as const;
+  ];
 
   return (
     <>
@@ -112,35 +127,29 @@ export function WorkspaceTopBar({
         <nav className="hidden shrink-0 items-center gap-0.5 rounded-xl border border-border/50 bg-muted/30 p-0.5 xl:flex">
           {navItems.map((item) => {
             const Icon = item.icon;
-            if ("onClick" in item && item.onClick) {
+            const itemClassName = cn(
+              "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
+              item.active
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
+            );
+
+            if ("onClick" in item) {
               return (
                 <button
                   key={item.label}
                   type="button"
                   onClick={item.onClick}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
-                    item.active
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
+                  className={itemClassName}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {item.label}
                 </button>
               );
             }
+
             return (
-              <Link
-                key={item.label}
-                href={asRoute(item.href)}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
-                  item.active
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
+              <Link key={item.label} href={asRoute(item.href)} className={itemClassName}>
                 <Icon className="h-3.5 w-3.5" />
                 {item.label}
               </Link>
@@ -155,9 +164,7 @@ export function WorkspaceTopBar({
         >
           <Search className="h-4 w-4 shrink-0" />
           <span>Search pages…</span>
-          <kbd className="ml-auto rounded border border-border/80 bg-background px-1.5 py-0.5 text-[10px] font-medium">
-            ⌘K
-          </kbd>
+          <ShortcutKey keys="Mod+K" className="ml-auto" />
         </button>
 
         <div className="flex shrink-0 items-center gap-1">

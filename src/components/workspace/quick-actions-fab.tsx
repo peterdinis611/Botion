@@ -5,6 +5,7 @@ import {
   Archive,
   CalendarDays,
   FolderPlus,
+  Keyboard,
   Network,
   NotebookPen,
   Plus,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ShortcutKey } from "@/components/ui/shortcut-key";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,10 +25,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCommandPalette } from "@/hooks/use-command-palette";
+import { useShortcutsDialog } from "@/hooks/use-shortcuts-dialog";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 
 export function QuickActionsFab() {
   const { openPalette } = useCommandPalette();
+  const { openShortcuts } = useShortcutsDialog();
   const { openNewPageDialog, openFolderDialog, openNotebookDialog } = useWorkspaceCreate();
 
   return (
@@ -62,9 +66,7 @@ export function QuickActionsFab() {
           <DropdownMenuItem onClick={openPalette}>
             <Search className="mr-2 h-4 w-4" />
             Quick find
-            <kbd className="ml-auto font-mono text-[10px] text-muted-foreground">
-              ⌘K
-            </kbd>
+            <ShortcutKey keys="Mod+K" className="ml-auto" />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => openNotebookDialog()}>
@@ -93,6 +95,10 @@ export function QuickActionsFab() {
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={openShortcuts}>
+            <Keyboard className="mr-2 h-4 w-4" />
+            Keyboard shortcuts
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/workspace?archived=1">

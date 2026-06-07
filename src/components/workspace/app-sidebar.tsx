@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Keyboard,
   LogOut,
   PanelLeft,
   PanelLeftClose,
@@ -36,6 +37,7 @@ import { SidebarWorkspaceSwitcher } from "@/components/workspace/sidebar-workspa
 import { SidebarWorkspaceTags } from "@/components/workspace/sidebar-workspace-tags";
 import type { Note, Notebook } from "@/graphql/types";
 import { useSidebar } from "@/hooks/use-sidebar";
+import { useShortcutsDialog } from "@/hooks/use-shortcuts-dialog";
 import { useWorkspaceCreate } from "@/hooks/use-workspace-create";
 import { ui } from "@/lib/ui-surface";
 import { cn } from "@/lib/utils";
@@ -49,6 +51,7 @@ export function AppSidebar({
   notes?: Note[];
 }) {
   const { user, logout } = useAuth();
+  const { openShortcuts } = useShortcutsDialog();
   const searchParams = useSearchParams();
   const filters = parseWorkspaceFilters(searchParams);
   const { collapsed, toggleCollapsed } = useSidebar();
@@ -162,6 +165,10 @@ export function AppSidebar({
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={openShortcuts}>
+                  <Keyboard className="mr-2 h-4 w-4" />
+                  Keyboard shortcuts
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => openFolderDialog()}>
                   New folder

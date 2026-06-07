@@ -1,10 +1,10 @@
 "use client";
 
+import { useHotkey } from "@tanstack/react-hotkeys";
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -24,16 +24,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
   const toggle = useCallback(() => setOpen((v) => !v), []);
   const openPalette = useCallback(() => setOpen(true), []);
 
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        toggle();
-      }
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [toggle]);
+  useHotkey("Mod+K", toggle);
 
   const value = useMemo(
     () => ({ open, setOpen, toggle, openPalette }),

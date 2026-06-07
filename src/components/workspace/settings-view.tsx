@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@apollo/client/react";
+import { Keyboard } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ShortcutKey } from "@/components/ui/shortcut-key";
 import { ThemeToggle } from "@/components/workspace/theme-toggle";
+import { useShortcutsDialog } from "@/hooks/use-shortcuts-dialog";
 import { ME_QUERY, UPDATE_MY_PROFILE_MUTATION } from "@/graphql/operations";
 import type { MeQueryResult, UpdateMyProfileResult } from "@/graphql/types";
 import { useSidebar } from "@/hooks/use-sidebar";
@@ -17,6 +20,7 @@ import { cn } from "@/lib/utils";
 export function SettingsView() {
   const { theme, setTheme } = useTheme();
   const { collapsed, setCollapsed } = useSidebar();
+  const { openShortcuts } = useShortcutsDialog();
   const { data, loading } = useQuery<MeQueryResult>(ME_QUERY);
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
@@ -155,6 +159,33 @@ export function SettingsView() {
                     {t}
                   </Button>
                 ))}
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div>
+            <h2 className="text-sm font-semibold">Keyboard shortcuts</h2>
+            <div className="mt-4 rounded-lg border border-border bg-card p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium">Shortcut reference</p>
+                  <p className="text-xs text-muted-foreground">
+                    Browse all workspace and editor shortcuts.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={openShortcuts}
+                >
+                  <Keyboard className="h-4 w-4" />
+                  View all
+                  <ShortcutKey keys="Mod+/" />
+                </Button>
               </div>
             </div>
           </div>

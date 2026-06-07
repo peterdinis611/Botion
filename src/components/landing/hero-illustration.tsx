@@ -245,9 +245,9 @@ export function HeroIllustration({ className }: { className?: string }) {
           stroke="var(--landing-illust-border)"
           strokeWidth="1.5"
         />
-        <circle cx="188" cy="44" r="10" fill="#5EEAD4" />
-        <circle cx="206" cy="44" r="10" fill="#818CF8" />
-        <circle cx="224" cy="44" r="10" fill="#F5D0C5" />
+        <circle cx="188" cy="44" r="10" fill="#818CF8" />
+        <circle cx="206" cy="44" r="10" fill="#6366F1" />
+        <circle cx="224" cy="44" r="10" fill="#C4B5FD" />
         <rect x="240" y="38" width="36" height="6" rx="3" fill="var(--landing-illust-muted)" />
       </g>
 
