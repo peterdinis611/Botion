@@ -177,60 +177,6 @@ export function HeroIllustration({ className }: { className?: string }) {
 
         <rect x="200" y="284" width="210" height="7" rx="3.5" fill="var(--landing-illust-muted)" />
         <rect x="200" y="298" width="160" height="7" rx="3.5" fill="var(--landing-illust-muted)" />
-
-        {/* Snaps panel */}
-        <rect x="456" y="48" width="88" height="340" fill="var(--landing-illust-panel)" />
-        <line x1="456" y1="48" x2="456" y2="388" stroke="var(--landing-illust-border)" />
-
-        <text x="468" y="78" fill="var(--foreground)" fontSize="12" fontWeight="600" fontFamily="system-ui, sans-serif">
-          Snaps
-        </text>
-        <circle cx="528" cy="72" r="12" fill="var(--primary)" fillOpacity="0.18" />
-        <text x="524" y="76" fill="var(--primary)" fontSize="14" fontWeight="700" fontFamily="system-ui, sans-serif">
-          +
-        </text>
-
-        <rect
-          x="468"
-          y="92"
-          width="64"
-          height="72"
-          rx="8"
-          fill="url(#snapThumb)"
-          stroke="var(--landing-illust-border)"
-          strokeWidth="1"
-        />
-        <rect x="476" y="100" width="36" height="5" rx="2.5" fill="var(--landing-illust-surface)" fillOpacity="0.7" />
-        <rect x="476" y="110" width="48" height="4" rx="2" fill="var(--landing-illust-surface)" fillOpacity="0.45" />
-
-        <rect
-          x="468"
-          y="172"
-          width="30"
-          height="30"
-          rx="6"
-          fill="var(--landing-illust-surface)"
-          stroke="var(--landing-illust-border)"
-        />
-        <rect
-          x="502"
-          y="172"
-          width="30"
-          height="30"
-          rx="6"
-          fill="var(--landing-illust-surface)"
-          stroke="var(--landing-illust-border)"
-        />
-        <rect
-          x="468"
-          y="208"
-          width="64"
-          height="44"
-          rx="8"
-          fill="var(--landing-illust-surface)"
-          stroke="var(--landing-illust-border)"
-        />
-        <rect x="476" y="216" width="48" height="28" rx="4" fill="var(--landing-illust-accent)" />
       </g>
 
       {/* Live collaboration cue */}

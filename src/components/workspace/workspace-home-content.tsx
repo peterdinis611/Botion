@@ -51,7 +51,7 @@ export function WorkspaceHomeContent({
           </div>
         </section>
 
-        {/* Pravý panel — deň + rýchly štart (nie stála 3. kolóna Snaps) */}
+        {/* Right column — daily brief + quick start */}
         <aside className="flex w-full shrink-0 flex-col gap-4 overflow-y-auto border-t border-border/50 bg-muted/20 px-5 py-6 lg:w-[min(360px,38%)] lg:border-l lg:border-t-0 lg:bg-muted/10">
           <DailyBriefSection variant="rail" />
 
