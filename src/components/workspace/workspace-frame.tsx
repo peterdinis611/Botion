@@ -6,8 +6,8 @@ import { PageTransition } from "@/components/motion/page-transition";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AppSidebar } from "@/components/workspace/app-sidebar";
 import { DemoAccountBanner } from "@/components/workspace/demo-account-banner";
-import { CommandPalette } from "@/components/workspace/command-palette";
-import { ShortcutsDialog } from "@/components/workspace/shortcuts-dialog";
+import { RoutePreloader } from "@/components/providers/route-preloader";
+import { CommandPalette, ShortcutsDialog } from "@/lib/dynamic-imports";
 import { TRASH_NOTES_QUERY, WORKSPACE_QUERY } from "@/graphql/operations";
 import type { WorkspaceQueryResult } from "@/graphql/types";
 import { clearLoginGracePeriod } from "@/lib/session-flash";
@@ -52,6 +52,7 @@ export function WorkspaceFrame({
           folders={data?.folders ?? []}
         />
         <ShortcutsDialog />
+        <RoutePreloader />
         <div className={ui.appShell}>
           <AppSidebar notebooks={data?.notebooks ?? []} notes={data?.notes ?? []} />
           <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-canvas">

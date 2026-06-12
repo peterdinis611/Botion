@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AuthForm } from "@/components/auth/auth-form";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Create account",
+  description: "Create a free Botion account and start organizing notes, graphs, and events.",
+  path: "/register",
+});
 
 export default function RegisterPage() {
   return (

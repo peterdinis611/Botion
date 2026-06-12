@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsView } from "@/components/workspace/settings-view";
+import { SettingsView } from "@/lib/dynamic-imports";
 import { WorkspaceSectionShell } from "@/components/workspace/workspace-section-shell";
 
 export default function SettingsPage() {

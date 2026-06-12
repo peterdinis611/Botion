@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client/react";
 import { notFound, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { NoteEditor } from "@/components/workspace/note-editor";
+import { NoteEditor } from "@/lib/dynamic-imports";
 import { TrashView } from "@/components/workspace/trash-view";
 import { WorkspaceFrame } from "@/components/workspace/workspace-frame";
 import { WorkspaceHomeContent } from "@/components/workspace/workspace-home-content";
@@ -112,7 +112,7 @@ export function WorkspaceShell({
   }, [filters.archived, noteId, noteData?.note, filters.notebookId, data?.notebooks]);
 
   return (
-    <WorkspaceFrame hideQuickFab>
+    <WorkspaceFrame>
       <div className={cn(ui.canvas, "relative flex min-h-0 min-w-0 flex-1 flex-col")}>
         <WorkspaceTopBar
           title={headerTitle}

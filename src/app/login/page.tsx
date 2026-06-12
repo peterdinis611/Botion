@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AuthForm } from "@/components/auth/auth-form";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createMetadata({
+  title: "Sign in",
+  description: "Sign in to your Botion workspace to access notes, graphs, and calendar.",
+  path: "/login",
+});
 
 export default function LoginPage() {
   return (

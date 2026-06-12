@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { GraphEditor } from "@/components/workspace/graph-editor";
+import { GraphEditor } from "@/lib/dynamic-imports";
 import { WorkspaceSectionShell } from "@/components/workspace/workspace-section-shell";
 
 export default function GraphEditorPage({

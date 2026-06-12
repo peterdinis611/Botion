@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarView } from "@/components/workspace/calendar-view";
+import { CalendarView } from "@/lib/dynamic-imports";
 import { WorkspaceSectionShell } from "@/components/workspace/workspace-section-shell";
 
 export default function CalendarPage() {

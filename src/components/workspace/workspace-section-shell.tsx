@@ -19,7 +19,7 @@ export function WorkspaceSectionShell({
   className?: string;
 }) {
   return (
-    <WorkspaceFrame hideQuickFab>
+    <WorkspaceFrame>
       <div className={cn(ui.canvas, "relative flex min-h-0 min-w-0 flex-1 flex-col")}>
         <WorkspaceTopBar title={title} icon={icon} notebookId={notebookId} />
 
