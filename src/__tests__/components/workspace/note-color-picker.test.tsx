@@ -2,7 +2,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { NoteColorPicker } from "@/components/workspace/note-color-picker";
-import React from "react";
 
 describe("NoteColorPicker", () => {
   it("opens the palette and selects a preset color", async () => {
